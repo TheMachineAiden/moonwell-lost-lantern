@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <title>Moonwell: The Lost Lantern</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body { margin:0; min-height:100vh; display:grid; place-items:center; background:#111827; color:#f8fafc; font:16px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    main { width:min(94vw, 780px); text-align:center; }
+    h1 { font-size:clamp(1.25rem, 3vw, 2rem); margin:.4rem 0; color:#fde68a; letter-spacing:.04em; }
+    p { margin:.35rem auto; max-width:680px; color:#cbd5e1; }
+    .screen { position:relative; margin:1rem auto .75rem; width:100%; aspect-ratio:16/10; background:#020617; border:5px solid #475569; box-shadow:0 0 0 5px #1e293b; overflow:hidden; image-rendering:pixelated; }
+    canvas { width:100%; height:100%; display:block; outline:none; }
+    .hud { display:flex; justify-content:space-between; gap:1rem; font-size:.82rem; color:#e2e8f0; }
+    kbd { padding:.08rem .32rem; border:1px solid #94a3b8; border-bottom-width:3px; border-radius:3px; color:white; }
+    #announcement { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+    .modal { position:absolute; inset:0; display:grid; place-items:center; padding:1rem; background:rgba(2,6,23,.82); }
+    .card { max-width:510px; padding:1.4rem; background:#172554; border:3px solid #93c5fd; box-shadow:7px 7px 0 #020617; }
+    .card h2 { color:#fef3c7; margin:0 0 .65rem; font-size:1.35rem; }
+    .card p { color:#dbeafe; }
+    button { cursor:pointer; margin-top:.7rem; padding:.65rem 1rem; border:3px solid #fef3c7; background:#f59e0b; color:#111827; font:inherit; font-weight:bold; }
+    button:focus-visible, canvas:focus-visible { outline:3px solid #fef08a; outline-offset:3px; }
+    footer { font-size:.75rem; color:#94a3b8; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>MOONWELL: THE LOST LANTERN</h1>
+    <p>Bring light back to a tiny dream forest. Find three fireflies, then follow the moonstone home.</p>
+    <div class="screen">
+      <canvas id="game" width="320" height="200" tabindex="0" aria-label="Moonwell game. Use arrow keys or WASD to move."></canvas>
+      <div id="announcement" aria-live="polite"></div>
+      <div class="modal" id="modal">
+        <div class="card">
+          <h2>The lantern has gone quiet.</h2>
+          <p>Walk through the forest and collect the three wandering fireflies. When they return to the lantern, a moonstone path will appear.</p>
+          <p><kbd>Arrow keys</kbd> or <kbd>W A S D</kbd> to walk. Press <kbd>Enter</kbd> to begin.</p>
+          <button id="start">Light the way</button>
+        </div>
+      </div>
+    </div>
+    <div class="hud"><span id="fireflies">Fireflies: 0 / 3</span><span id="hint">Explore the glade</span></div>
+    <footer>A short original 8-bit walking tale · No external assets</footer>
+  </main>
+  <script>
+  (() => {
+    const canvas = document.querySelector('#game'), ctx = canvas.getContext('2d');
+    const modal = document.querySelector('#modal'), start = document.querySelector('#start');
+    const announce = document.querySelector('#announcement'), countEl = document.querySelector('#fireflies'), hintEl = document.querySelector('#hint');
+    const W=320,H=200,T=16;
+    const map = [
+      '####################',
+      '#..................#',
+      '#..##........##....#',
+      '#..................#',
+      '#......##..........#',
+      '#..................#',
+      '#..........##......#',
+      '#..................#',
+      '#....##............#',
+      '#..................#',
+      '#..................#',
+      '#..................#',
+      '####################'
+    ];
+    const player={x:25,y:25,dir:0}, home={x:280,y:168};
+    const lights=[{x:264,y:27},{x:73,y:153},{x:168,y:88}];
+    let collected=0, running=false, won=false, last=0, step=0;
+    const isWall=(x,y)=> { const c=Math.floor(x/T), r=Math.floor(y/T); return r<0||r>=map.length||c<0||c>=map[0].length||map[r][c]==='#'; };
+    const canMove=(x,y)=> !isWall(x-5,y-5)&&!isWall(x+5,y-5)&&!isWall(x-5,y+5)&&!isWall(x+5,y+5);
+    const keys={};
+    function say(text){ announce.textContent=text; hintEl.textContent=text; }
+    function rect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(x,y,w,h)}
+    function drawTree(x,y){ rect(x+5,y+8,6,8,'#713f12'); rect(x+1,y+3,14,9,'#14532d'); rect(x+4,y,8,14,'#166534'); rect(x+6,y+2,4,3,'#4ade80'); }
+    function draw(){
+      rect(0,0,W,H,'#0f172a');
+      for(let r=0;r<map.length;r++)for(let c=0;c<map[r].length;c++){
+        const x=c*T,y=r*T;
+        if(map[r][c]==='#') drawTree(x,y); else { rect(x,y,T,T,'#164e63'); rect(x+3+(r*c)%9,y+4+(r+c)%7,1,1,'#67e8f9'); }
+      }
+      // lantern home
+      rect(home.x-5,home.y+4,10,6,'#78350f'); rect(home.x-3,home.y-8,6,13, collected===3?'#fef08a':'#64748b');
+      if(collected===3){ ctx.fillStyle='rgba(253,224,71,.18)';ctx.beginPath();ctx.arc(home.x,home.y,30,0,Math.PI*2);ctx.fill(); }
+      lights.forEach((f,i)=>{ if(!f.got){ const pulse=1+Math.sin((step+i*22)/12)*.4; ctx.fillStyle='rgba(253,224,71,.16)';ctx.beginPath();ctx.arc(f.x,f.y,8*pulse,0,7);ctx.fill(); rect(f.x-2,f.y-2,5,5,'#fef08a'); rect(f.x-1,f.y-1,2,2,'#fff'); }});
+      // player cloak
+      rect(player.x-5,player.y-5,10,11,'#a78bfa'); rect(player.x-3,player.y-8,6,5,'#f8fafc'); rect(player.x-2,player.y-7,1,1,'#111827'); rect(player.x+2,player.y-7,1,1,'#111827');
+      ctx.fillStyle='rgba(15,23,42,.35)';ctx.fillRect(0,0,W,H); // moonlight mood
+      if(collected>0){ ctx.fillStyle=`rgba(253,224,71,${.035*collected})`;ctx.fillRect(0,0,W,H); }
+    }
+    function update(dt){
+      let dx=0,dy=0; const speed=65*dt;
+      if(keys.ArrowUp||keys.w||keys.W){dy-=speed;player.dir=0} if(keys.ArrowDown||keys.s||keys.S){dy+=speed;player.dir=1}
+      if(keys.ArrowLeft||keys.a||keys.A){dx-=speed;player.dir=2} if(keys.ArrowRight||keys.d||keys.D){dx+=speed;player.dir=3}
+      if(dx&&dy){dx*=.707;dy*=.707} if(canMove(player.x+dx,player.y))player.x+=dx; if(canMove(player.x,player.y+dy))player.y+=dy;
+      lights.forEach((f,i)=>{ if(!f.got && Math.hypot(player.x-f.x,player.y-f.y)<12){ f.got=true; collected++; countEl.textContent=`Fireflies: ${collected} / 3`; say(collected===3?'The lantern wakes. Follow its golden glow!':`A firefly joins you! ${3-collected} still wander.`); } });
+      if(collected===3&&!won&&Math.hypot(player.x-home.x,player.y-home.y)<17){ won=true; running=false; modal.innerHTML='<div class="card"><h2>The Moonwell shines again.</h2><p>The fireflies settle into the little lantern. Across the water, every sleeping tree remembers its name.</p><p>You found a small way home.</p><button id="again">Walk again</button></div>';modal.hidden=false; document.querySelector('#again').onclick=reset; say('The forest is bright again.'); }
+    }
+    function loop(t){if(!running)return; const dt=Math.min(.04,(t-last)/1000||0);last=t;step++;update(dt);draw();requestAnimationFrame(loop)}
+    function begin(){modal.hidden=true;running=true;last=performance.now();canvas.focus();say('Find the wandering fireflies.');requestAnimationFrame(loop)}
+    function reset(){location.reload()}
+    start.onclick=begin;
+    addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ','Enter'].includes(e.key))e.preventDefault(); if(e.key==='Enter'&&!running&&!won)begin(); keys[e.key]=true});
+    addEventListener('keyup',e=>keys[e.key]=false); draw();
+  })();
+  </script>
+</body>
+</html>
