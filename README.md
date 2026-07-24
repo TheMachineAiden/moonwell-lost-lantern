@@ -2,7 +2,7 @@
 
 A small, original browser game made as one self-contained HTML page. Walk with arrow keys or WASD, collect three fireflies, and return them to the lantern. On phones, rotate to landscape, choose the clear fullscreen entry, then use the transparent directional controls and gravity-seed button.
 
-Elsewhere is its own product at [themachineaiden.github.io/elsewhere](https://themachineaiden.github.io/elsewhere/). The former `elsewhere.html` path is a small forwarding page so old links continue to work.
+`elsewhere.html` remains a separate, playable no-gravity room until its dedicated public repository and Pages URL are verified. Drag its floating objects on touch or desktop, tap open space or choose Drift for a nudge, and optionally enable its gentle synthesized sound.
 
 `field-guide.html` is a mobile-first companion page with short field notes for the moonwell, lantern motes, and gravity seed, plus a direct route back to the game.
 
