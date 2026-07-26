@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="24" viewBox="0 0 96 24">
+  <title>Moonwell discovery sprites: firefly, moonflower, echo-stone, lantern charm</title>
+  <g shape-rendering="crispEdges">
+    <g id="firefly"><path fill="#665c24" d="M8 8h8v8H8z"/><path fill="#f6e866" d="M10 6h4v12h-4z"/><path fill="#fffde8" d="M11 8h2v6h-2z"/><path fill="#b8eaff" d="M4 8h6v4H4zm10 0h6v4h-6z"/></g>
+    <g transform="translate(24)"><path fill="#315a4b" d="M10 12h4v12h-4z"/><path fill="#8c6dc3" d="M8 4h8v8H8zM4 8h8v8H4zm8 0h8v8h-8z"/><path fill="#d9c8ff" d="M10 6h4v4h-4z"/></g>
+    <g transform="translate(48)"><path fill="#596579" d="M6 8h12v12H6z"/><path fill="#94a3b8" d="M8 6h8v4H8z"/><path fill="#cab7ff" d="M10 10h4v6h-4z"/><path fill="#49375f" d="M8 18h8v2H8z"/></g>
+    <g transform="translate(72)"><path fill="#6f4319" d="M8 8h8v12H8z"/><path fill="#e5b64d" d="M10 4h4v4h-4zM8 8h8v8H8z"/><path fill="#fff8c6" d="M10 10h4v4h-4z"/><path fill="#453052" d="M6 20h12v4H6z"/></g>
+  </g>
+</svg>
