@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="32" viewBox="0 0 48 32">
+  <title>Lantern keeper idle and walking sprite frames</title>
+  <g shape-rendering="crispEdges">
+    <g id="idle"><path fill="#24133d" d="M6 2h12v3h3v8h-3v3h3v6h-3v4H6v-4H3v-6h3v-3H3V5h3z"/><path fill="#76549a" d="M6 2h12v3h3v8h-3v3H6v-3H3V5h3z"/><path fill="#f2ebff" d="M6 8h12v6H6z"/><path fill="#29203a" d="M9 10h2v2H9zm5 0h2v2h-2z"/><path fill="#a78bfa" d="M6 16h12v8H6z"/><path fill="#e9ddff" d="M4 24h6v3H4zm10 0h6v3h-6z"/><path fill="#fef08a" d="M0 14h4v5H0z"/><path fill="#fffce1" d="M1 15h2v2H1z"/></g>
+    <g transform="translate(24)" id="walk"><path fill="#24133d" d="M6 2h12v3h3v8h-3v3h3v6h-3v4H6v-4H1v-3h5v-3H3V5h3z"/><path fill="#76549a" d="M6 2h12v3h3v8h-3v3H6v-3H3V5h3z"/><path fill="#f2ebff" d="M6 8h12v6H6z"/><path fill="#29203a" d="M9 10h2v2H9zm5 0h2v2h-2z"/><path fill="#a78bfa" d="M6 16h12v8H6z"/><path fill="#e9ddff" d="M2 24h7v3H2zm12 2h7v3h-7z"/><path fill="#fef08a" d="M0 14h4v5H0z"/><path fill="#fffce1" d="M1 15h2v2H1z"/></g>
+  </g>
+</svg>
