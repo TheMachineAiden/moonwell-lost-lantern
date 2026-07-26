@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="72" height="24" viewBox="0 0 72 24">
+  <title>Moonwell forest memory keepsakes: rain-silver leaf, violet root-knot, bell-shell</title>
+  <g shape-rendering="crispEdges">
+    <g id="rain-silver-leaf"><path fill="#526d77" d="M10 4h6v3h3v8h-3v3h-6v-3H7V7h3z"/><path fill="#dbeafe" d="M10 6h6v3h-3v3h3v3h-6v-3h3V9h-3z"/><path fill="#a5f3fc" d="M13 9h3v3h-3z"/></g>
+    <g transform="translate(24)" id="violet-root-knot"><path fill="#5b3b28" d="M10 3h4v4h4v4h-4v4h4v4h-4v2h-4v-2H6v-4h4v-4H6V7h4z"/><path fill="#c4b5fd" d="M10 7h4v4h-4zm0 8h4v4h-4z"/><path fill="#ede9fe" d="M10 11h4v4h-4z"/></g>
+    <g transform="translate(48)" id="bell-shell"><path fill="#475569" d="M9 5h6v3h3v9h-3v3H9v-3H6V8h3z"/><path fill="#e2e8f0" d="M9 8h6v6H9z"/><path fill="#94a3b8" d="M9 14h6v3H9z"/><path fill="#fef3c7" d="M11 17h2v3h-2z"/></g>
+  </g>
+</svg>
