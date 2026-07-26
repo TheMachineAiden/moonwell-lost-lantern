@@ -6,6 +6,8 @@ A small, original browser game made from a static HTML page and game script. Wal
 
 `field-guide.html` is a mobile-first companion page with short field notes for the moonwell, lantern motes, and gravity seed, plus a direct route back to the game.
 
+The small original raster art pack in `assets/` adds a lantern-keeper companion and discovery sprites while retaining the game's no-dependency static setup. Its provenance and reuse note are recorded in `assets/ARTWORK.md`.
+
 ## Run locally
 
 Open `index.html` in a modern browser. No install, build step, network access, or third-party assets are needed.
