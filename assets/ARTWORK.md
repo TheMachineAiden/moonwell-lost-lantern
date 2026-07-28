@@ -13,3 +13,7 @@ The final PNGs are deliberately small (72 × 88, 48 × 32, 96 × 24, and 72 × 2
 Prompt: “Original quiet moonlit 8-bit forest art sheet: a dark evergreen and undergrowth cluster, three luminous fairies, and a young violet-hooded lantern keeper; crisp limited-palette pixel art on a flat magenta chroma-key background; no text, watermark, gradients, or photorealism.”
 
 The game only transfers the three compact transparent derivatives. The retained source is not referenced by the page and exists solely for local provenance and future re-cropping.
+
+`moonwell-world-v1.png` (128 × 86) is an original project-bound environmental sprite sheet generated with the built-in ChatGPT image-generation tool (`gpt-image-2`) on 2026-07-28. It supplies the moon lanterns, moonflower, stepping stones, echo-stones, skybells, hollow arch, falling canopy lights, and finished-lantern scene. The original 1536 × 1024 tool output is retained at `assets/generated/moonwell-world-sprite-source.png`; the runtime asset was chroma-keyed, point-downsampled, and stored with alpha via ImageMagick. Prompt: “Original quiet moonlit 8-bit forest art sheet … on a flat magenta chroma-key background; no text, watermark, gradients, or photorealism.”
+
+The player uses the generated `moonwell-keeper-v2.png` with a compact two-phase walk gait at runtime. Its facing is mirrored from horizontal player input, while `prefers-reduced-motion` keeps the idle pose stable.
