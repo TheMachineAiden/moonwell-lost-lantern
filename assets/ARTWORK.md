@@ -20,8 +20,18 @@ The player uses the generated `moonwell-keeper-v2.png` with a compact two-phase 
 
 ## Movement and world-object polish — 2026-07-28
 
-`moonwell-keeper-walk-v3.png` (252 × 68), `moonwell-fairy-perches-v1.png` (150 × 50), `moonwell-water-crossing-v1.png` (160 × 25), and `moonwell-moonwell-guardian-v1.png` (63 × 54) are compact project-bound derivatives generated for the movement/world-object polish pass. They were generated with the built-in ChatGPT image-generation tool (`gpt-image-2`), keyed from a flat magenta background, cropped, point-downsampled, and palette-limited locally with ImageMagick. The unmodified tool output is retained as `assets/generated/moonwell-polish-source.png`.
+`moonwell-keeper-walk-v3.png` (252 × 68) is a compact project-bound derivative generated for the movement/world-object polish pass. It was generated with the built-in ChatGPT image-generation tool (`gpt-image-2`), keyed from a flat magenta background, cropped, point-downsampled, and palette-limited locally with ImageMagick. The unmodified tool output is retained as `assets/generated/moonwell-polish-source.png`.
 
 Prompt: “Original 8-bit pixel-art sheet: a four-frame violet-hooded lantern keeper walk cycle; three friendly luminous fairies sitting on mushroom or twig perches; a moonlit reed-lined water crossing with a short wooden bridge; and a mossy stone lantern-watcher with amber eyes. Flat magenta chroma-key background, limited palette, no text, watermark, gradients, or photorealism.”
 
-At runtime, the keeper uses the four frames at a time-based 9 fps gait only while actually moving, with horizontal mirroring for left/right facing and a stable idle under reduced motion. The perches are quiet decorative rest points. Moonroot’s generated water is collidable until the moonflower unlocks its central bridge, and the lantern-watcher is a visible, collidable hollow guardian rather than a walk-through figure.
+At runtime, the keeper uses the four frames at a time-based 9 fps gait only while actually moving, with horizontal mirroring for left/right facing and a stable idle under reduced motion.
+
+## Corrected water and world objects — 2026-07-28
+
+`moonwell-water-tile-v1.png` (16 × 16), `moonwell-fairy-platform-v2.png` (52 × 28), and `moonwell-moonwell-sentinel-v2.png` (40 × 46) are new project-bound runtime assets generated with the built-in ChatGPT image-generation tool (`gpt-image-2`). Their untouched tool outputs are retained at `assets/generated/moonwell-water-tile-source.png` and `assets/generated/moonwell-world-objects-source.png`. The compact derivatives were chroma-keyed from flat magenta, cropped, and point-downsampled with ImageMagick. The first is deliberately a single repeated water tile; it is not a map-spanning strip.
+
+Water prompt: “Create one small 8-bit pixel-art water tile, designed to repeat edge-to-edge in both directions without a visible seam … a dark moonlit forest stream surface, tiny cyan ripple highlights and violet reflections … flat magenta chroma-key background.”
+
+World-object prompt: “Create a clean two-object sprite sheet for Moonwell: The Lost Lantern … a sturdy mossy moonstone mushroom-and-root perch/platform … and a distinct collidable ancient moonwell sentinel, a low rounded stone shrine with a crescent lantern niche … flat magenta chroma-key background.”
+
+The game repeats the 16 × 16 tile across Moonroot Crossing and keeps that water collidable except for the revealed bridge gap. The generated platforms use explicit solid collision boxes, the non-collidable fairy sprite overlays have been removed, and the previous statue-like guardian asset is no longer loaded or drawn: Whispering Hollow now draws and collides with the new moonwell sentinel only.
