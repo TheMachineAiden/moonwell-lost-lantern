@@ -1,6 +1,6 @@
 # Moonwell artwork pack
 
-`keeper-companion.png`, `keeper-walk.png`, `discoveries.png`, and `moon-memories.png` are original, project-bound raster artwork for **Moonwell: The Lost Lantern**. They were authored for this repository as simple pixel illustrations and rasterized locally from the adjacent SVG source files on 2026-07-26. `keeper-walk.png` contains the young keeper's idle and walking frames; `moon-memories.png` contains the three collectible keepsakes.
+`keeper-walk.png`, `discoveries.png`, and `moon-memories.png` are original, project-bound raster artwork for **Moonwell: The Lost Lantern**. They were authored for this repository as simple pixel illustrations and rasterized locally from adjacent SVG source files on 2026-07-26. `keeper-walk.png` contains the young keeper's idle and walking frames; `moon-memories.png` contains the three collectible keepsakes.
 
 No third-party artwork, model output, or external asset is included. The project owner may use, modify, and publish this pack with Moonwell under the repository's existing publication terms.
 
@@ -34,4 +34,4 @@ Water prompt: “Create one small 8-bit pixel-art water tile, designed to repeat
 
 World-object prompt: “Create a clean two-object sprite sheet for Moonwell: The Lost Lantern … a sturdy mossy moonstone mushroom-and-root perch/platform … and a distinct collidable ancient moonwell sentinel, a low rounded stone shrine with a crescent lantern niche … flat magenta chroma-key background.”
 
-The game repeats the 16 × 16 tile across Moonroot Crossing and keeps that water collidable except for the revealed bridge gap. The generated platforms use explicit solid collision boxes, the non-collidable fairy sprite overlays have been removed, and the previous statue-like guardian asset is no longer loaded or drawn: Whispering Hollow now draws and collides with the new moonwell sentinel only.
+The game repeats the 16 × 16 tile across Moonroot Crossing over a matching opaque base cell, so transparent source edges cannot create seams at the native pixel scale. Water remains collidable except for the revealed bridge gap. The generated platforms use explicit solid collision boxes, the non-collidable fairy sprite overlays have been removed, and the previous large guardian and companion sprites have been removed: Whispering Hollow now draws and collides with the compact moonwell sentinel only.
