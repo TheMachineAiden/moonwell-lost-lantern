@@ -14,6 +14,8 @@ For deterministic non-player-facing scene checks, use `?dev=scene&area=0` throug
 
 Open `index.html` in a modern browser. No install, build step, network access, or third-party assets are needed.
 
+For a local HTTP preview, run `npm run dev` and open `http://127.0.0.1:4173`. Run `npm test` for the dependency-free progression checks and `npm run check` for JavaScript syntax checks.
+
 ## Accessibility
 
 The game has keyboard controls, a visible control guide, focus styling, and polite screen-reader updates for important game events.
