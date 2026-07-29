@@ -3,6 +3,7 @@
   "private":true,
   "type":"module",
   "scripts":{
+    "build":"mkdir -p dist/assets && cp index.html game.js game-core.js field-guide.html elsewhere.html dist/ && cp assets/* dist/assets/",
     "dev":"python3 -m http.server 4173 --bind 127.0.0.1",
     "test":"node --test",
     "check":"node --check game.js && node --check game-core.js"
