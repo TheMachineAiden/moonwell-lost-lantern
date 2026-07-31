@@ -35,3 +35,20 @@ Water prompt: “Create one small 8-bit pixel-art water tile, designed to repeat
 World-object prompt: “Create a clean two-object sprite sheet for Moonwell: The Lost Lantern … a sturdy mossy moonstone mushroom-and-root perch/platform … and a distinct collidable ancient moonwell sentinel, a low rounded stone shrine with a crescent lantern niche … flat magenta chroma-key background.”
 
 The game repeats the 16 × 16 tile across Moonroot Crossing over a matching opaque base cell, so transparent source edges cannot create seams at the native pixel scale. Water remains collidable except for the revealed bridge gap. The generated platforms use explicit solid collision boxes, the non-collidable fairy sprite overlays have been removed, and the previous large guardian and companion sprites have been removed: Whispering Hollow now draws and collides with the compact moonwell sentinel only.
+
+## Tile-first world-art refresh — 2026-07-31
+
+The reusable world art in `moonwell-art/production/` is a project-bound,
+non-character replacement system for every in-world prop. Its retained source
+sheets are `generated/moonwell-world-props-atlas-v2-source.png` and
+`generated/moonwell-animated-props-atlas-v2-source.png`, created with the
+built-in ChatGPT image-generation tool (`gpt-image-2`) using the visual
+contract in `moonwell-art/ART_DIRECTION.md`. The existing keeper asset was not
+modified.
+
+`scripts/process-moonwell-art.sh` is the reproducible post-processing step. It
+removes the chroma-key field while retaining foliage, crops each source
+object to its approved tile footprint using point scaling, and creates compact
+four-frame firefly, memory, lantern, and skybell strips. Runtime code loads
+only the compact derivatives. The source sheets remain for provenance and
+future re-cropping; neither source is served by the game page.
