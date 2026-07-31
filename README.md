@@ -18,4 +18,4 @@ For a local HTTP preview, run `npm run dev` and open `http://127.0.0.1:4173`. Ru
 
 ## Accessibility
 
-The game has keyboard controls, a visible control guide, focus styling, and polite screen-reader updates for important game events.
+The game has keyboard controls, a visible control guide, focus styling, and polite screen-reader updates for important game events. Press `P` or `Escape` at any point during a run to pause; press either key again or choose **Continue** to resume.

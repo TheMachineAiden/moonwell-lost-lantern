@@ -48,8 +48,33 @@ work applies only to non-character world art. The existing keeper/player asset
 - Pre-existing untracked direction references retained unchanged:
   `assets/moonwell-art/ART_DIRECTION.md` and the two v1 chroma atlases.
 
+## Completed on 2026-07-31 — pause control
+
+- Added an in-game pause overlay that preserves the current run, with
+  **Continue** and **Start again** actions.
+- Added `P` and `Escape` keyboard toggles, visible entry guidance, and an
+  expanded canvas label so the control is discoverable to screen-reader users.
+- The keeper and tile-first world art remain unchanged.
+
+## Verification
+
+- `npm test` — 5/5 progression checks passed.
+- `npm run check` and `npm run build` — passed.
+- Browser QA at `http://127.0.0.1:4173`: normal-input start → `P` pause →
+  `Escape` resume on desktop; normal-input start → `P` pause → **Continue**
+  resume on touch landscape. The pause panel, canvas, and touch control fit
+  the reviewed viewports; no browser console messages were reported.
+- Mobile portrait at 390 × 844 retains the intentional rotation gate without
+  horizontal overflow. Mobile landscape at 844 × 390 retains fitting touch
+  controls and a legible pause panel.
+
+## Workspace state
+
+- Current source baseline: `e17fa66b99b6bbbc3485c67e958a7b5b62c4f7a0`.
+- This iteration modifies `game.js`, `index.html`, `README.md`, and this
+  continuity record. The generated `dist/` output remains ignored.
+
 ## Next concrete action
 
-Request owner visual feedback from the local preview before any aesthetic
-iteration. If approved, a later commit can include the retained references,
-reproducible pipeline, production assets, and runtime integration together.
+Inspect the released pause control at the public game URL after publication,
+then look for the next small player-visible improvement.
