@@ -67,6 +67,10 @@ work applies only to non-character world art. The existing keeper/player asset
 - Mobile portrait at 390 × 844 retains the intentional rotation gate without
   horizontal overflow. Mobile landscape at 844 × 390 retains fitting touch
   controls and a legible pause panel.
+- Publication validation found the hosted document can refresh before its
+  unversioned script is evicted from a browser cache. The game script now uses
+  a narrow pause-control cache key so the visible control and its logic arrive
+  together.
 
 ## Workspace state
 
