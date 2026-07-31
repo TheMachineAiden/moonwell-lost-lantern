@@ -78,6 +78,16 @@ work applies only to non-character world art. The existing keeper/player asset
 - This iteration modifies `game.js`, `index.html`, `README.md`, and this
   continuity record. The generated `dist/` output remains ignored.
 
+## Completed on 2026-07-31 — touch pause control
+
+- Added a labelled, round pause button in the upper-right of the mobile
+  landscape play view, so touch-only players can pause without a keyboard.
+- The control hides behind the pause panel and returns after **Continue**;
+  it does not alter desktop presentation, the keeper, or world art.
+- Local browser check at `http://127.0.0.1:4173`: touch start → pause button
+  → pause panel completed with no console errors. `npm test` (5/5),
+  `npm run check`, `npm run build`, and `git diff HEAD --check` passed.
+
 ## Next concrete action
 
 Inspect the released pause control at the public game URL after publication,
