@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="730" viewBox="0 0 960 730" role="img" aria-labelledby="title desc">
+  <title id="title">Moonwell level layout wireframes</title>
+  <desc id="desc">Four 20 by 13 tile wireframes showing the shared blocked-cell map, player starts, lanterns, memories, and each area's puzzle objects. Every square is one 16 pixel game tile.</desc>
+  <style>
+    .page{fill:#07111f}.panel{fill:#0e2138;stroke:#7dd3fc;stroke-width:2}.grid{stroke:#36516d;stroke-width:1}.wall{fill:#24455b}.path{fill:#123047}.start{fill:#c4b5fd}.home{fill:#fbbf24}.memory{fill:#e2e8f0}.light{fill:#fef08a}.puzzle{fill:#c084fc}.bridge{fill:#4ade80}.label{fill:#e0f2fe;font:600 17px system-ui,sans-serif}.small{fill:#bae6fd;font:12px system-ui,sans-serif}.legend{fill:#dbeafe;font:13px system-ui,sans-serif}
+  </style>
+  <rect class="page" width="960" height="730"/>
+  <text x="34" y="38" class="label">Moonwell — grid-first level wireframe</text>
+  <text x="34" y="59" class="small">Each small square is one 16 × 16 gameplay cell. Symbols mark logical anchor cells; the next art pass must not silently exceed their footprint.</text>
+  <g transform="translate(34 84)">
+    <rect class="panel" width="410" height="280" rx="8"/><text class="label" x="18" y="28">Lantern Glade</text><text class="small" x="18" y="48">○ keeper start · ★ firefly · ◆ memory · ◉ lantern</text>
+    <g transform="translate(38 66)">
+      <rect class="path" width="320" height="208"/>
+      <path class="wall" d="M0 0h320v16H0zm0 192h320v16H0zM0 0h16v208H0zm304 0h16v208h-16zM48 32h32v16H48zm160 0h32v16h-32zM96 64h32v16H96zm80 32h32v16h-32zM64 128h32v16H64z"/>
+      <path class="grid" d="M0 0v208M16 0v208M32 0v208M48 0v208M64 0v208M80 0v208M96 0v208M112 0v208M128 0v208M144 0v208M160 0v208M176 0v208M192 0v208M208 0v208M224 0v208M240 0v208M256 0v208M272 0v208M288 0v208M304 0v208M320 0v208M0 0h320M0 16h320M0 32h320M0 48h320M0 64h320M0 80h320M0 96h320M0 112h320M0 128h320M0 144h320M0 160h320M0 176h320M0 192h320M0 208h320"/>
+      <circle class="start" cx="25" cy="25" r="7"/><circle class="light" cx="264" cy="27" r="7"/><circle class="light" cx="73" cy="153" r="7"/><circle class="light" cx="168" cy="88" r="7"/><rect class="memory" x="35" y="67" width="12" height="12"/><circle class="home" cx="280" cy="168" r="9"/>
+    </g>
+  </g>
+  <g transform="translate(516 84)">
+    <rect class="panel" width="410" height="280" rx="8"/><text class="label" x="18" y="28">Moonroot Crossing</text><text class="small" x="18" y="48">● moonflower · ═ bridge span · water remains solid elsewhere</text>
+    <g transform="translate(38 66)">
+      <rect class="path" width="320" height="208"/><path class="wall" d="M0 0h320v16H0zm0 192h320v16H0zM0 0h16v208H0zm304 0h16v208h-16zM48 32h32v16H48zm160 0h32v16h-32zM96 64h32v16H96zm80 32h32v16h-32zM64 128h32v16H64z"/><rect x="0" y="88" width="320" height="32" fill="#164e63"/><rect class="bridge" x="128" y="96" width="64" height="16"/>
+      <path class="grid" d="M0 0v208M16 0v208M32 0v208M48 0v208M64 0v208M80 0v208M96 0v208M112 0v208M128 0v208M144 0v208M160 0v208M176 0v208M192 0v208M208 0v208M224 0v208M240 0v208M256 0v208M272 0v208M288 0v208M304 0v208M320 0v208M0 0h320M0 16h320M0 32h320M0 48h320M0 64h320M0 80h320M0 96h320M0 112h320M0 128h320M0 144h320M0 160h320M0 176h320M0 192h320M0 208h320"/>
+      <circle class="start" cx="40" cy="40" r="7"/><circle class="puzzle" cx="264" cy="72" r="9"/><circle class="light" cx="248" cy="151" r="7"/><circle class="light" cx="152" cy="169" r="7"/><rect class="memory" x="274" y="35" width="12" height="12"/><circle class="home" cx="40" cy="168" r="9"/>
+    </g>
+  </g>
+  <g transform="translate(34 402)">
+    <rect class="panel" width="410" height="280" rx="8"/><text class="label" x="18" y="28">Whispering Hollow</text><text class="small" x="18" y="48">● echo-stone · ■ proposed 2 × 2 sentinel ownership</text>
+    <g transform="translate(38 66)">
+      <rect class="path" width="320" height="208"/><path class="wall" d="M0 0h320v16H0zm0 192h320v16H0zM0 0h16v208H0zm304 0h16v208h-16zM48 32h32v16H48zm160 0h32v16h-32zM96 64h32v16H96zm80 32h32v16h-32zM64 128h32v16H64z"/>
+      <rect x="144" y="96" width="32" height="32" fill="#64748b" stroke="#f8fafc" stroke-width="2"/>
+      <path class="grid" d="M0 0v208M16 0v208M32 0v208M48 0v208M64 0v208M80 0v208M96 0v208M112 0v208M128 0v208M144 0v208M160 0v208M176 0v208M192 0v208M208 0v208M224 0v208M240 0v208M256 0v208M272 0v208M288 0v208M304 0v208M320 0v208M0 0h320M0 16h320M0 32h320M0 48h320M0 64h320M0 80h320M0 96h320M0 112h320M0 128h320M0 144h320M0 160h320M0 176h320M0 192h320M0 208h320"/>
+      <circle class="start" cx="279" cy="40" r="7"/><circle class="puzzle" cx="264" cy="152" r="8"/><circle class="puzzle" cx="152" cy="72" r="8"/><circle class="puzzle" cx="57" cy="120" r="8"/><circle class="light" cx="162" cy="128" r="7"/><rect class="memory" x="260" y="51" width="12" height="12"/><circle class="home" cx="46" cy="168" r="9"/>
+    </g>
+  </g>
+  <g transform="translate(516 402)">
+    <rect class="panel" width="410" height="280" rx="8"/><text class="label" x="18" y="28">Starfall Grove</text><text class="small" x="18" y="48">● skybell · ▣ proposed 2 × 2 altar ownership</text>
+    <g transform="translate(38 66)">
+      <rect class="path" width="320" height="208"/><path class="wall" d="M0 0h320v16H0zm0 192h320v16H0zM0 0h16v208H0zm304 0h16v208h-16zM48 32h32v16H48zm160 0h32v16h-32zM96 64h32v16H96zm80 32h32v16h-32zM64 128h32v16H64z"/><rect x="160" y="80" width="32" height="32" fill="#64748b" stroke="#f8fafc" stroke-width="2"/>
+      <path class="grid" d="M0 0v208M16 0v208M32 0v208M48 0v208M64 0v208M80 0v208M96 0v208M112 0v208M128 0v208M144 0v208M160 0v208M176 0v208M192 0v208M208 0v208M224 0v208M240 0v208M256 0v208M272 0v208M288 0v208M304 0v208M320 0v208M0 0h320M0 16h320M0 32h320M0 48h320M0 64h320M0 80h320M0 96h320M0 112h320M0 128h320M0 144h320M0 160h320M0 176h320M0 192h320M0 208h320"/>
+      <circle class="start" cx="276" cy="40" r="7"/><circle class="puzzle" cx="258" cy="150" r="8"/><circle class="puzzle" cx="160" cy="76" r="8"/><circle class="puzzle" cx="62" cy="118" r="8"/><circle class="light" cx="146" cy="150" r="7"/><circle class="light" cx="234" cy="62" r="7"/><circle class="home" cx="48" cy="168" r="9"/>
+    </g>
+  </g>
+</svg>
