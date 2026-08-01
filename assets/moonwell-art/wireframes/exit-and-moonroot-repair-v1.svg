@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="500" viewBox="0 0 960 500" role="img" aria-labelledby="title desc">
+  <title id="title">Moonwell exit and Moonroot crossing repair</title>
+  <desc id="desc">A grid-first wireframe showing a one-cell light opening between two one-cell tree colliders and a four-cell-wide bridge spanning Moonroot's two water rows.</desc>
+  <style>.page{fill:#07111f}.panel{fill:#0e2138;stroke:#7dd3fc;stroke-width:2}.grid{stroke:#36516d}.tree{fill:#14532d;stroke:#86efac;stroke-width:2}.opening{fill:#fef08a;stroke:#fff7cc;stroke-width:2}.water{fill:#164e63}.bridge{fill:#c4b5fd;stroke:#f5f3ff;stroke-width:2}.text{fill:#e0f2fe;font:600 18px system-ui,sans-serif}.small{fill:#bae6fd;font:14px system-ui,sans-serif}.note{fill:#fef3c7;font:600 14px system-ui,sans-serif}</style>
+  <rect class="page" width="960" height="500"/>
+  <text class="text" x="36" y="40">Moonwell repair — visual footprint and collider contract</text>
+  <text class="small" x="36" y="64">Every square is one 16 × 16 world cell. Filled green and violet cells are solid; the light opening is deliberately non-solid.</text>
+  <g transform="translate(36 100)">
+    <rect class="panel" width="404" height="344" rx="10"/>
+    <text class="text" x="22" y="34">Transition opening</text><text class="small" x="22" y="56">A compact light is visible only after the area is complete.</text>
+    <g transform="translate(82 104)">
+      <rect class="tree" x="0" y="0" width="96" height="96"/><rect class="opening" x="96" y="0" width="96" height="96"/><rect class="tree" x="192" y="0" width="96" height="96"/>
+      <path class="grid" d="M0 0h288M0 96h288M0 0v96M96 0v96M192 0v96M288 0v96"/>
+      <rect x="132" y="20" width="24" height="60" fill="#fff7cc"/><rect x="126" y="80" width="36" height="10" fill="#ca8a04"/>
+      <text class="note" x="14" y="124">solid tree</text><text class="note" x="108" y="124">clear exit</text><text class="note" x="200" y="124">solid tree</text>
+    </g>
+    <text class="small" x="22" y="290">Visual: 8 × 12 px inside its own 16 × 16 cell.</text><text class="small" x="22" y="314">Collider: none at the opening; each flank is one tile.</text>
+  </g>
+  <g transform="translate(500 100)">
+    <rect class="panel" width="424" height="344" rx="10"/>
+    <text class="text" x="22" y="34">Moonroot full water crossing</text><text class="small" x="22" y="56">The bridge spans both water rows, so it connects the upper and lower shores.</text>
+    <g transform="translate(84 104)">
+      <rect class="water" x="0" y="0" width="256" height="128"/><rect class="bridge" x="96" y="0" width="64" height="128"/>
+      <path class="grid" d="M0 0h256M0 64h256M0 128h256M0 0v64M64 0v64M128 0v64M192 0v64M256 0v64M0 64v64M64 64v64M128 64v64M192 64v64M256 64v64"/>
+    </g>
+    <text class="small" x="22" y="274">Visual: eight repeated 16 × 16 bridge cells.</text><text class="small" x="22" y="298">Collider: exactly those eight cells are passable; adjacent water remains solid.</text>
+  </g>
+</svg>
