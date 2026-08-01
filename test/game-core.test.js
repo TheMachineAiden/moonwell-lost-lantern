@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const context={};
 vm.runInNewContext(fs.readFileSync(new URL('../game-core.js',import.meta.url),'utf8'),context);
-const {TOTAL_FIREFLIES,areaComplete,countLights,countMemories,createAreas,createWorldObjects,hiddenLightVisible,isBlocked,nextAreaIndex}=context.MoonwellCore;
+const {TOTAL_FIREFLIES,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createWorldObjects,hiddenLightVisible,isBlocked,nextAreaIndex}=context.MoonwellCore;
 
 test('Moonwell starts with four areas, eight fireflies, and three optional memories',()=>{
   const areas=createAreas();
@@ -79,6 +79,42 @@ test('hidden fireflies follow their area-specific encounter gates',()=>{
   assert.equal(hiddenLightVisible(2,true,false),true);
   assert.equal(hiddenLightVisible(3,true,false),false);
   assert.equal(hiddenLightVisible(3,false,true),true);
+});
+
+test('the Hollow echo retraces Luna from the casting rune to the remembered rune',()=>{
+  const runes=createAreas()[2].runes;
+  const trail=[{x:runes[0].x,y:runes[0].y},{x:216,y:118},{x:runes[1].x,y:runes[1].y}];
+  const replay=createEchoReplay(trail,runes[0]);
+  assert.deepEqual(replay,[trail[2],trail[1],trail[0]]);
+  assert.equal(createEchoReplay(trail.slice(1),runes[0]).length,0);
+});
+
+test('the Hollow only resolves when Luna reaches rune three while the echo holds rune one',()=>{
+  const runes=createAreas()[2].runes;
+  assert.equal(canResolveEchoRune(2,true,runes[2],runes),true);
+  assert.equal(canResolveEchoRune(2,false,runes[2],runes),false);
+  assert.equal(canResolveEchoRune(1,true,runes[2],runes),false);
+  assert.equal(canResolveEchoRune(2,true,runes[1],runes),false);
+});
+
+test('Whispering Hollow keeps a collision-safe route through the three echo runes',()=>{
+  const runes=createAreas()[2].runes;
+  const canStand=(x,y)=>![[x-5,y-5],[x+5,y-5],[x-5,y+5],[x+5,y+5]].some(([pointX,pointY])=>isBlocked(pointX,pointY,2,false));
+  const routeExists=(start,target)=>{
+    const queue=[[start.x,start.y]],seen=new Set([`${start.x},${start.y}`]);
+    while(queue.length){
+      const [x,y]=queue.shift();
+      if(Math.hypot(x-target.x,y-target.y)<8)return true;
+      for(const [deltaX,deltaY] of [[2,0],[-2,0],[0,2],[0,-2]]){
+        const nextX=x+deltaX,nextY=y+deltaY,key=`${nextX},${nextY}`;
+        if(nextX<6||nextX>314||nextY<6||nextY>194||seen.has(key)||!canStand(nextX,nextY))continue;
+        seen.add(key);queue.push([nextX,nextY]);
+      }
+    }
+    return false;
+  };
+  assert.equal(routeExists(runes[0],runes[1]),true);
+  assert.equal(routeExists(runes[1],runes[2]),true);
 });
 
 test('area progression ends cleanly at Starfall Grove',()=>{

@@ -2,6 +2,7 @@
 const TILE_SIZE=16;
 const MAP=['....................','....................','....................','....................','....................','....................','....................','....................','....................','....................','....................','....................','....................'];
 const TOTAL_FIREFLIES=8;
+const HOLLOW_ECHO_RADIUS=15;
 const treeCells=[[3,2],[4,2],[13,2],[14,2],[7,4],[8,4],[11,6],[12,6],[5,8],[6,8]];
 const platformCells=[[[5,2],[13,7]],[[5,2],[13,7]],[[6,9],[13,6]],[[5,3],[16,6]]];
 
@@ -41,5 +42,11 @@ const areaComplete=area=>area.lights.every(light=>light.got);
 const nextAreaIndex=(areaIndex,areas)=>areaIndex<areas.length-1?areaIndex+1:null;
 const hiddenLightVisible=(areaIndex,echoAwake,starfallAwake)=>areaIndex===2?echoAwake:areaIndex===3?starfallAwake:true;
 function isBlocked(x,y,areaIndex,bridge){return createWorldObjects(areaIndex,bridge).some(object=>object.solid&&contains(object,x,y))}
-globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,TOTAL_FIREFLIES,areaComplete,countLights,countMemories,createAreas,createWorldObjects,hiddenLightVisible,isBlocked,nextAreaIndex});
+const nearPoint=(point,target,radius=HOLLOW_ECHO_RADIUS)=>Math.hypot(point.x-target.x,point.y-target.y)<radius;
+function createEchoReplay(trail,origin){
+  for(let index=trail.length-1;index>=0;index--)if(nearPoint(trail[index],origin))return trail.slice(index).reverse();
+  return []
+}
+const canResolveEchoRune=(stage,echoHolding,player,runes)=>stage===2&&echoHolding&&nearPoint(player,runes[2]);
+globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createWorldObjects,hiddenLightVisible,isBlocked,nearPoint,nextAreaIndex});
 })();

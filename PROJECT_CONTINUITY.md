@@ -93,6 +93,21 @@ work applies only to non-character world art. The existing keeper/player asset
 Inspect the released pause control at the public game URL after publication,
 then look for the next small player-visible improvement.
 
+## Whispering Hollow lantern echo — 2026-08-01
+
+- Replaced the Hollow's former automatic three-rune proximity sequence with a
+  delayed lantern echo puzzle. Luna touches the first rune, walks to the
+  second, and calls Echo with `E` (or the touch **Echo** button). The one-tile
+  echo retraces her recorded route to hold the first rune while Luna reaches
+  the third.
+- Added the inspectable route, footprint, and collider plan at
+  `assets/moonwell-art/wireframes/whispering-hollow-echo-route-v1.svg`.
+  The echo is visual-only; all tree, water, bridge, exit, and sentinel
+  collision records remain unchanged.
+- The action is keyboard-accessible, exposed in the canvas label and entry
+  instructions, and placed beneath the existing 44px pause button on touch
+  landscape without changing the canvas size.
+
 ## Compact scale correction — 2026-08-01
 
 - Rechecked the runtime against the 16 × 16 tree tile and found the keeper
