@@ -14,11 +14,13 @@ const boundaryObjects=()=>{
 };
 const contains=(object,x,y)=>x>=object.x&&x<object.x+object.w&&y>=object.y&&y<object.y+object.h;
 function createWorldObjects(areaIndex,bridge){
-  const objects=[...boundaryObjects(),...treeCells.map(([col,row],index)=>tileObject(`tree-${index}`,'tree',col,row,{solid:true}))];
+  const area=createAreas()[areaIndex];
+  const exitCol=Math.floor(area.home.x/TILE_SIZE),exitRow=Math.floor(area.home.y/TILE_SIZE);
+  const objects=[...boundaryObjects(),...treeCells.map(([col,row],index)=>tileObject(`tree-${index}`,'tree',col,row,{solid:true})),tileObject(`exit-tree-left-${areaIndex}`,'tree',exitCol-1,exitRow,{solid:true}),tileObject(`exit-tree-right-${areaIndex}`,'tree',exitCol+1,exitRow,{solid:true})];
   platformCells[areaIndex].forEach(([col,row],index)=>objects.push({id:`platform-${areaIndex}-${index}`,kind:'platform',x:col*TILE_SIZE,y:row*TILE_SIZE,w:TILE_SIZE*2,h:TILE_SIZE,solid:true}));
   if(areaIndex===1){
     for(let row=6;row<8;row++)for(let col=1;col<19;col++){
-      const bridgeCell=bridge&&row===6&&col>=8&&col<12;
+      const bridgeCell=bridge&&col>=8&&col<12;
       objects.push(tileObject(`water-${col}-${row}`,bridgeCell?'bridge':'water',col,row,{solid:!bridgeCell,frame:col-8}))
     }
   }

@@ -5,7 +5,8 @@ sprites are integrated. It is deliberately a design and collision contract,
 not a replacement for the playable scenes.
 
 - [Level layout wireframes](layout-plan.svg) map the current 20 × 13 board and
-  each area's interactables to 16-pixel cells.
+  each area's interactables to 16-pixel cells, including Moonroot's full
+  two-cell-deep bridge crossing.
 - [Footprint and collision plan](footprint-and-collision-plan.svg) compares the
   current oversize art with the proposed placement rules and embeds the current
   representative keeper, tree, and sentinel sprites for scale review.
@@ -13,6 +14,9 @@ not a replacement for the playable scenes.
   records the final 1 × 1 visual targets: 16 × 16 runtime cells, player feet
   and lantern base aligned to their existing interaction points, and no new
   collision area.
+- [Exit and Moonroot repair](exit-and-moonroot-repair-v1.svg) records the
+  one-cell light opening and the eight-cell, two-row bridge contract used by
+  the current blocking repair.
 
 ## Finding
 
@@ -31,7 +35,7 @@ this pass addresses.
 | Ordinary tree, small prop | 1 × 1 cell | 1 × 1 cell when solid | One authored 16 × 16 cell; no cluster rendered once per map cell. |
 | Tree grove, sentinel, lantern, skybell, altar | deliberate 2 × 2 exception | matching 2 × 2 tile mask | One marker owns the complete footprint, with one grid-aligned baseline. |
 | Root platform | deliberate 2 × 1 exception | matching 2 × 1 mask | Decorative surface and solid area use the same cells. |
-| Bridge | repeated 1 × 1 cells | only its visible span is passable | A bridge uses a row of normal cells rather than one 4-cell image with a separate gap rule. |
+| Bridge | repeated 1 × 1 cells | only its visible span is passable | Moonroot's four-cell-wide bridge covers both water rows; every visible bridge cell is passable. |
 | Water | 1 × 1 cell | solid except bridge cells | The tile repeats on both axes without changing the grid. |
 
 The keeper remains logically one tile. Its existing 24 × 30 render must be
@@ -63,4 +67,6 @@ spills sideways into unblocked cells.
    2 × 2 sentinel, and bridge-cell passability as new landmarks are added.
 
 The footprint decision is now encoded in the runtime; future art work must
-preserve it rather than restoring oversized render-only placement.
+preserve it rather than restoring oversized render-only placement. Area
+transitions are a one-cell, non-solid light opening, flanked by two ordinary
+solid 1 × 1 trees; no lantern sprite remains at an exit.

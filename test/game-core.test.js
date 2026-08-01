@@ -15,7 +15,7 @@ test('Moonwell starts with four areas, eight fireflies, and three optional memor
   assert.equal(areas.filter(area=>area.memory).length,3);
 });
 
-test('a lantern only opens after every firefly in its current area is gathered',()=>{
+test('an area exit only opens after every firefly in its current area is gathered',()=>{
   const areas=createAreas();
   assert.equal(areaComplete(areas[0]),false);
   areas[0].lights.forEach(light=>light.got=true);
@@ -23,11 +23,41 @@ test('a lantern only opens after every firefly in its current area is gathered',
   assert.equal(countLights(areas),3);
 });
 
-test('the Moonroot bridge opens only across its stepping-stone span',()=>{
+test('the Moonroot bridge opens across the entire two-tile water crossing',()=>{
   assert.equal(isBlocked(160,100,1,false),true);
   assert.equal(isBlocked(160,100,1,true),false);
+  assert.equal(isBlocked(160,116,1,true),false);
   assert.equal(isBlocked(80,100,1,true),true);
   assert.equal(isBlocked(8,8,0,false),true);
+});
+
+test('Moonroot has a complete playable route from its flower to its lower shore only after the bridge opens',()=>{
+  const canStand=(x,y,bridge)=>![[x-5,y-5],[x+5,y-5],[x-5,y+5],[x+5,y+5]].some(([pointX,pointY])=>isBlocked(pointX,pointY,1,bridge));
+  const routeExists=bridge=>{
+    const start=[264,72],target=[248,151],queue=[start],seen=new Set([start.join(',')]);
+    while(queue.length){
+      const [x,y]=queue.shift();
+      if(Math.hypot(x-target[0],y-target[1])<8)return true;
+      for(const [deltaX,deltaY] of [[2,0],[-2,0],[0,2],[0,-2]]){
+        const nextX=x+deltaX,nextY=y+deltaY,key=`${nextX},${nextY}`;
+        if(nextX<6||nextX>314||nextY<6||nextY>194||seen.has(key)||!canStand(nextX,nextY,bridge))continue;
+        seen.add(key);queue.push([nextX,nextY]);
+      }
+    }
+    return false;
+  };
+  assert.equal(routeExists(false),false);
+  assert.equal(routeExists(true),true);
+});
+
+test('each transition is a clear one-cell opening between two solid trees',()=>{
+  const areas=createAreas();
+  areas.forEach((area,index)=>{
+    const col=Math.floor(area.home.x/16),row=Math.floor(area.home.y/16);
+    assert.equal(isBlocked(area.home.x,area.home.y,index,false),false);
+    assert.equal(isBlocked((col-1)*16+8,row*16+8,index,false),true);
+    assert.equal(isBlocked((col+1)*16+8,row*16+8,index,false),true);
+  });
 });
 
 test('world records keep ordinary blockers to one cell and landmark colliders to their declared footprint',()=>{
