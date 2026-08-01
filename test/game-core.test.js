@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const context={};
 vm.runInNewContext(fs.readFileSync(new URL('../game-core.js',import.meta.url),'utf8'),context);
-const {TOTAL_FIREFLIES,EXIT_STATES,addedTreeCells,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,nextAreaIndex}=context.MoonwellCore;
+const {TOTAL_FIREFLIES,MEMORY_REVEAL_TIMING,EXIT_STATES,addedTreeCells,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealStateAt,nextAreaIndex}=context.MoonwellCore;
 
 test('Moonwell starts with four areas, eight fireflies, and three optional memories',()=>{
   const areas=createAreas();
@@ -21,6 +21,15 @@ test('an area exit only opens after every firefly in its current area is gathere
   areas[0].lights.forEach(light=>light.got=true);
   assert.equal(areaComplete(areas[0]),true);
   assert.equal(countLights(areas),3);
+});
+
+test('collected memories hold long enough to read, then dissolve without motion when reduced',()=>{
+  assert.equal(memoryRevealStateAt(0), 'holding');
+  assert.equal(memoryRevealStateAt(MEMORY_REVEAL_TIMING.hold-.01), 'holding');
+  assert.equal(memoryRevealStateAt(MEMORY_REVEAL_TIMING.hold), 'fading');
+  assert.equal(memoryRevealStateAt(MEMORY_REVEAL_TIMING.hold+MEMORY_REVEAL_TIMING.fade-.01), 'fading');
+  assert.equal(memoryRevealStateAt(MEMORY_REVEAL_TIMING.hold+MEMORY_REVEAL_TIMING.fade), 'hidden');
+  assert.equal(memoryRevealStateAt(MEMORY_REVEAL_TIMING.hold,true), 'hidden');
 });
 
 test('the Moonroot bridge opens across the entire two-tile water crossing',()=>{
