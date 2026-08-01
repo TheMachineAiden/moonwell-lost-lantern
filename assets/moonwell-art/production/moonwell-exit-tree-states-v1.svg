@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="16" viewBox="0 0 64 16" shape-rendering="crispEdges" aria-label="Moonwell exit tree states: closed, opening, revealed, open">
+  <!-- Four 16px cells. The first cell is also the ordinary forest tree. -->
+  <g id="closed">
+    <path fill="#06182a" d="M6 0h5v1h2v2h1v5h-2v2h-1v5H4v-3H2V7H1V4h2V2h2V1h1z"/>
+    <path fill="#104b53" d="M6 1h5v1h2v3h-1v2h-2v1H4V7H2V4h2V2h2z"/>
+    <path fill="#1d6d67" d="M5 2h3V1h2v2h2v2H9v2H5V6H3V4h2z"/>
+    <path fill="#4f9b7b" d="M6 1h3v1h2v2H9v1H7V4H5V3h1z"/>
+    <path fill="#8acb92" d="M7 1h2v2H7z"/>
+    <path fill="#203f4b" d="M3 5h2v2H3zm7 1h3v2h-3z"/>
+    <path fill="#613c32" d="M6 8h4v5h1v2H9v-1H7v1H4v-2h2z"/>
+    <path fill="#a36b45" d="M7 8h2v5H7z"/>
+    <path fill="#c59059" d="M7 9h1v3H7z"/>
+    <path fill="#4b7653" d="M2 12h2v1H2zm9 1h2v1h-2z"/>
+  </g>
+  <g transform="translate(16)" id="opening">
+    <path fill="#06182a" d="M6 0h5v1h2v2h1v5h-2v2h-1v5H4v-3H2V7H1V4h2V2h2V1h1z"/>
+    <path fill="#104b53" d="M6 1h5v1h2v3h-1v2h-2v1H4V7H2V4h2V2h2z"/>
+    <path fill="#1d6d67" d="M5 2h3V1h2v2h2v2H9v2H5V6H3V4h2z"/>
+    <path fill="#4f9b7b" d="M6 1h3v1h2v2H9v1H7V4H5V3h1z"/>
+    <path fill="#8acb92" d="M7 1h2v2H7z"/>
+    <path fill="#203f4b" d="M3 5h2v2H3zm7 1h3v2h-3z"/>
+    <!-- A narrow lit seam: the trunk has begun to split but is still a solid cell. -->
+    <path fill="#613c32" d="M5 8h2v5H6v2H4v-2h1zm4 0h2v5h1v2H9v-2H8V8z"/>
+    <path fill="#a36b45" d="M6 8h1v4H6zm3 0h1v4H9z"/>
+    <path fill="#f0c76a" d="M8 5h1v8H8z"/><path fill="#64c6cb" d="M8 7h1v4H8z"/>
+    <path fill="#4b7653" d="M2 12h2v1H2zm9 1h2v1h-2z"/>
+  </g>
+  <g transform="translate(32)" id="revealed">
+    <!-- The same crown and trunk have physically separated around the glimmer. -->
+    <path fill="#06182a" d="M4 1h3v1h1v2h1v4H7v2H6v5H2v-3H1V7H0V4h2V2h2zm8 0h3v1h1v2h1v3h-1v5h-1v3h-4v-5h-1V5h1V2h1z"/>
+    <path fill="#104b53" d="M4 2h3v1h1v4H6v1H2V7H1V4h2V2h1zm8 0h3v1h1v3h-1v2h-3V6h-1V3h1z"/>
+    <path fill="#1d6d67" d="M3 3h3V2h1v3h1v2H5V6H2V4h1zm10-1h2v2h1v3h-3V5h-1V3h1z"/>
+    <path fill="#4f9b7b" d="M4 2h2v2H4V3H3zm9 0h2v2h-2z"/>
+    <path fill="#8acb92" d="M5 2h1v1H5zm9 0h1v1h-1z"/>
+    <path fill="#0b5060" d="M7 5h3v7H7z"/><path fill="#47a9a7" d="M8 5h1v7H8z"/><path fill="#d9e89d" d="M8 7h1v4H8z"/>
+    <path fill="#613c32" d="M3 8h3v5h1v2H4v-2H2v-2h1zm8 0h3v3h1v3h-3v1h-2v-2h1z"/>
+    <path fill="#a36b45" d="M4 8h1v5H4zm8 1h1v4h-1z"/>
+    <path fill="#c59059" d="M5 9h1v2H5zm7 1h1v2h-1z"/>
+  </g>
+  <g transform="translate(48)" id="open">
+    <!-- Fully parted: cyan depth and moon-gold path are visible; collision is removed in core state only. -->
+    <path fill="#06182a" d="M3 1h3v1h1v3h1v4H6v2H5v4H1v-3H0V7h1V4h2zm10 0h3v1h1v2h1v7h-1v4h-4v-4h-1V7h1V3h1z"/>
+    <path fill="#104b53" d="M3 2h3v1h1v4H5v1H2V7H1V4h2zm10 0h3v1h1v4h-2V6h-2V3h1z"/>
+    <path fill="#1d6d67" d="M2 3h3V2h1v3h1v2H4V6H1V4h1zm11-1h2v2h1v3h-3V5h-1V3h1z"/>
+    <path fill="#4f9b7b" d="M3 2h2v2H3V3H2zm10 0h2v2h-2z"/><path fill="#8acb92" d="M4 2h1v1H4zm10 0h1v1h-1z"/>
+    <path fill="#083d62" d="M7 4h3v1h1v7h-1v2H7v-2H6V5h1z"/><path fill="#147b91" d="M8 4h2v8H8z"/><path fill="#51c8cc" d="M8 5h1v5H8z"/>
+    <path fill="#f0c76a" d="M8 11h2v1H8zm-1 2h4v1H7z"/><path fill="#fff0a8" d="M8 11h1v1H8z"/>
+    <path fill="#613c32" d="M2 8h3v5h1v2H3v-2H1v-2h1zm10 0h3v3h1v4h-3v-2h-1z"/>
+    <path fill="#a36b45" d="M3 8h1v5H3zm10 1h1v4h-1z"/>
+  </g>
+</svg>
