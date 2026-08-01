@@ -14,15 +14,21 @@ This is the visual contract for every Moonwell asset except the existing keeper/
 
 ### Standard footprints
 
+The runtime now treats 1 × 1 as the default. A larger footprint is a deliberate
+landmark exception and must be declared in the shared world-object record used
+for both drawing and collision. Legacy v2 art below documents source-sheet
+geometry, not permission to render beyond the runtime footprint.
+
 | Object | Footprint | Notes |
 | --- | --- | --- |
 | Firefly, memory token | 1 x 1 tile (16 x 16) | Centre on the tile; animation must not change collision centre. |
-| Flower, rune stone | 2 x 2 tiles (32 x 32) | Same ground baseline across variants. |
-| Lantern, skybell | 2 x 3 tiles (32 x 48) | Unlit and lit versions share an identical silhouette and baseline. |
-| Tree cluster, sentinel | 3 x 3 tiles (48 x 48) | Keep the readable silhouette; no tiny texture noise. |
-| Fairy platform / root log | 3 x 2 tiles (48 x 32) | Flat, obvious standing surface. |
-| Bridge segment | 4 x 1 tile (64 x 16) | Repeats seamlessly at left and right edges. |
-| Moonwell endgame altar | 4 x 3 tiles (64 x 48) | Simple focal object; do not use a separate high-detail style. |
+| Flower, rune stone | 1 x 1 tile (16 x 16) | May rise above its baseline, never spill sideways. |
+| Lantern, skybell | 2 x 2 tiles (32 x 32) | Deliberate landmark exception with a matching declared footprint. |
+| Tree | 1 x 1 tile (16 x 16) | One tile record, never a repeated oversized cluster. |
+| Sentinel | 2 x 2 tiles (32 x 32) | Deliberate solid landmark with an exact 2 × 2 mask. |
+| Fairy platform / root log | 2 x 1 tiles (32 x 16) | Flat, obvious standing surface with the same solid cells. |
+| Bridge segment | 1 x 1 tile (16 x 16) | Repeat as separate tile records across a passable span. |
+| Moonwell endgame altar | 2 x 2 tiles (32 x 32) | Simple focal object; declare its collision choice with the record. |
 | Water | 1 x 1 tile (16 x 16) | Seamless on all four edges. |
 
 ## Style rules

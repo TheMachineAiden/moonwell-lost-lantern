@@ -35,16 +35,26 @@ re-cropped or redrawn to a 16-pixel-wide cell before the next art integration;
 the wireframe shows its intended 1 × 1 gameplay cell rather than treating the
 current overhang as a collider.
 
-## Implementation sequence after review
+## Implemented runtime migration
 
-1. Replace interior `#` clusters with explicit grid-anchored object records
-   containing `x`, `y`, `w`, `h`, `solid`, and a named sprite.
-2. Keep the boundary map as ordinary single-cell blockers; render edge foliage
-   as a non-colliding backdrop so it cannot create a misleading walkable shape.
-3. Redraw or crop representative assets to the footprint table, then make
-   `wall()` consult the exact same object records used by `draw()`.
-4. Add deterministic assertions that a 1 × 1 object blocks one cell and every
-   deliberate 2 × 2 exception blocks exactly its four marked cells.
+The first migration is now live in the game source. `createWorldObjects()` is
+the shared grid record factory for rendering and collision: map-edge foliage
+and ordinary interior trees are 16 × 16 single-cell records, root platforms
+are 32 × 16 records, Moonroot water and its revealed bridge are individual
+16 × 16 records, and the Hollow sentinel is one 32 × 32 record. `wall()`
+consults those exact records, so an art placement cannot silently retain an
+unrelated hit box. Current legacy source art is scaled into the declared
+footprint while dedicated replacement sprites are prepared; it no longer
+spills sideways into unblocked cells.
 
-No gameplay source changes occur in this wireframe-only commit. Approval of
-the footprint choices is the gate for the next sprite/collider implementation.
+## Remaining art sequence
+
+1. Replace the constrained legacy tree, root, and sentinel art with dedicated
+   sprites drawn to their declared footprints.
+2. Align remaining decorative interactive sprites to this same object-record
+   contract before changing their collision behavior.
+3. Keep deterministic assertions for one-cell trees, the 2 × 1 platform, the
+   2 × 2 sentinel, and bridge-cell passability as new landmarks are added.
+
+The footprint decision is now encoded in the runtime; future art work must
+preserve it rather than restoring oversized render-only placement.
