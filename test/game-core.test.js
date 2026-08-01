@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const context={};
 vm.runInNewContext(fs.readFileSync(new URL('../game-core.js',import.meta.url),'utf8'),context);
-const {TOTAL_FIREFLIES,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createWorldObjects,hiddenLightVisible,isBlocked,nextAreaIndex}=context.MoonwellCore;
+const {TOTAL_FIREFLIES,EXIT_STATES,addedTreeCells,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,nextAreaIndex}=context.MoonwellCore;
 
 test('Moonwell starts with four areas, eight fireflies, and three optional memories',()=>{
   const areas=createAreas();
@@ -50,14 +50,25 @@ test('Moonroot has a complete playable route from its flower to its lower shore 
   assert.equal(routeExists(true),true);
 });
 
-test('each transition is a clear one-cell opening between two solid trees',()=>{
+test('each exit stays a solid one-cell tree until its fully parted state',()=>{
   const areas=createAreas();
   areas.forEach((area,index)=>{
     const col=Math.floor(area.home.x/16),row=Math.floor(area.home.y/16);
-    assert.equal(isBlocked(area.home.x,area.home.y,index,false),false);
-    assert.equal(isBlocked((col-1)*16+8,row*16+8,index,false),true);
-    assert.equal(isBlocked((col+1)*16+8,row*16+8,index,false),true);
+    for(const state of [EXIT_STATES.CLOSED,EXIT_STATES.OPENING,EXIT_STATES.REVEALED]){
+      const exit=createWorldObjects(index,false,state).find(object=>object.id===`exit-tree-${index}`);
+      assert.deepEqual({x:exit.x,y:exit.y,w:exit.w,h:exit.h,solid:exit.solid,state:exit.state},{x:col*16,y:row*16,w:16,h:16,solid:true,state});
+    }
+    const openExit=createWorldObjects(index,false,EXIT_STATES.OPEN).find(object=>object.id===`exit-tree-${index}`);
+    assert.equal(openExit.solid,false);
   });
+});
+
+test('the exit tree state sequence cannot remove its collider before the fully parted glimmer',()=>{
+  assert.equal(exitStateAt(0),EXIT_STATES.OPENING);
+  assert.equal(exitStateAt(.74),EXIT_STATES.OPENING);
+  assert.equal(exitStateAt(.75),EXIT_STATES.REVEALED);
+  assert.equal(exitStateAt(1.99),EXIT_STATES.REVEALED);
+  assert.equal(exitStateAt(2),EXIT_STATES.OPEN);
 });
 
 test('world records keep ordinary blockers to one cell and landmark colliders to their declared footprint',()=>{
@@ -72,6 +83,30 @@ test('world records keep ordinary blockers to one cell and landmark colliders to
   assert.equal(isBlocked(144,96,2,false),true);
   assert.equal(isBlocked(175,127,2,false),true);
   assert.equal(isBlocked(176,127,2,false),false);
+});
+
+test('every approved side-forest cluster has ten one-cell solid trees and preserves the marked routes',()=>{
+  const areas=createAreas();
+  const requiredRoutes=[
+    [areas[0].start,...areas[0].lights,areas[0].home],
+    [areas[1].start,areas[1].flower,{x:160,y:88},{x:160,y:144},areas[1].home],
+    [areas[2].start,...areas[2].runes,areas[2].home],
+    [areas[3].start,...areas[3].bells,...areas[3].lights,areas[3].home]
+  ];
+  const routeExists=(areaIndex,bridge,start,target)=>{
+    const objects=createWorldObjects(areaIndex,bridge,EXIT_STATES.OPEN);
+    const blocked=(x,y)=>objects.some(object=>object.solid&&x>=object.x&&x<object.x+object.w&&y>=object.y&&y<object.y+object.h);
+    const canStand=(x,y)=>![[x-5,y-5],[x+5,y-5],[x-5,y+5],[x+5,y+5]].some(([pointX,pointY])=>blocked(pointX,pointY));
+    const queue=[[start.x,start.y]],seen=new Set([`${start.x},${start.y}`]);
+    while(queue.length){const [x,y]=queue.shift();if(Math.hypot(x-target.x,y-target.y)<10)return true;for(const [dx,dy] of [[2,0],[-2,0],[0,2],[0,-2]]){const nextX=x+dx,nextY=y+dy,key=`${nextX},${nextY}`;if(nextX<6||nextX>314||nextY<6||nextY>194||seen.has(key)||!canStand(nextX,nextY))continue;seen.add(key);queue.push([nextX,nextY])}}
+    return false;
+  };
+  addedTreeCells.forEach((cells,areaIndex)=>{
+    assert.equal(cells.length,10);
+    const objects=createWorldObjects(areaIndex,areaIndex===1);
+    cells.forEach(([col,row])=>{const tree=objects.find(object=>object.x===col*16&&object.y===row*16);assert.deepEqual({w:tree.w,h:tree.h,solid:tree.solid},{w:16,h:16,solid:true})});
+    requiredRoutes[areaIndex].slice(1).reduce((from,to)=>{assert.equal(routeExists(areaIndex,areaIndex===1,from,to),true,`area ${areaIndex}: ${from.x},${from.y} to ${to.x},${to.y}`);return to},requiredRoutes[areaIndex][0]);
+  });
 });
 
 test('hidden fireflies follow their area-specific encounter gates',()=>{
