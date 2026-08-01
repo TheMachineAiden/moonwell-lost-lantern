@@ -49,8 +49,10 @@ spills sideways into unblocked cells.
 
 ## Remaining art sequence
 
-1. Replace the constrained legacy tree, root, and sentinel art with dedicated
-   sprites drawn to their declared footprints.
+1. Completed: the dedicated `tree-tile-v3` (16 × 16), `root-platform-tile-v3`
+   (32 × 16), and `sentinel-tile-v4` (32 × 32) sprites now render directly
+   into their declared world-object records. The sentinel no longer rises one
+   extra cell above its matching 2 × 2 collision footprint.
 2. Align remaining decorative interactive sprites to this same object-record
    contract before changing their collision behavior.
 3. Keep deterministic assertions for one-cell trees, the 2 × 1 platform, the
