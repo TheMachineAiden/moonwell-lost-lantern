@@ -4,7 +4,15 @@ const MAP=['....................','....................','....................',
 const TOTAL_FIREFLIES=8;
 const HOLLOW_ECHO_RADIUS=15;
 const treeCells=[[3,2],[4,2],[13,2],[14,2],[7,4],[8,4],[11,6],[12,6],[5,8],[6,8]];
+const addedTreeCells=[
+  [[2,5],[3,4],[15,4],[16,4],[2,7],[3,7],[14,8],[15,8],[8,9],[9,9]],
+  [[2,3],[3,3],[8,2],[9,2],[14,3],[15,3],[5,9],[6,9],[14,9],[16,9]],
+  [[2,3],[3,3],[6,3],[7,3],[15,3],[17,3],[3,9],[4,9],[13,9],[14,9]],
+  [[2,3],[3,3],[7,3],[8,3],[15,3],[16,3],[3,8],[4,8],[13,8],[14,8]]
+];
 const platformCells=[[[5,2],[13,7]],[[5,2],[13,7]],[[6,9],[13,6]],[[5,3],[16,6]]];
+const EXIT_STATES=Object.freeze({CLOSED:'closed',OPENING:'opening',REVEALED:'revealed',OPEN:'open'});
+const EXIT_STATE_DURATIONS=Object.freeze({opening:.75,revealed:1.25});
 
 const tileObject=(id,kind,col,row,options={})=>({id,kind,x:col*TILE_SIZE,y:row*TILE_SIZE,w:TILE_SIZE,h:TILE_SIZE,solid:false,...options});
 const boundaryObjects=()=>{
@@ -14,10 +22,11 @@ const boundaryObjects=()=>{
   return objects
 };
 const contains=(object,x,y)=>x>=object.x&&x<object.x+object.w&&y>=object.y&&y<object.y+object.h;
-function createWorldObjects(areaIndex,bridge){
+function createWorldObjects(areaIndex,bridge,exitState=EXIT_STATES.CLOSED){
   const area=createAreas()[areaIndex];
   const exitCol=Math.floor(area.home.x/TILE_SIZE),exitRow=Math.floor(area.home.y/TILE_SIZE);
-  const objects=[...boundaryObjects(),...treeCells.map(([col,row],index)=>tileObject(`tree-${index}`,'tree',col,row,{solid:true})),tileObject(`exit-tree-left-${areaIndex}`,'tree',exitCol-1,exitRow,{solid:true}),tileObject(`exit-tree-right-${areaIndex}`,'tree',exitCol+1,exitRow,{solid:true})];
+  const ordinaryTrees=[...treeCells,...addedTreeCells[areaIndex]];
+  const objects=[...boundaryObjects(),...ordinaryTrees.map(([col,row],index)=>tileObject(`tree-${index}`,'tree',col,row,{solid:true})),tileObject(`exit-tree-${areaIndex}`,'exit-tree',exitCol,exitRow,{solid:exitState!==EXIT_STATES.OPEN,state:exitState})];
   platformCells[areaIndex].forEach(([col,row],index)=>objects.push({id:`platform-${areaIndex}-${index}`,kind:'platform',x:col*TILE_SIZE,y:row*TILE_SIZE,w:TILE_SIZE*2,h:TILE_SIZE,solid:true}));
   if(areaIndex===1){
     for(let row=6;row<8;row++)for(let col=1;col<19;col++){
@@ -42,11 +51,16 @@ const areaComplete=area=>area.lights.every(light=>light.got);
 const nextAreaIndex=(areaIndex,areas)=>areaIndex<areas.length-1?areaIndex+1:null;
 const hiddenLightVisible=(areaIndex,echoAwake,starfallAwake)=>areaIndex===2?echoAwake:areaIndex===3?starfallAwake:true;
 function isBlocked(x,y,areaIndex,bridge){return createWorldObjects(areaIndex,bridge).some(object=>object.solid&&contains(object,x,y))}
+function exitStateAt(seconds){
+  if(seconds<EXIT_STATE_DURATIONS.opening)return EXIT_STATES.OPENING;
+  if(seconds<EXIT_STATE_DURATIONS.opening+EXIT_STATE_DURATIONS.revealed)return EXIT_STATES.REVEALED;
+  return EXIT_STATES.OPEN
+}
 const nearPoint=(point,target,radius=HOLLOW_ECHO_RADIUS)=>Math.hypot(point.x-target.x,point.y-target.y)<radius;
 function createEchoReplay(trail,origin){
   for(let index=trail.length-1;index>=0;index--)if(nearPoint(trail[index],origin))return trail.slice(index).reverse();
   return []
 }
 const canResolveEchoRune=(stage,echoHolding,player,runes)=>stage===2&&echoHolding&&nearPoint(player,runes[2]);
-globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createWorldObjects,hiddenLightVisible,isBlocked,nearPoint,nextAreaIndex});
+globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,EXIT_STATES,EXIT_STATE_DURATIONS,addedTreeCells,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,nearPoint,nextAreaIndex});
 })();

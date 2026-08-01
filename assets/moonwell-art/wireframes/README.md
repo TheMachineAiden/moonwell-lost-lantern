@@ -68,5 +68,22 @@ spills sideways into unblocked cells.
 
 The footprint decision is now encoded in the runtime; future art work must
 preserve it rather than restoring oversized render-only placement. Area
-transitions are a one-cell, non-solid light opening, flanked by two ordinary
-solid 1 × 1 trees; no lantern sprite remains at an exit.
+transitions use one ordinary 1 × 1 exit tree at the current home cell. It is
+solid while closed, opening, and revealed; only its fully parted glimmer state
+removes that same one-cell collider. No lantern sprite or secondary exit cell
+remains at an exit.
+# Forest-density approval artifacts (v1)
+
+- `forest-density-layout-v1.svg` is the exact 20 × 13 cell implementation
+  proposal for all four areas. Its SVG metadata lists every existing and
+  proposed tree, every exit cell, and the deliberately clear routes.
+- `exit-tree-state-contract-v1.svg` fixes the state sequence: an exit is an
+  ordinary, solid one-cell tree while closed; its glimmer is visible while it
+  still blocks movement; collision is removed only for the visibly open tree.
+- `../concepts/forest-exit-density-concept-v1.png` is the image-generation
+  concept reference. It is deliberately preview-only—not a production atlas.
+
+The approved layout now drives the production records in `game-core.js`.
+The runtime keeps ten additional one-cell trees per area and the single-cell
+exit state contract, with tiny collision-safe placement offsets where the
+diagram would otherwise cover an existing firefly or memory.
