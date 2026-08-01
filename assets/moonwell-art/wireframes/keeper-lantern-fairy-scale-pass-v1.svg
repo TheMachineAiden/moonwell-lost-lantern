@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="480" viewBox="0 0 960 480">
+  <style>
+    text{font-family:ui-monospace,monospace;fill:#e2e8f0;font-size:16px} .small{font-size:13px;fill:#cbd5e1}.label{font-size:18px;font-weight:bold;fill:#fef3c7}.grid{stroke:#475569;stroke-width:1}.solid{fill:#0f766e;fill-opacity:.34;stroke:#5eead4;stroke-width:2}.visual{fill:#8b5cf6;fill-opacity:.4;stroke:#c4b5fd;stroke-width:2}.light{fill:#fbbf24;fill-opacity:.52;stroke:#fde68a;stroke-width:2}.note{fill:#172554;stroke:#93c5fd;stroke-width:2}
+  </style>
+  <rect width="960" height="480" fill="#020617"/>
+  <text x="32" y="38" class="label">Moonwell compact-character scale contract · v1</text>
+  <text x="32" y="64" class="small">Each grid square is one 16×16 world tile. Visual bounds must not add collider area; feet / base stay inside the existing interaction point.</text>
+  <g transform="translate(56 110)">
+    <text x="0" y="-24" class="label">Reference tree</text>
+    <rect class="solid" x="0" y="0" width="128" height="128"/>
+    <g class="grid"><path d="M0 32H128M0 64H128M0 96H128M32 0V128M64 0V128M96 0V128"/></g>
+    <rect class="visual" x="48" y="16" width="32" height="96"/>
+    <text x="0" y="154" class="small">1×1 collider / 1 tile</text><text x="0" y="176" class="small">tree visual 16×16</text>
+  </g>
+  <g transform="translate(286 110)">
+    <text x="0" y="-24" class="label">Keeper target</text>
+    <rect class="solid" x="0" y="0" width="128" height="128"/>
+    <g class="grid"><path d="M0 32H128M0 64H128M0 96H128M32 0V128M64 0V128M96 0V128"/></g>
+    <rect class="visual" x="48" y="40" width="32" height="64"/>
+    <path d="M64 40v64" stroke="#e9d5ff" stroke-width="3"/>
+    <text x="0" y="154" class="small">existing point collider unchanged</text><text x="0" y="176" class="small">compact 8×16 visual; ≤ tree height</text>
+  </g>
+  <g transform="translate(516 110)">
+    <text x="0" y="-24" class="label">End lantern target</text>
+    <rect class="solid" x="0" y="0" width="128" height="128"/>
+    <g class="grid"><path d="M0 32H128M0 64H128M0 96H128M32 0V128M64 0V128M96 0V128"/></g>
+    <rect class="light" x="52" y="52" width="24" height="48"/>
+    <circle cx="64" cy="68" r="9" fill="#fef08a"/>
+    <text x="0" y="154" class="small">home interaction radius unchanged</text><text x="0" y="176" class="small">6×12 visual; clear point of light</text>
+  </g>
+  <g transform="translate(746 110)">
+    <text x="0" y="-24" class="label">Firefly target</text>
+    <rect class="solid" x="0" y="0" width="128" height="128"/>
+    <g class="grid"><path d="M0 32H128M0 64H128M0 96H128M32 0V128M64 0V128M96 0V128"/></g>
+    <rect class="light" x="56" y="56" width="16" height="16"/>
+    <text x="0" y="154" class="small">existing pickup radius unchanged</text><text x="0" y="176" class="small">4×4 core + glow stays in cell</text>
+  </g>
+  <rect x="32" y="344" width="896" height="96" rx="8" class="note"/>
+  <text x="56" y="378" class="label">Runtime mapping</text>
+  <text x="56" y="406" class="small">tree(x,y) → draw x,y,16,16 · keeper(player) → feet at player x,y · lantern(home) → light base at home x,home y · firefly(light) → center at light x,light y</text>
+  <text x="56" y="428" class="small">No collider changes in this pass: tree = 16×16 solid; keeper and lights retain point-radius checks; lantern destination radius remains 17px.</text>
+</svg>

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This is the visual contract for every Moonwell asset except the existing keeper/player character. It is intended to stop mixed pixel densities and make new objects interchangeable.
+This is the visual contract for every Moonwell asset. It is intended to stop mixed pixel densities and make new objects interchangeable.
 
 ## Native geometry
 
@@ -23,7 +23,8 @@ geometry, not permission to render beyond the runtime footprint.
 | --- | --- | --- |
 | Firefly, memory token | 1 x 1 tile (16 x 16) | Centre on the tile; animation must not change collision centre. |
 | Flower, rune stone | 1 x 1 tile (16 x 16) | May rise above its baseline, never spill sideways. |
-| Lantern, skybell | 2 x 2 tiles (32 x 32) | Deliberate landmark exception with a matching declared footprint. |
+| Lantern | 1 x 1 tile (16 x 16) | Small character-scale destination point; its interaction remains centred on the existing home coordinate. |
+| Skybell | 2 x 2 tiles (32 x 32) | Deliberate landmark exception with a matching declared footprint. |
 | Tree | 1 x 1 tile (16 x 16) | One tile record, never a repeated oversized cluster. |
 | Sentinel | 2 x 2 tiles (32 x 32) | Deliberate solid landmark with an exact 2 × 2 mask. |
 | Fairy platform / root log | 2 x 1 tiles (32 x 16) | Flat, obvious standing surface with the same solid cells. |
@@ -37,7 +38,7 @@ Original handcrafted 16-bit pixel art, viewed in a slight top-down game perspect
 
 Use a restricted palette: midnight navy, deep teal, blue-violet, muted moss green, aged brown, pale silver, and pale moon-gold. Magenta is a tiny accent only. Reserve gold light for fireflies, lit lanterns, and the final altar. Avoid pure white and neon pink.
 
-Every object must look as though one pixel artist made it: identical outline weight, comparable texture density, and the same grounded baseline. The keeper is deliberately excluded and remains the existing player asset.
+Every object must look as though one pixel artist made it: identical outline weight, comparable texture density, and the same grounded baseline. The keeper is a compact one-tile visual, with feet aligned to its existing movement point.
 
 ## Animation rules
 
@@ -61,6 +62,6 @@ These are chroma-key concept atlases, not yet production-cut sprites: their cell
 ## Production derivatives
 
 `production/` contains the tile-exact alpha PNGs consumed by `game.js`. The
-four animation strips have fixed cells: firefly and memory use 16 × 16 cells;
-lantern and skybell use 32 × 48 cells. `scripts/process-moonwell-art.sh`
+four animation strips have fixed cells: keeper, firefly, memory, and lantern
+use 16 × 16 cells; skybell uses 32 × 48 cells. `scripts/process-moonwell-art.sh`
 recreates them from the retained v2 source sheets under `assets/generated/`.

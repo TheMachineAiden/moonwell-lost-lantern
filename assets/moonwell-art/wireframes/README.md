@@ -9,6 +9,10 @@ not a replacement for the playable scenes.
 - [Footprint and collision plan](footprint-and-collision-plan.svg) compares the
   current oversize art with the proposed placement rules and embeds the current
   representative keeper, tree, and sentinel sprites for scale review.
+- [Compact keeper, lantern, and firefly scale pass](keeper-lantern-fairy-scale-pass-v1.svg)
+  records the final 1 × 1 visual targets: 16 × 16 runtime cells, player feet
+  and lantern base aligned to their existing interaction points, and no new
+  collision area.
 
 ## Finding
 
