@@ -92,3 +92,28 @@ work applies only to non-character world art. The existing keeper/player asset
 
 Inspect the released pause control at the public game URL after publication,
 then look for the next small player-visible improvement.
+
+## Compact scale correction — 2026-08-01
+
+- Rechecked the runtime against the 16 × 16 tree tile and found the keeper
+  (24 × 30 render) and lantern (32 × 48 render) still violated the stated
+  scale contract despite their existing collision records.
+- Added the inspectable scale wireframe at
+  `assets/moonwell-art/wireframes/keeper-lantern-fairy-scale-pass-v1.svg`.
+  It maps every visual to the same existing player, light, and home anchors;
+  no collision or interaction radius changed.
+- Generated and retained a new project-bound compact source sheet, then added
+  16 × 16 production cells for the keeper, lantern, and firefly. The live
+  renderer now draws the keeper at 16 × 16, lantern at 16 × 16, and both
+  loops in four 16 × 16 frames.
+- Mobile portrait QA also revealed clipped rotation-gate copy. A compact gate
+  card now fits inside the intentional 320 × 200 frame at 390 × 844.
+
+### Verification
+
+- `npm run check`, `npm test` (6/6), `npm run build`, and `git diff --check`
+  passed.
+- Browser QA at 1200px desktop and 844 × 390 touch landscape confirmed the
+  compact sprites, tree-relative scale, touch controls, pause/resume cycle,
+  and no console messages. At 390 × 844 touch portrait, the rotation card and
+  its full message fit with no console messages.

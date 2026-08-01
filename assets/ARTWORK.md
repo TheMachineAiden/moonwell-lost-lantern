@@ -52,3 +52,21 @@ object to its approved tile footprint using point scaling, and creates compact
 four-frame firefly, memory, lantern, and skybell strips. Runtime code loads
 only the compact derivatives. The source sheets remain for provenance and
 future re-cropping; neither source is served by the game page.
+
+## Compact keeper, lantern, and firefly pass — 2026-08-01
+
+`generated/moonwell-compact-character-source-v1.png` is the retained
+project-bound source sheet for the compact keeper, destination lantern, and
+firefly pass. It was created with the built-in image-generation workflow on a
+flat magenta chroma-key field. The selected regions were key-removed,
+point-scaled, and packed into
+`moonwell-art/production/moonwell-keeper-walk-v4.png`,
+`moonwell-lantern-{off,on,loop}-v3.png`, and
+`moonwell-firefly-loop-v3.png`.
+
+The runtime cells are 16 × 16 (four horizontal cells for loops), keeping all
+three visuals within a single world tile. The player movement point, firefly
+pickup radius, and lantern destination radius are unchanged. Source prompt:
+“tiny violet-hooded young lantern keeper, tiny brass crescent lantern as a
+point of light, and tiny yellow-white fireflies; crisp limited-palette pixel
+art on a flat magenta chroma-key background.”
