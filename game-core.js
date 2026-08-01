@@ -3,6 +3,7 @@ const TILE_SIZE=16;
 const MAP=['....................','....................','....................','....................','....................','....................','....................','....................','....................','....................','....................','....................','....................'];
 const TOTAL_FIREFLIES=8;
 const HOLLOW_ECHO_RADIUS=15;
+const MEMORY_REVEAL_TIMING=Object.freeze({hold:3.25,fade:.75});
 const treeCells=[[3,2],[4,2],[13,2],[14,2],[7,4],[8,4],[11,6],[12,6],[5,8],[6,8]];
 const addedTreeCells=[
   [[2,5],[3,4],[15,4],[16,4],[2,7],[3,7],[14,8],[15,8],[8,9],[9,9]],
@@ -50,6 +51,12 @@ const countMemories=areas=>areas.filter(area=>area.memory?.got).length;
 const areaComplete=area=>area.lights.every(light=>light.got);
 const nextAreaIndex=(areaIndex,areas)=>areaIndex<areas.length-1?areaIndex+1:null;
 const hiddenLightVisible=(areaIndex,echoAwake,starfallAwake)=>areaIndex===2?echoAwake:areaIndex===3?starfallAwake:true;
+function memoryRevealStateAt(seconds,reducedMotion=false){
+  if(seconds<0)return 'hidden';
+  if(seconds<MEMORY_REVEAL_TIMING.hold)return 'holding';
+  if(!reducedMotion&&seconds<MEMORY_REVEAL_TIMING.hold+MEMORY_REVEAL_TIMING.fade)return 'fading';
+  return 'hidden'
+}
 function isBlocked(x,y,areaIndex,bridge){return createWorldObjects(areaIndex,bridge).some(object=>object.solid&&contains(object,x,y))}
 function exitStateAt(seconds){
   if(seconds<EXIT_STATE_DURATIONS.opening)return EXIT_STATES.OPENING;
@@ -62,5 +69,5 @@ function createEchoReplay(trail,origin){
   return []
 }
 const canResolveEchoRune=(stage,echoHolding,player,runes)=>stage===2&&echoHolding&&nearPoint(player,runes[2]);
-globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,EXIT_STATES,EXIT_STATE_DURATIONS,addedTreeCells,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,nearPoint,nextAreaIndex});
+globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,EXIT_STATES,EXIT_STATE_DURATIONS,addedTreeCells,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealStateAt,nearPoint,nextAreaIndex});
 })();
