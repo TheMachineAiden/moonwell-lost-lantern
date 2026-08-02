@@ -94,3 +94,31 @@ selected production interpretation are code-native: the editable v2 Figma
 system and SVG wireframes define cells/footprints; runtime details are compact
 canvas primitives; the quieter platform and crescent exit mark are tile-exact
 SVGs.
+
+## Owner-selected forest production pass — 2026-08-02
+
+The owner selected the concept sheet's compact moonlit forest scene for live
+production. The built-in image-generation workflow used
+`generated/moonwell-320x208-art-direction-source-v1.png` as its sole visual
+reference and produced the retained flat-magenta source
+`generated/moonwell-selected-forest-production-source-v1.png`.
+
+Prompt summary: “Create a clean orthographic production atlas from the
+selected Moonwell forest reference: four violet Keeper frames, three spruce
+variants, four crescent-exit states, two 32 × 16 root platforms, foliage,
+ground textures, stones, mushrooms, four firefly frames, and moonlight pools;
+crisp limited-palette pixels on a flat #ff00ff key, no labels, sample scene,
+grid, watermark, or overlap.”
+
+`scripts/process-selected-forest-art.sh` removes the key, applies hard
+pixel-art alpha, point-scales each approved crop, and packs ten compact runtime
+strips in `moonwell-art/production/`. Keeper, spruce, exit, foliage, ground,
+stones, mushrooms, fireflies, and light pools use 16 × 16 cells. Root
+platforms remain the declared 32 × 16 exception. The large retained source is
+never referenced by `game.js`; the runtime transfers only the compact
+derivatives.
+
+Representative source-to-sprite evidence is retained as
+`generated/moonwell-selected-reference-sprite-comparison-v1.png`. Desktop
+before/after captures, the four-level production contact sheet, portrait, and
+touch-landscape captures are retained beside it under `generated/`.

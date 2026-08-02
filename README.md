@@ -6,7 +6,7 @@ A small, original browser game made from a static HTML page and game script. Wal
 
 `field-guide.html` is a mobile-first companion page with short field notes for the moonwell, lantern motes, and gravity seed, plus a direct route back to the game.
 
-The small original raster art pack in `assets/` adds the animated lantern keeper and discovery sprites while retaining the game's no-dependency static setup. Its provenance and reuse note are recorded in `assets/ARTWORK.md`.
+The small original raster art pack in `assets/` adds the animated lantern keeper and discovery sprites while retaining the game's no-dependency static setup. The current live forest system is derived from the owner-selected moonlit concept: compact Keeper, spruce, crescent-exit, root-platform, foliage, ground, stone, mushroom, firefly, and light-pool strips are integrated across all four levels. Its provenance and reuse note are recorded in `assets/ARTWORK.md`.
 
 For deterministic non-player-facing scene checks, use `?dev=scene&area=0` through `?dev=scene&area=3`. These routes start the requested scene without changing normal gameplay and expose a small `window.__moonwellAudit` assertion surface for browser verification.
 

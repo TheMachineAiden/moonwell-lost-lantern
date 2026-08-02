@@ -68,3 +68,10 @@ These are chroma-key concept atlases, not yet production-cut sprites: their cell
 four animation strips have fixed cells: keeper, firefly, memory, and lantern
 use 16 × 16 cells; skybell uses 32 × 48 cells. `scripts/process-moonwell-art.sh`
 recreates them from the retained v2 source sheets under `assets/generated/`.
+
+The owner-selected forest production family is recreated by
+`scripts/process-selected-forest-art.sh`. Its native strips are Keeper
+(4 × 16 × 16), spruce (3 × 16 × 16), crescent exit (4 × 16 × 16), root
+platform (2 × 32 × 16), foliage/ground/stone/light pools (3 × 16 × 16),
+mushrooms (2 × 16 × 16), and fireflies (4 × 16 × 16). These are the current
+runtime sources for the shared forest vocabulary across all four areas.
