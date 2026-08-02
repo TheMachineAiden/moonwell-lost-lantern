@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const context={};
 vm.runInNewContext(fs.readFileSync(new URL('../game-core.js',import.meta.url),'utf8'),context);
-const {TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,EXIT_STATES,addedTreeCells,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex}=context.MoonwellCore;
+const {TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,EXIT_STATES,addedTreeCells,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,watcherChoiceResult}=context.MoonwellCore;
 
 test('Moonwell starts with four areas, eight fireflies, and three optional memories',()=>{
   const areas=createAreas();
@@ -174,4 +174,14 @@ test('area progression ends cleanly at Starfall Grove',()=>{
   assert.equal(nextAreaIndex(0,areas),1);
   assert.equal(nextAreaIndex(2,areas),3);
   assert.equal(nextAreaIndex(3,areas),null);
+});
+
+test('Eir is a one-cell, non-blocking Moonroot encounter with a retryable memory riddle',()=>{
+  const watcher=createAreas()[1].watcher;
+  assert.deepEqual(JSON.parse(JSON.stringify(watcher)),{x:264,y:48});
+  assert.equal(isBlocked(watcher.x,watcher.y,1,false),false);
+  assert.equal(WATCHER_DIALOGUE.choices.length,2);
+  assert.equal(watcherChoiceResult(0).correct,true);
+  assert.equal(watcherChoiceResult(1).correct,false);
+  assert.match(watcherChoiceResult(1).reply,/no harm/i);
 });
