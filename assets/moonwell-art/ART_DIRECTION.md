@@ -27,10 +27,10 @@ geometry, not permission to render beyond the runtime footprint.
 | Firefly, memory token | 1 x 1 tile (16 x 16) | Centre on the tile; animation must not change collision centre. |
 | Flower, rune stone | 1 x 1 tile (16 x 16) | May rise above its baseline, never spill sideways. |
 | Lantern | 1 x 1 tile (16 x 16) | Small character-scale destination point; its interaction remains centred on the existing home coordinate. |
-| Skybell | 2 x 3 visual tiles (32 x 48) | Deliberate non-solid landmark exception; its interaction point stays on one tile centre. |
-| Tree | 1 x 1 logical tile (16 x 16) | One predictable root collider; perimeter art may overhang to 40 × 56 px and interior art to 28 × 40 px. |
+| Starroot chime | 1 x 1 logical tile (16 x 16) | Non-solid grounded interaction; 24 × 24 visual with an amber seed glow and one tile-centred interaction point. |
+| Tree | 1 x 1 logical tile (16 x 16) | A 20 × 12 rooted contact mask sits at offset −2,+4; perimeter canopy may overhang to 40 × 56 px and interior canopy to 24 × 40 px. |
 | Sentinel | 2 x 2 tiles (32 x 32) | Deliberate solid landmark with an exact 2 × 2 mask. |
-| Fairy platform / root log | 2 x 1 logical tiles (32 x 16) | Flat, obvious standing surface; art may overhang to 96 × 32 px while the two cells remain the complete solid mask. |
+| Root platform | 2 x 1 logical tiles (32 x 16) | 48 × 24 visual; its visible shelf/face uses a 40 × 14 contact mask at offset −4,+2, leaving only a clearly decorative 4 px side and 8 px top overhang. |
 | Bridge segment | 1 x 1 tile (16 x 16) | Repeat as separate tile records across a passable span. |
 | Moonwell endgame altar | 2 x 2 tiles (32 x 32) | Simple focal object; declare its collision choice with the record. |
 | Water | 1 x 1 tile (16 x 16) | Seamless on all four edges. |
@@ -47,7 +47,7 @@ Every object must look as though one pixel artist made it: identical outline wei
 
 - A frame strip is horizontal, left-to-right, with four equal cells unless a mechanic needs fewer.
 - Every frame has the same cell dimensions, anchor point, and baseline.
-- Motion is small and legible: fireflies hover, tokens shimmer, lantern flames breathe, bells sway/ring.
+- Motion is small and legible: fireflies hover, tokens shimmer, lantern flames breathe, and rooted seed chimes warm from teal shadow to amber.
 - Do not change an object's silhouette or collision footprint during animation.
 - Use no smear frames or motion blur.
 
@@ -64,10 +64,11 @@ These are chroma-key concept atlases, not yet production-cut sprites: their cell
 
 ## Production derivatives
 
-`production/` contains the tile-exact alpha PNGs consumed by `game.js`. The
-four animation strips have fixed cells: keeper, firefly, memory, and lantern
-use 16 × 16 cells; skybell uses 32 × 48 cells. `scripts/process-moonwell-art.sh`
-recreates them from the retained v2 source sheets under `assets/generated/`.
+`production/` contains the tile-exact alpha PNGs consumed by `game.js`. Keeper,
+firefly, memory, and lantern use 16 × 16 cells. The legacy skybell strip remains
+only as retained provenance and is not loaded by the runtime.
+`scripts/process-moonwell-art.sh` recreates that legacy family from the retained
+v2 source sheets under `assets/generated/`.
 
 The owner-selected forest production family is recreated by
 `scripts/process-selected-forest-art.sh`. Its native strips are Keeper
@@ -92,22 +93,27 @@ This is the authoritative mapping:
 
 | Runtime object | Logical footprint / collider | Visual footprint and anchor |
 | --- | --- | --- |
-| Keeper | 10 × 10 px solid movement box | 20 × 24 px; anchor −10, −22 from movement point |
-| Ordinary spruce | 1 × 1 cell, solid | Perimeter 40 × 56 px; interior 28 × 40 px; both retain a one-cell root |
+| Luna | 10 × 10 px solid movement box | 14 × 18 px; anchor −7, −17 from the precise foot point |
+| Ordinary spruce | rooted 20 × 12 px mask at −2,+4 from its 1-cell anchor | Perimeter 40 × 56 px; interior 24 × 40 px; canopy overhang is passable, trunk/root contact is not |
 | Crescent exit | 1 × 1 cell, solid through `revealed`; non-solid at `open` | 48 × 64 px; 16 px left/right and 48 px top overhang |
-| Root platform | 2 × 1 cells, solid | 96 × 32 px; 32 px side and 16 px top overhang |
+| Root platform | 40 × 14 px contact mask at −4,+2 from its 2 × 1 record | 48 × 24 px; 4 px side and 8 px top overhang |
+| Starroot chime | non-solid one-cell interaction anchor, radius 15 px | 24 × 24 px; anchor −12,−16; rooted baseline and fixed silhouette |
 | Eir | one non-solid cell-centred interaction anchor, radius 22 px | 32 × 48 px; anchor −16, −44; four raster idle frames |
 | Loam patch | no collider | 80 × 48 px overlapping floor layer |
 | Moonlight pool | no collider | 112 × 66 px dominant screen-composited illumination; secondary pools may be smaller |
 | Canopy curtain | no collider | 128 × 56 px enclosing background/foreground layer |
 
-The only deliberate larger logical collider exceptions remain the 2 × 1 root
-platform and 2 × 2 Hollow sentinel. Eir is deliberately non-blocking so her
-larger portrait-scale world silhouette cannot trap the player. Spruce and exit
-overhangs do not enlarge their predictable one-cell collider; their roots and
-shared baselines communicate that cell. Decorative loam, light, and canopy
-layers never collide. The runtime contract is exported as `VISUAL_FOOTPRINTS`
-from `game-core.js` and is covered by deterministic tests.
+The only larger logical collider exception remains the 2 × 2 Hollow sentinel.
+The root platform uses a 40 × 14 perceived-contact mask around its 2 × 1 record
+so its shelf face and collision agree. Eir and starroot chimes are deliberately
+non-blocking. Spruce canopy overhang does not enlarge its rooted contact mask;
+the trunk and visible base do. Decorative loam, light, and canopy layers never
+collide. The runtime contract is exported as `VISUAL_FOOTPRINTS` from
+`game-core.js` and is covered by deterministic tests.
+
+Starfall Grove consumes `moonwell-starroot-chime-loop-v1.png`, generated from
+the retained `moonwell-starroot-chime-source-v1.png` through
+`scripts/process-starroot-chime-art.sh`.
 
 Lighting order is continuous loam → screen-composited moonlight → waterways
 and detail → canopy depth → baseline-sorted sprites → navy vignette. Lantern

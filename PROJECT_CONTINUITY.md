@@ -235,3 +235,40 @@ then look for the next small player-visible improvement.
 - Figma node `14:2` adds the corrected matched proof, four-level contact sheet,
   retained raster Eir production art, and revised collider/overhang table:
   `https://www.figma.com/design/3mcJh1WvCC8tqOTg2cWLHl?node-id=14-2`.
+
+## Rooted collision truth, starroot chimes, and Luna scale — 2026-08-02
+
+- Ordinary spruce collision now follows a 20 × 12 trunk/root base offset
+  `(-2,+4)` from its one-cell anchor; the 24 × 40 interior or 40 × 56
+  perimeter canopy remains a visual overhang. Root shelves use a 40 × 14
+  contact face offset `(-4,+2)` beneath a 48 × 24 visual. Exit trees retain
+  their deliberate 24 × 12 closed-root contract. These rectangles are
+  exported by `collisionRectFor` and used by both gameplay and QA.
+- Audited every tree and platform record in all four areas. Deterministic
+  four-direction contact sweeps stop Luna at the perceived solid face, reject
+  tunneling, preserve the clear overhang lane, and rerun every required route
+  and puzzle path through the same collision function.
+- Replaced Starfall's floating sky bells with three grounded, non-solid
+  starroot chimes: image-generated root-knot/seed-pod animation in restrained
+  navy, teal, loam, and amber. The three-touch wake gate and hidden-light
+  progression remain unchanged. No HTML or JavaScript runtime path requests
+  the retired sky-bell strip.
+- Luna now renders at 14 × 18 from the existing four-frame raster animation,
+  foot-anchored to the unchanged 10 × 10 one-cell movement box. At normal play
+  scale she is visibly smaller than Eir, ordinary spruces, root shelves, and
+  the crescent landmark without implying extra collision.
+- Editable production contract:
+  `https://www.figma.com/design/3mcJh1WvCC8tqOTg2cWLHl?node-id=17-2`.
+  Four-level live contact sheet:
+  `https://www.figma.com/design/3mcJh1WvCC8tqOTg2cWLHl?node-id=20-2`.
+
+### Verification
+
+- `npm run check`, `npm test` (31/31), `npm run build`, and byte-identical
+  starroot regeneration passed. Final asset SHA-256:
+  `21dc10309bdd7e312a8fe4c21a65f7a7c20c797b6f869df1fe1ab16d35aa5261`.
+- Normal keyboard/touch contact, representative tree/platform approaches,
+  pause/continue, raster Eir dialogue, all four cache-isolated scenes, and
+  desktop 1440 × 900 / portrait 390 × 844 × 3 / touch landscape
+  844 × 390 × 3 fit were checked. Final local consoles are empty and document
+  width equals viewport width at every presentation.

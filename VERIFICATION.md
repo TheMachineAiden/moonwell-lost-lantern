@@ -95,3 +95,24 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
   three checks, and all final consoles are empty.
 - Editable Figma production system: node `11:2` in
   `https://www.figma.com/design/3mcJh1WvCC8tqOTg2cWLHl?node-id=11-2`.
+
+## Rooted-contact and relative-scale acceptance — 2026-08-02
+
+- Deterministic suite: 31/31. New coverage audits every tree/platform instance
+  across all four areas, exact logical versus visual footprints, representative
+  four-direction contact, overhang passability, route reachability, grounded
+  starroot asset/copy/state paths, retired sky-bell runtime absence, and Luna's
+  14 × 18 render over the unchanged 10 × 10 movement box.
+- Desktop keyboard QA approached a representative spruce and root shelf from
+  multiple directions with repeated normal inputs. Contact stopped at the
+  visible trunk/root face without tunneling; the clear canopy/platform
+  overhang lane remained passable. Touch landscape repeated tree contact and
+  completed pause/Continue.
+- Figma node `17:2` shows the corrected collider examples, relative Luna
+  scale, production starroot strip, and asset provenance. Node `20:2`
+  contains verified cache-isolated 640 × 416 captures of all four levels.
+- Responsive Eir dialogue stayed inside portrait (307 × 129) and touch
+  landscape (564 × 216) viewports, with the 512 × 512 raster portrait loaded.
+  Document widths were 1440/1440, 390/390, and 844/844. Final console checks
+  were empty; final network inspection loaded the starroot strip with 200 and
+  did not request the retired sky-bell strip.
