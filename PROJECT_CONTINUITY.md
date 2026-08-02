@@ -144,3 +144,33 @@ then look for the next small player-visible improvement.
   compact sprites, tree-relative scale, touch controls, pause/resume cycle,
   and no console messages. At 390 × 844 touch portrait, the rotation card and
   its full message fit with no console messages.
+
+## Owner-selected forest production integration — 2026-08-02
+
+- Generated and retained a new production atlas from the owner-selected
+  moonlit forest reference. The game does not load the large source.
+- Added ten tile-exact alpha strips: Keeper animation, spruce family,
+  crescent-exit states, root-platform variants, foliage, ground textures,
+  stones, mushrooms, fireflies, and light pools.
+- Replaced the old Keeper/tree/exit/platform/firefly runtime references and
+  routed every deterministic floor-detail kind through the selected forest
+  family across all four levels.
+- Preserved the 320 × 208 / 20 × 13 world, all tile-centred anchors,
+  one-cell ordinary-object records, the 2 × 1 platform and 2 × 2 sentinel
+  exceptions, routes, puzzles, dialogue, progression, touch shell, and
+  `#moonwell` route.
+- Extended the editable Figma file with the validated vector production panel
+  at node `6:2`, beside the canonical geometry frame.
+- Retained owner-visible comparison, before/after, all-level, portrait, and
+  touch-landscape captures under `assets/generated/`.
+
+### Verification
+
+- `npm run check`, `npm test` (22/22), `npm run build`, and
+  `git diff --check` passed.
+- Chrome QA covered all four developer scenes, normal desktop keyboard
+  movement, keyboard pause/resume, the 390 × 844 portrait gate, and 844 × 390
+  touch movement plus pause/continue. The intrinsic canvas stayed 320 × 208,
+  all viewports had zero horizontal overflow, collision assertions remained
+  true, production assets resolved successfully, and every reviewed console
+  was clean.

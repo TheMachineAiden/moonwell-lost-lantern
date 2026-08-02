@@ -97,7 +97,14 @@ diagram would otherwise cover an existing firefly or memory.
 - `forest-density-layout-v1.svg` remains the approved four-level route and
   collider-cell authority; v2 extends rather than replaces that evidence.
 - Editable Figma system: https://www.figma.com/design/3mcJh1WvCC8tqOTg2cWLHl
+- Selected forest production panel:
+  https://www.figma.com/design/3mcJh1WvCC8tqOTg2cWLHl?node-id=6-2
 
 All actor, collectible, exit, and ordinary-interactive anchors now sit on tile
 centres. Ordinary trees and props remain 1 × 1; root platforms remain the
 declared 2 × 1 exception and the Hollow sentinel remains 2 × 2.
+
+The selected forest panel adds editable vector masters for the Keeper, spruce,
+crescent-exit, root-platform, floor-detail, firefly, and light-pool families,
+plus an editable four-level route mapping. It extends the canonical frame and
+does not replace its geometry or collider authority.

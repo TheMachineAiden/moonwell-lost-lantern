@@ -47,3 +47,25 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
   landscape navigations.
 
 `node --check game.js` and `git diff --check` are required local release checks. The hidden query route is intentionally not linked from the player experience; its small `window.__moonwellAudit` API exists only for deterministic browser checks.
+
+## Selected forest post-release acceptance — 2026-08-02
+
+- Deterministic suite: 22/22. New assertions cover exact production-strip
+  dimensions, the full floor vocabulary in each of four areas, non-solid
+  decoration, and the prohibition on loading the retained source sheet.
+- Desktop 1200 × 780: 320 × 208 intrinsic canvas displayed at 640 × 416,
+  equal X/Y scale, no horizontal overflow. Normal `#moonwell` start,
+  keyboard movement, P pause, and Escape resume completed.
+- Portrait 390 × 844 × 3: native 320 × 208 canvas and complete rotation gate
+  fit with no horizontal overflow.
+- Touch landscape 844 × 390 × 3: canvas displayed at 600 × 390, touch
+  steering changed the rendered frame, and the 44 × 44 pause button completed
+  pause/continue without overflow.
+- All four developer scenes were visually reviewed. Moonroot water remained
+  blocked outside the passable bridge, the Hollow sentinel remained solid,
+  and every reviewed console was clean.
+- Evidence: `assets/generated/moonwell-before-selected-reference-desktop.png`,
+  `moonwell-after-selected-reference-desktop.png`,
+  `moonwell-after-selected-reference-four-levels.png`,
+  `moonwell-after-selected-reference-portrait.png`, and
+  `moonwell-after-selected-reference-touch-landscape.png`.
