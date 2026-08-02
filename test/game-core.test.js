@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const context={};
 vm.runInNewContext(fs.readFileSync(new URL('../game-core.js',import.meta.url),'utf8'),context);
-const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,EXIT_STATES,addedTreeCells,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,watcherChoiceResult}=context.MoonwellCore;
+const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,EXIT_STATES,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,watcherChoiceResult}=context.MoonwellCore;
 
 test('the canonical world is a complete 20 by 13 tile canvas',()=>{
   assert.equal(TILE_SIZE,16);
@@ -19,13 +19,19 @@ test('the canonical world is a complete 20 by 13 tile canvas',()=>{
 test('logical cells are decoupled from the two-times luminous render surface',()=>{
   assert.deepEqual({RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT},{RENDER_SCALE:2,RENDER_WIDTH:640,RENDER_HEIGHT:416});
   assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.tree)),{
-    logical:{cellsWide:1,cellsHigh:1,solid:true},visual:{perimeterWidth:40,perimeterHeight:56,interiorWidth:28,interiorHeight:40,overhangTop:40,overhangBottom:0}
+    logical:{cellsWide:1,cellsHigh:1,solid:true,colliderWidth:20,colliderHeight:12,colliderOffsetX:-2,colliderOffsetY:4},visual:{perimeterWidth:40,perimeterHeight:56,interiorWidth:24,interiorHeight:40,overhangTop:40,overhangBottom:0}
   });
   assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.exitTree)),{
     logical:{cellsWide:1,cellsHigh:1,solidUntil:'open'},visual:{width:48,height:64,overhangLeft:16,overhangRight:16,overhangTop:48,overhangBottom:0}
   });
   assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.rootPlatform)),{
-    logical:{cellsWide:2,cellsHigh:1,solid:true},visual:{width:96,height:32,overhangLeft:32,overhangRight:32,overhangTop:16,overhangBottom:0}
+    logical:{cellsWide:2,cellsHigh:1,solid:true,colliderWidth:40,colliderHeight:14,colliderOffsetX:-4,colliderOffsetY:2},visual:{width:48,height:24,overhangLeft:4,overhangRight:4,overhangTop:8,overhangBottom:0}
+  });
+  assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.keeper)),{
+    logical:{colliderWidth:10,colliderHeight:10,solid:true},visual:{width:14,height:18,anchorOffsetX:-7,anchorOffsetY:-17}
+  });
+  assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.starrootChime)),{
+    logical:{cellsWide:1,cellsHigh:1,solid:false,interactionRadius:15},visual:{width:24,height:24,anchorOffsetX:-12,anchorOffsetY:-16}
   });
   assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.eir)),{
     logical:{cellsWide:1,cellsHigh:1,solid:false,interactionRadius:22},visual:{width:32,height:48,anchorOffsetX:-16,anchorOffsetY:-44}
@@ -113,11 +119,13 @@ test('the exit tree state sequence cannot remove its collider before the fully p
   assert.equal(exitStateAt(2),EXIT_STATES.OPEN);
 });
 
-test('world records keep ordinary blockers to one cell and landmark colliders to their declared footprint',()=>{
+test('world records keep rooted blockers to their perceived contact footprint',()=>{
   const glade=createWorldObjects(0,false);
   const tree=glade.find(object=>object.id==='tree-0');
   assert.deepEqual({x:tree.x,y:tree.y,w:tree.w,h:tree.h,solid:tree.solid},{x:32,y:80,w:16,h:16,solid:true});
-  assert.equal(isBlocked(32,80,0,false),true);
+  assert.deepEqual(JSON.parse(JSON.stringify(collisionRectFor(tree))),{x:30,y:84,w:20,h:12});
+  assert.equal(isBlocked(32,84,0,false),true);
+  assert.equal(isBlocked(32,83,0,false),false);
   assert.equal(isBlocked(112,32,0,false),false);
   const hollow=createWorldObjects(2,false);
   const sentinel=hollow.find(object=>object.id==='sentinel');
@@ -127,6 +135,33 @@ test('world records keep ordinary blockers to one cell and landmark colliders to
   assert.equal(isBlocked(176,127,2,false),false);
   const platform=glade.find(object=>object.kind==='platform');
   assert.deepEqual({w:platform.w,h:platform.h,solid:platform.solid},{w:32,h:16,solid:true});
+  assert.deepEqual(JSON.parse(JSON.stringify(collisionRectFor(platform))),{x:124,y:50,w:40,h:14});
+});
+
+test('tree and platform contact stops Luna from every direction without blocking clear overhang',()=>{
+  const objects=createWorldObjects(0,false).filter(object=>object.solid);
+  for(const object of [objects.find(item=>item.id==='tree-0'),objects.find(item=>item.kind==='platform')]){
+    const canStand=(x,y)=>![[x-5,y-5],[x+5,y-5],[x-5,y+5],[x+5,y+5]].some(([pointX,pointY])=>{const collider=collisionRectFor(object);return pointX>=collider.x&&pointX<collider.x+collider.w&&pointY>=collider.y&&pointY<collider.y+collider.h});
+    const sweep=(startX,startY,dx,dy)=>{let x=startX,y=startY;for(let step=0;step<40;step++){const nextX=x+dx,nextY=y+dy;if(!canStand(nextX,nextY))break;x=nextX;y=nextY}return{x,y}};
+    const collider=collisionRectFor(object),midX=collider.x+collider.w/2,midY=collider.y+collider.h/2;
+    const left=sweep(collider.x-24,midY,2,0),right=sweep(collider.x+collider.w+24,midY,-2,0),top=sweep(midX,collider.y-24,0,2),bottom=sweep(midX,collider.y+collider.h+24,0,-2);
+    assert.ok(left.x+5<=collider.x&&collider.x-(left.x+5)<2,`${object.id} left contact`);
+    assert.ok(right.x-5>=collider.x+collider.w&&right.x-5-(collider.x+collider.w)<2,`${object.id} right contact`);
+    assert.ok(top.y+5<=collider.y&&collider.y-(top.y+5)<2,`${object.id} top contact`);
+    assert.ok(bottom.y-5>=collider.y+collider.h&&bottom.y-5-(collider.y+collider.h)<2,`${object.id} bottom contact`);
+  }
+  const tree=objects.find(item=>item.id==='tree-0'),platform=objects.find(item=>item.kind==='platform');
+  const canStandAgainst=(object,x,y)=>![[x-5,y-5],[x+5,y-5],[x-5,y+5],[x+5,y+5]].some(([pointX,pointY])=>{const collider=collisionRectFor(object);return pointX>=collider.x&&pointX<collider.x+collider.w&&pointY>=collider.y&&pointY<collider.y+collider.h});
+  assert.equal(canStandAgainst(tree,tree.x+8,tree.y-2),true,'tree canopy overhang remains passable behind its root base');
+  assert.equal(canStandAgainst(platform,platform.x+16,platform.y-4),true,'platform top overhang remains passable behind its contact face');
+});
+
+test('every tree and root platform instance in all four areas uses the declared collider contract',()=>{
+  for(let areaIndex=0;areaIndex<4;areaIndex++)for(const object of createWorldObjects(areaIndex,areaIndex===1)){
+    const collider=collisionRectFor(object);
+    if(object.kind==='tree')assert.deepEqual(JSON.parse(JSON.stringify(collider)),{x:object.x-2,y:object.y+4,w:20,h:12});
+    if(object.kind==='platform')assert.deepEqual(JSON.parse(JSON.stringify(collider)),{x:object.x-4,y:object.y+2,w:40,h:14});
+  }
 });
 
 test('Lantern Glade composes its corrected landmark clearing without changing simple collider rules',()=>{
@@ -159,7 +194,7 @@ test('keepers, exits, collectibles, and ordinary interactives use tile-centred a
     if(area.flower)assert.equal(centred(area.flower),true);
     if(area.watcher)assert.equal(centred(area.watcher),true);
     area.runes?.forEach(rune=>assert.equal(centred(rune),true));
-    area.bells?.forEach(bell=>assert.equal(centred(bell),true));
+    area.starroots?.forEach(starroot=>assert.equal(centred(starroot),true));
   }
 });
 
@@ -169,11 +204,11 @@ test('every approved side-forest cluster has ten one-cell solid trees and preser
     [areas[0].start,...areas[0].lights,areas[0].home],
     [areas[1].start,areas[1].flower,{x:160,y:88},{x:160,y:144},areas[1].home],
     [areas[2].start,...areas[2].runes,areas[2].home],
-    [areas[3].start,...areas[3].bells,...areas[3].lights,areas[3].home]
+    [areas[3].start,...areas[3].starroots,...areas[3].lights,areas[3].home]
   ];
   const routeExists=(areaIndex,bridge,start,target)=>{
     const objects=createWorldObjects(areaIndex,bridge,EXIT_STATES.OPEN);
-    const blocked=(x,y)=>objects.some(object=>object.solid&&x>=object.x&&x<object.x+object.w&&y>=object.y&&y<object.y+object.h);
+    const blocked=(x,y)=>objects.some(object=>{if(!object.solid)return false;const collider=collisionRectFor(object);return x>=collider.x&&x<collider.x+collider.w&&y>=collider.y&&y<collider.y+collider.h});
     const canStand=(x,y)=>![[x-5,y-5],[x+5,y-5],[x-5,y+5],[x+5,y+5]].some(([pointX,pointY])=>blocked(pointX,pointY));
     const queue=[[start.x,start.y]],seen=new Set([`${start.x},${start.y}`]);
     while(queue.length){const [x,y]=queue.shift();if(Math.hypot(x-target.x,y-target.y)<10)return true;for(const [dx,dy] of [[2,0],[-2,0],[0,2],[0,-2]]){const nextX=x+dx,nextY=y+dy,key=`${nextX},${nextY}`;if(nextX<6||nextX>314||nextY<6||nextY>202||seen.has(key)||!canStand(nextX,nextY))continue;seen.add(key);queue.push([nextX,nextY])}}

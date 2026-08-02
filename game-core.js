@@ -6,10 +6,11 @@ const RENDER_SCALE=2;
 const RENDER_WIDTH=WORLD_WIDTH*RENDER_SCALE;
 const RENDER_HEIGHT=WORLD_HEIGHT*RENDER_SCALE;
 const VISUAL_FOOTPRINTS=Object.freeze({
-  keeper:Object.freeze({logical:Object.freeze({colliderWidth:10,colliderHeight:10,solid:true}),visual:Object.freeze({width:20,height:24,anchorOffsetX:-10,anchorOffsetY:-22})}),
-  tree:Object.freeze({logical:Object.freeze({cellsWide:1,cellsHigh:1,solid:true}),visual:Object.freeze({perimeterWidth:40,perimeterHeight:56,interiorWidth:28,interiorHeight:40,overhangTop:40,overhangBottom:0})}),
+  keeper:Object.freeze({logical:Object.freeze({colliderWidth:10,colliderHeight:10,solid:true}),visual:Object.freeze({width:14,height:18,anchorOffsetX:-7,anchorOffsetY:-17})}),
+  tree:Object.freeze({logical:Object.freeze({cellsWide:1,cellsHigh:1,solid:true,colliderWidth:20,colliderHeight:12,colliderOffsetX:-2,colliderOffsetY:4}),visual:Object.freeze({perimeterWidth:40,perimeterHeight:56,interiorWidth:24,interiorHeight:40,overhangTop:40,overhangBottom:0})}),
   exitTree:Object.freeze({logical:Object.freeze({cellsWide:1,cellsHigh:1,solidUntil:'open'}),visual:Object.freeze({width:48,height:64,overhangLeft:16,overhangRight:16,overhangTop:48,overhangBottom:0})}),
-  rootPlatform:Object.freeze({logical:Object.freeze({cellsWide:2,cellsHigh:1,solid:true}),visual:Object.freeze({width:96,height:32,overhangLeft:32,overhangRight:32,overhangTop:16,overhangBottom:0})}),
+  rootPlatform:Object.freeze({logical:Object.freeze({cellsWide:2,cellsHigh:1,solid:true,colliderWidth:40,colliderHeight:14,colliderOffsetX:-4,colliderOffsetY:2}),visual:Object.freeze({width:48,height:24,overhangLeft:4,overhangRight:4,overhangTop:8,overhangBottom:0})}),
+  starrootChime:Object.freeze({logical:Object.freeze({cellsWide:1,cellsHigh:1,solid:false,interactionRadius:15}),visual:Object.freeze({width:24,height:24,anchorOffsetX:-12,anchorOffsetY:-16})}),
   eir:Object.freeze({logical:Object.freeze({cellsWide:1,cellsHigh:1,solid:false,interactionRadius:22}),visual:Object.freeze({width:32,height:48,anchorOffsetX:-16,anchorOffsetY:-44})}),
   loamPatch:Object.freeze({logical:Object.freeze({solid:false}),visual:Object.freeze({width:80,height:48})}),
   moonlightPool:Object.freeze({logical:Object.freeze({solid:false}),visual:Object.freeze({width:112,height:66})}),
@@ -49,7 +50,8 @@ const boundaryObjects=()=>{
   for(let row=1;row<12;row++){objects.push(tileObject(`edge-left-${row}`,'tree',0,row,{solid:true}));objects.push(tileObject(`edge-right-${row}`,'tree',19,row,{solid:true}))}
   return objects
 };
-const contains=(object,x,y)=>x>=object.x&&x<object.x+object.w&&y>=object.y&&y<object.y+object.h;
+const collisionRectFor=object=>object.kind==='tree'?{x:object.x-2,y:object.y+4,w:20,h:12}:object.kind==='exit-tree'?{x:object.x-4,y:object.y+4,w:24,h:12}:object.kind==='platform'?{x:object.x-4,y:object.y+2,w:40,h:14}:{x:object.x,y:object.y,w:object.w,h:object.h};
+const contains=(object,x,y)=>{const collider=collisionRectFor(object);return x>=collider.x&&x<collider.x+collider.w&&y>=collider.y&&y<collider.y+collider.h};
 function createWorldObjects(areaIndex,bridge,exitState=EXIT_STATES.CLOSED){
   const area=createAreas()[areaIndex];
   const exitCol=Math.floor(area.home.x/TILE_SIZE),exitRow=Math.floor(area.home.y/TILE_SIZE);
@@ -69,8 +71,8 @@ function createWorldObjects(areaIndex,bridge,exitState=EXIT_STATES.CLOSED){
 function createAreas(){return [
   {name:'Lantern Glade',start:{x:56,y:152},home:{x:280,y:72},memory:{x:40,y:72,text:'A rain-silver leaf holds the storm’s first reflection. The lantern keeper was not alone on the path home.'},lights:[{x:264,y:24},{x:88,y:136},{x:168,y:88}]},
   {name:'Moonroot Crossing',start:{x:40,y:40},home:{x:40,y:168},flower:{x:264,y:72},watcher:{x:264,y:56},memory:{x:280,y:40,text:'A root-knot is tied with a violet thread. Someone marked the crossing for the next traveler.'},lights:[{x:248,y:152},{x:152,y:168}]},
-  {name:'Whispering Hollow',start:{x:280,y:40},home:{x:40,y:168},runes:[{x:264,y:152},{x:152,y:72},{x:56,y:120}],memory:{x:264,y:56,text:'A small bell-shell remembers a child’s laugh. The hollow keeps gentle sounds as well as echoes.'},lights:[{x:168,y:136,hidden:true}]},
-  {name:'Starfall Grove',start:{x:280,y:40},home:{x:56,y:168},bells:[{x:264,y:152},{x:168,y:72},{x:56,y:120}],lights:[{x:152,y:152,hidden:true},{x:232,y:56,hidden:true}]}
+  {name:'Whispering Hollow',start:{x:280,y:40},home:{x:40,y:168},runes:[{x:264,y:152},{x:152,y:72},{x:56,y:120}],memory:{x:264,y:56,text:'A small seed-shell remembers a child’s laugh. The hollow keeps gentle sounds as well as echoes.'},lights:[{x:168,y:136,hidden:true}]},
+  {name:'Starfall Grove',start:{x:280,y:40},home:{x:56,y:168},starroots:[{x:264,y:152},{x:168,y:72},{x:56,y:120}],lights:[{x:152,y:152,hidden:true},{x:232,y:56,hidden:true}]}
 ]}
 
 function createGroundDecor(areaIndex){return groundDecorCells[areaIndex].map(([kind,col,row],index)=>Object.freeze({id:`decor-${areaIndex}-${index}`,kind,x:col*TILE_SIZE,y:row*TILE_SIZE,w:TILE_SIZE,h:TILE_SIZE,solid:false}))}
@@ -100,5 +102,5 @@ function createEchoReplay(trail,origin){
 }
 const canResolveEchoRune=(stage,echoHolding,player,runes)=>stage===2&&echoHolding&&nearPoint(player,runes[2]);
 function watcherChoiceResult(choice){return choice===0?Object.freeze({correct:true,reply:'Yes. A memory carries a path after the feet have gone. The moonflower listens for that keeping.'}):Object.freeze({correct:false,reply:'A shadow follows, but it does not keep. Listen to the riddle once more; there is no harm in trying again.'})}
-globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,MEMORY_DIALOGUE_TYPOGRAPHY,WATCHER_DIALOGUE,EXIT_STATES,EXIT_STATE_DURATIONS,addedTreeCells,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,watcherChoiceResult});
+globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,MEMORY_DIALOGUE_TYPOGRAPHY,WATCHER_DIALOGUE,EXIT_STATES,EXIT_STATE_DURATIONS,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,watcherChoiceResult});
 })();
