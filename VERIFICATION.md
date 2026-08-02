@@ -116,3 +116,32 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
   Document widths were 1440/1440, 390/390, and 844/844. Final console checks
   were empty; final network inspection loaded the starroot strip with 200 and
   did not request the retired sky-bell strip.
+
+## No-violet environmental acceptance — 2026-08-03
+
+- Deterministic suite: 35/35. The runtime raster inventory is exact and
+  exhaustive: 21 environmental layers are zero-tolerance checked for the
+  prohibited purple-family predicate, including alpha-connected silhouettes
+  and repeated frame/tile seams. Luna and Eir are the only explicit semantic
+  character exceptions. Canvas environmental fallbacks and player copy cannot
+  reintroduce violet terrain language.
+- `scripts/process-no-violet-environment-art.sh` rebuilds from all retained
+  generated families into versioned production derivatives. A full rerun is
+  byte-identical and does not mutate the retained selected-reference proof.
+- Visual evidence at native 640 × 416 scale covers all four levels in
+  `artifacts/qa/moonwell-no-violet-four-level-contact-sheet.png`. The exact
+  bottom-right reference comparison is
+  `artifacts/qa/moonwell-no-violet-reference-level-1-matched.png`, and the
+  representative production family is
+  `artifacts/qa/moonwell-no-violet-representative-assets.png`.
+- Desktop 1440 × 900 uses a 640 × 416 canvas inside a 650 × 426 frame with no
+  horizontal overflow. Normal keyboard movement and pause/resume passed.
+  Portrait 390 × 844 × 3 keeps the complete rotation gate inside the viewport.
+  Touch landscape 844 × 390 × 3 keeps the 600 × 390 canvas, 44 × 44 pause
+  control, and 116 × 116 steering control in bounds; normal touch movement and
+  pause/Continue passed. Final consoles are empty.
+- Every four-level developer-scene navigation loaded the complete current
+  production family without failures. Moonroot still reports blocked water and
+  a passable bridge; Whispering Hollow still reports its sentinel blocked.
+- Figma production evidence: palette contract and matched proof at node `26:2`;
+  four-level contact sheet and audit evidence at node `26:3`.

@@ -272,3 +272,49 @@ then look for the next small player-visible improvement.
   desktop 1440 × 900 / portrait 390 × 844 × 3 / touch landscape
   844 × 390 × 3 fit were checked. Final local consoles are empty and document
   width equals viewport width at every presentation.
+
+## No-violet environmental palette correction — 2026-08-03
+
+- Rebuilt every runtime environmental raster from the retained generated
+  sources into a new versioned production family. A shared deterministic
+  processor maps prohibited purple/magenta/violet pixels to material-specific
+  teal, bark, cyan, or amber-neutral hues; it does not tint or filter the
+  canvas at runtime. Luna and Eir remain explicitly outside the environmental
+  processor.
+- Runtime now loads 21 audited no-violet environmental derivatives, plus only
+  the established Luna and Eir character rasters as semantic character art.
+  Moonflower, memory, rune, starroot, sentinel, water, ground detail, roots,
+  spruces, canopy, loam, stones, mushrooms, and all tiled/seamed layers are
+  covered by the same prohibited-pixel predicate.
+- `assets/moonwell-art/ART_DIRECTION.md` and `assets/ARTWORK.md` now make the
+  framed bottom-right palette authoritative: continuous muted blue-green loam
+  and moss, deep teal foliage, natural bark/root tones, cool cyan moonlight,
+  pale neutral magic, and restrained amber focal light. Environmental purple
+  outlines, seams, halos, repeated strokes, edge accents, and collider cues are
+  prohibited.
+- Matched local proof is
+  `artifacts/qa/moonwell-no-violet-reference-level-1-matched.png`; the four
+  640 × 416 scenes are composed at
+  `artifacts/qa/moonwell-no-violet-four-level-contact-sheet.png`; representative
+  regenerated assets are shown at
+  `artifacts/qa/moonwell-no-violet-representative-assets.png`.
+- Editable Figma evidence extends the existing production file at node `26:2`
+  (palette contract, matched proof, and representative assets) and node `26:3`
+  (four-level contact sheet and audit evidence):
+  `https://www.figma.com/design/3mcJh1WvCC8tqOTg2cWLHl?node-id=26-2` and
+  `https://www.figma.com/design/3mcJh1WvCC8tqOTg2cWLHl?node-id=26-3`.
+
+### Verification
+
+- `npm run check`, 35/35 deterministic tests, `npm run build`, and
+  `git diff --check` pass. Regression coverage classifies every runtime raster,
+  rejects prohibited environmental pixels at silhouettes and frame/tile seams,
+  checks canvas fallbacks/copy, preserves exact dimensions, and proves
+  byte-identical regeneration without rewriting retained proof images.
+- Cache-isolated local Chrome QA covered normal desktop keyboard start,
+  movement, pause/resume; the 390 × 844 × 3 portrait rotation gate; 844 × 390 ×
+  3 touch movement and pause/Continue; and all four developer scenes. The
+  640 × 416 canvas fits every reviewed presentation, document width equals
+  viewport width, consoles are empty, and all 23 eagerly loaded production
+  image requests complete successfully. Moonroot water/bridge and Hollow
+  sentinel audit assertions remain correct.

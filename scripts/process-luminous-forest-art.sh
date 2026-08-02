@@ -6,8 +6,10 @@ set -eu
 # treat the packed dimensions below as part of the visual/logical contract.
 repo_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 generated="$repo_dir/assets/generated"
-production="$repo_dir/assets/moonwell-art/production"
+production="${MOONWELL_ART_OUTPUT:-$repo_dir/assets/moonwell-art/production}"
 work_dir=$(mktemp -d "${TMPDIR:-/var/tmp}/moonwell-luminous.XXXXXX")
+trap 'rm -rf "$work_dir"' EXIT
+mkdir -p "$production"
 
 key_alpha() {
   magick "$1" -alpha on -fuzz "$2" -transparent "$3" "$4"
@@ -70,4 +72,3 @@ magick "$work_dir/exit-0.png" "$work_dir/exit-1.png" "$work_dir/exit-2.png" "$wo
 magick "$portrait" -resize 512x512! "$production/moonwell-eir-rootwatcher-portrait-v1.png"
 
 printf '%s\n' "Rebuilt luminous Moonwell production art in $production"
-printf '%s\n' "Temporary keyed intermediates retained at $work_dir"
