@@ -9,12 +9,17 @@ const dimensions=path=>{const png=read(path);assert.equal(png.subarray(1,4).toSt
 const context={globalThis:{}};
 runInNewContext(read('game-core.js').toString(),context);
 
-test('selected-reference production strips preserve exact tile footprints',()=>{
+test('luminous production assets preserve exact render footprints',()=>{
   const expected={
     'assets/moonwell-art/production/moonwell-keeper-walk-v5.png':[64,16],
-    'assets/moonwell-art/production/moonwell-spruce-family-v2.png':[48,16],
-    'assets/moonwell-art/production/moonwell-crescent-exit-states-v2.png':[64,16],
-    'assets/moonwell-art/production/moonwell-root-platform-variants-v5.png':[64,16],
+    'assets/moonwell-art/production/moonwell-spruce-overhang-v2.png':[480,112],
+    'assets/moonwell-art/production/moonwell-canopy-curtains-v1.png':[512,112],
+    'assets/moonwell-art/production/moonwell-loam-patches-v1.png':[512,96],
+    'assets/moonwell-art/production/moonwell-moonlight-pools-v2.png':[384,96],
+    'assets/moonwell-art/production/moonwell-crescent-exit-overhang-v3.png':[320,112],
+    'assets/moonwell-art/production/moonwell-root-platform-overhang-v1.png':[256,48],
+    'assets/moonwell-art/production/moonwell-eir-rootwatcher-idle-v1.png':[256,96],
+    'assets/moonwell-art/production/moonwell-eir-rootwatcher-portrait-v1.png':[512,512],
     'assets/moonwell-art/production/moonwell-foliage-variants-v1.png':[48,16],
     'assets/moonwell-art/production/moonwell-ground-texture-variants-v1.png':[48,16],
     'assets/moonwell-art/production/moonwell-stone-variants-v1.png':[48,16],
@@ -34,13 +39,18 @@ test('all four areas receive the selected forest floor vocabulary without new co
   }
 });
 
-test('runtime references only compact derivatives, never the large selected source sheet',()=>{
+test('runtime references only production derivatives, never retained generation sources',()=>{
   const source=read('game.js').toString();
   [
     'moonwell-keeper-walk-v5.png',
-    'moonwell-spruce-family-v2.png',
-    'moonwell-crescent-exit-states-v2.png',
-    'moonwell-root-platform-variants-v5.png',
+    'moonwell-spruce-overhang-v2.png',
+    'moonwell-canopy-curtains-v1.png',
+    'moonwell-loam-patches-v1.png',
+    'moonwell-moonlight-pools-v2.png',
+    'moonwell-crescent-exit-overhang-v3.png',
+    'moonwell-root-platform-overhang-v1.png',
+    'moonwell-eir-rootwatcher-idle-v1.png',
+    'moonwell-eir-rootwatcher-portrait-v1.png',
     'moonwell-foliage-variants-v1.png',
     'moonwell-ground-texture-variants-v1.png',
     'moonwell-stone-variants-v1.png',
@@ -48,5 +58,15 @@ test('runtime references only compact derivatives, never the large selected sour
     'moonwell-firefly-loop-v4.png',
     'moonwell-light-pool-variants-v1.png'
   ].forEach(asset=>assert.match(source,new RegExp(asset.replaceAll('.','\\.'))));
-  assert.doesNotMatch(source,/selected-forest-production-source|320x208-art-direction-source/);
+  assert.doesNotMatch(source,/selected-forest-production-source|luminous-forest-production-source|eir-rootwatcher-(?:sprite|portrait)-source|320x208-art-direction-source/);
+});
+
+test('Eir dialogue uses raster production art and has no SVG or drawn-sigil fallback',()=>{
+  const source=read('game.js').toString();
+  const html=read('index.html').toString();
+  assert.match(source,/moonwell-eir-rootwatcher-idle-v1\.png/);
+  assert.match(source,/moonwell-eir-rootwatcher-portrait-v1\.png/);
+  assert.match(source,/data-qa-required','Eir dialogue/);
+  assert.match(html,/<canvas[^>]+width="640"[^>]+height="416"/);
+  assert.doesNotMatch(source+html,/eir[^\n"']*\.svg|watcher-dialogue__sigil/i);
 });
