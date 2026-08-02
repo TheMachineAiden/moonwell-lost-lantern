@@ -1,33 +1,66 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
 import {runInNewContext} from 'node:vm';
 
 const root=new URL('../',import.meta.url);
 const read=path=>readFileSync(new URL(path,root));
 const dimensions=path=>{const png=read(path);assert.equal(png.subarray(1,4).toString(),'PNG');return[png.readUInt32BE(16),png.readUInt32BE(20)]};
+const rgba=path=>execFileSync('magick',[fileURLToPath(new URL(path,root)),'-alpha','on','-depth','8','rgba:-'],{maxBuffer:16*1024*1024});
+const prohibited=(r,g,b,a)=>a>15&&r>g*1.08&&b>g*1.12&&b>r*.58&&Math.max(r,b)-g>9;
+const environmentalFrames={
+  'assets/moonwell-art/production/moonwell-spruce-overhang-v3.png':80,
+  'assets/moonwell-art/production/moonwell-clearing-crescent-landmark-v5.png':96,
+  'assets/moonwell-art/production/moonwell-clearing-canopy-v3.png':256,
+  'assets/moonwell-art/production/moonwell-clearing-loam-patches-v3.png':160,
+  'assets/moonwell-art/production/moonwell-clearing-moonlight-v4.png':192,
+  'assets/moonwell-art/production/moonwell-crescent-exit-overhang-v4.png':80,
+  'assets/moonwell-art/production/moonwell-clearing-root-platform-v3.png':192,
+  'assets/moonwell-art/production/moonwell-foliage-variants-v2.png':16,
+  'assets/moonwell-art/production/moonwell-ground-texture-variants-v2.png':16,
+  'assets/moonwell-art/production/moonwell-stone-variants-v2.png':16,
+  'assets/moonwell-art/production/moonwell-mushroom-variants-v2.png':16,
+  'assets/moonwell-art/production/moonwell-clearing-firefly-loop-v6.png':16,
+  'assets/moonwell-art/production/moonwell-light-pool-variants-v2.png':16,
+  'assets/moonwell-art/production/moonwell-memory-loop-v3.png':16,
+  'assets/moonwell-art/production/moonwell-moonflower-v3.png':32,
+  'assets/moonwell-art/production/moonwell-bridge-segment-v3.png':16,
+  'assets/moonwell-art/production/moonwell-rune-stone-v3.png':32,
+  'assets/moonwell-art/production/moonwell-starroot-chime-loop-v2.png':24,
+  'assets/moonwell-art/production/moonwell-sentinel-tile-v5.png':32,
+  'assets/moonwell-art/production/moonwell-altar-v3.png':64,
+  'assets/moonwell-art/production/moonwell-water-tile-v3.png':16
+};
+const semanticCharacterRasters=new Set([
+  'assets/moonwell-art/production/moonwell-keeper-walk-v5.png',
+  'assets/moonwell-art/production/moonwell-eir-rootwatcher-idle-v1.png',
+  'assets/moonwell-art/production/moonwell-eir-rootwatcher-portrait-v1.png'
+]);
 const context={globalThis:{}};
 runInNewContext(read('game-core.js').toString(),context);
 
 test('luminous production assets preserve exact render footprints',()=>{
   const expected={
     'assets/moonwell-art/production/moonwell-keeper-walk-v5.png':[64,16],
-    'assets/moonwell-art/production/moonwell-spruce-overhang-v2.png':[480,112],
-    'assets/moonwell-art/production/moonwell-clearing-crescent-landmark-v4.png':[96,128],
-    'assets/moonwell-art/production/moonwell-clearing-canopy-v2.png':[512,112],
-    'assets/moonwell-art/production/moonwell-clearing-loam-patches-v2.png':[640,96],
-    'assets/moonwell-art/production/moonwell-clearing-moonlight-v3.png':[576,112],
-    'assets/moonwell-art/production/moonwell-crescent-exit-overhang-v3.png':[320,112],
-    'assets/moonwell-art/production/moonwell-clearing-root-platform-v2.png':[192,64],
+    'assets/moonwell-art/production/moonwell-spruce-overhang-v3.png':[480,112],
+    'assets/moonwell-art/production/moonwell-clearing-crescent-landmark-v5.png':[96,128],
+    'assets/moonwell-art/production/moonwell-clearing-canopy-v3.png':[512,112],
+    'assets/moonwell-art/production/moonwell-clearing-loam-patches-v3.png':[640,96],
+    'assets/moonwell-art/production/moonwell-clearing-moonlight-v4.png':[576,112],
+    'assets/moonwell-art/production/moonwell-crescent-exit-overhang-v4.png':[320,112],
+    'assets/moonwell-art/production/moonwell-clearing-root-platform-v3.png':[192,64],
     'assets/moonwell-art/production/moonwell-eir-rootwatcher-idle-v1.png':[256,96],
     'assets/moonwell-art/production/moonwell-eir-rootwatcher-portrait-v1.png':[512,512],
-    'assets/moonwell-art/production/moonwell-foliage-variants-v1.png':[48,16],
-    'assets/moonwell-art/production/moonwell-ground-texture-variants-v1.png':[48,16],
-    'assets/moonwell-art/production/moonwell-stone-variants-v1.png':[48,16],
-    'assets/moonwell-art/production/moonwell-mushroom-variants-v1.png':[32,16],
-    'assets/moonwell-art/production/moonwell-clearing-firefly-loop-v5.png':[64,16],
-    'assets/moonwell-art/production/moonwell-light-pool-variants-v1.png':[48,16],
-    'assets/moonwell-art/production/moonwell-starroot-chime-loop-v1.png':[96,24]
+    'assets/moonwell-art/production/moonwell-foliage-variants-v2.png':[48,16],
+    'assets/moonwell-art/production/moonwell-ground-texture-variants-v2.png':[48,16],
+    'assets/moonwell-art/production/moonwell-stone-variants-v2.png':[48,16],
+    'assets/moonwell-art/production/moonwell-mushroom-variants-v2.png':[32,16],
+    'assets/moonwell-art/production/moonwell-clearing-firefly-loop-v6.png':[64,16],
+    'assets/moonwell-art/production/moonwell-light-pool-variants-v2.png':[48,16],
+    'assets/moonwell-art/production/moonwell-starroot-chime-loop-v2.png':[96,24]
   };
   for(const [path,size] of Object.entries(expected))assert.deepEqual(dimensions(path),size,path);
 });
@@ -45,24 +78,32 @@ test('runtime references only production derivatives, never retained generation 
   const source=read('game.js').toString();
   [
     'moonwell-keeper-walk-v5.png',
-    'moonwell-spruce-overhang-v2.png',
-    'moonwell-clearing-crescent-landmark-v4.png',
-    'moonwell-clearing-canopy-v2.png',
-    'moonwell-clearing-loam-patches-v2.png',
-    'moonwell-clearing-moonlight-v3.png',
-    'moonwell-crescent-exit-overhang-v3.png',
-    'moonwell-clearing-root-platform-v2.png',
+    'moonwell-spruce-overhang-v3.png',
+    'moonwell-clearing-crescent-landmark-v5.png',
+    'moonwell-clearing-canopy-v3.png',
+    'moonwell-clearing-loam-patches-v3.png',
+    'moonwell-clearing-moonlight-v4.png',
+    'moonwell-crescent-exit-overhang-v4.png',
+    'moonwell-clearing-root-platform-v3.png',
     'moonwell-eir-rootwatcher-idle-v1.png',
     'moonwell-eir-rootwatcher-portrait-v1.png',
-    'moonwell-foliage-variants-v1.png',
-    'moonwell-ground-texture-variants-v1.png',
-    'moonwell-stone-variants-v1.png',
-    'moonwell-mushroom-variants-v1.png',
-    'moonwell-clearing-firefly-loop-v5.png',
-    'moonwell-light-pool-variants-v1.png',
-    'moonwell-starroot-chime-loop-v1.png'
+    'moonwell-foliage-variants-v2.png',
+    'moonwell-ground-texture-variants-v2.png',
+    'moonwell-stone-variants-v2.png',
+    'moonwell-mushroom-variants-v2.png',
+    'moonwell-clearing-firefly-loop-v6.png',
+    'moonwell-light-pool-variants-v2.png',
+    'moonwell-starroot-chime-loop-v2.png'
   ].forEach(asset=>assert.match(source,new RegExp(asset.replaceAll('.','\\.'))));
   assert.doesNotMatch(source,/selected-forest-production-source|luminous-forest-production-source|bottom-right-clearing-source|eir-rootwatcher-(?:sprite|portrait)-source|320x208-art-direction-source/);
+});
+
+test('every runtime-loaded raster is explicitly classified for palette audit',()=>{
+  const source=read('game.js').toString();
+  const runtimeRasters=new Set([...source.matchAll(/assets\/moonwell-art\/production\/[a-z0-9-]+\.png/g)].map(match=>match[0]));
+  const audited=new Set([...Object.keys(environmentalFrames),...semanticCharacterRasters]);
+  assert.deepEqual([...runtimeRasters].sort(),[...audited].sort());
+  for(const asset of semanticCharacterRasters)assert.ok(runtimeRasters.has(asset),`${asset} lost its semantic character exemption`);
 });
 
 test('corrected clearing renderer keeps a dominant light pool and separates perimeter from interior scale',()=>{
@@ -75,11 +116,49 @@ test('corrected clearing renderer keeps a dominant light pool and separates peri
 
 test('Starfall uses grounded starroot art and contains no sky-bell runtime path or copy',()=>{
   const source=read('game.js').toString(),core=read('game-core.js').toString(),html=read('index.html').toString();
-  assert.match(source,/moonwell-starroot-chime-loop-v1\.png/);
+  assert.match(source,/moonwell-starroot-chime-loop-v2\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-rooted-contact-4/);
-  assert.match(html,/game\.js\?v=moonwell-rooted-contact-4/);
+  assert.match(html,/game-core\.js\?v=moonwell-no-violet-5/);
+  assert.match(html,/game\.js\?v=moonwell-no-violet-5/);
+});
+
+test('environmental rasters contain no prohibited purple-family silhouette or seam pixels',()=>{
+  for(const [asset,frameWidth] of Object.entries(environmentalFrames)){
+    const [width,height]=dimensions(asset),pixels=rgba(asset);
+    let prohibitedPixels=0,prohibitedEdges=0,prohibitedSeams=0;
+    const alphaAt=(x,y)=>x<0||y<0||x>=width||y>=height?0:pixels[(y*width+x)*4+3];
+    for(let y=0;y<height;y++)for(let x=0;x<width;x++){
+      const offset=(y*width+x)*4,r=pixels[offset],g=pixels[offset+1],b=pixels[offset+2],a=pixels[offset+3];
+      if(!prohibited(r,g,b,a))continue;
+      prohibitedPixels++;
+      if(alphaAt(x-1,y)<16||alphaAt(x+1,y)<16||alphaAt(x,y-1)<16||alphaAt(x,y+1)<16)prohibitedEdges++;
+      if(x%frameWidth===0||x%frameWidth===frameWidth-1)prohibitedSeams++;
+    }
+    assert.equal(prohibitedPixels,0,`${asset} contains purple-family pixels`);
+    assert.equal(prohibitedEdges,0,`${asset} recreates a purple silhouette`);
+    assert.equal(prohibitedSeams,0,`${asset} recreates a purple tiled seam`);
+  }
+});
+
+test('environmental canvas fallbacks and copy do not reintroduce violet language',()=>{
+  const source=read('game.js').toString(),html=read('index.html').toString();
+  assert.doesNotMatch(source+html,/violet (?:rune|glow)|magenta|purple/i);
+  assert.doesNotMatch(source,/rgba\((?:189,150,255|216,180,254)/);
+  assert.doesNotMatch(html,/rgba\(196,181,253|#(?:a78bfa|c4b5fd|7c3aed|e9d5ff)/i);
+});
+
+test('no-violet environmental regeneration is byte-identical',()=>{
+  const digest=asset=>createHash('sha256').update(read(asset)).digest('hex');
+  const before=Object.fromEntries(Object.keys(environmentalFrames).map(asset=>[asset,digest(asset)]));
+  const retainedProof='assets/generated/moonwell-selected-reference-sprite-comparison-v1.png';
+  const retainedStarrootAlpha='assets/generated/moonwell-starroot-chime-source-v1-alpha.png';
+  const proofBefore=digest(retainedProof);
+  const starrootAlphaBefore=digest(retainedStarrootAlpha);
+  execFileSync('sh',[fileURLToPath(new URL('scripts/process-no-violet-environment-art.sh',root))],{stdio:'pipe',timeout:120000});
+  for(const [asset,hash] of Object.entries(before))assert.equal(digest(asset),hash,asset);
+  assert.equal(digest(retainedProof),proofBefore,'composite regeneration rewrote a retained proof image');
+  assert.equal(digest(retainedStarrootAlpha),starrootAlphaBefore,'composite regeneration rewrote a retained generated source companion');
 });
 
 test('Luna remains one-cell controlled while rendering smaller than ordinary rooted landmarks',()=>{

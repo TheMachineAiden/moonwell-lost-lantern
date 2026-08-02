@@ -168,8 +168,8 @@ production atlas, not a sample scene: one dominant crescent-trunk spruce, one
 broad mossy root platform, four continuous loamy forest-floor patches, two
 enclosing spruce-canopy clusters, three soft cool moonlight pools, and four
 restrained amber firefly points. Match the supplied bottom-right clearing's
-deep navy negative space, teal depth, moss, roots, stone, and restrained
-violet; keep generous spacing on a flat magenta key; no text, UI, characters,
+deep navy negative space, teal depth, moss, roots, stone, and cool moonlight;
+keep generous spacing on a flat magenta key; no text, UI, characters,
 grid, watermark, or baked composition.”
 
 `scripts/process-bottom-right-clearing-art.sh` reproducibly removes the
@@ -179,3 +179,15 @@ loads those derivatives only. The matched comparison and four-level contact
 sheet are retained at
 `artifacts/qa/moonwell-bottom-right-reference-live-matched-v3.png` and
 `artifacts/qa/moonwell-bottom-right-four-level-contact-sheet-v3.png`.
+
+## No-violet environmental production pass — 2026-08-03
+
+The framed bottom-right reference is also authoritative for palette. The
+runtime environment therefore contains no purple-family pixels in terrain,
+tree/canopy silhouettes, roots and root shelves, stones, mushrooms, water,
+decorative detail, magical terrain props, or tiled seams. The retained
+generated sources remain unchanged as provenance; the deterministic
+`scripts/process-no-violet-environment-art.sh` rebuilds them into new
+versioned teal/bark/cyan/amber-neutral production derivatives. Luna and Eir
+remain outside that environmental processor so their established character
+art and collision/interaction contracts are preserved.

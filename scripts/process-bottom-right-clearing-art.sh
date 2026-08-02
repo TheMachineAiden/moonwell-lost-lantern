@@ -7,9 +7,10 @@ set -eu
 repo_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 chroma_source="$repo_dir/assets/generated/moonwell-bottom-right-clearing-source-v3.png"
 source="$repo_dir/assets/generated/moonwell-bottom-right-clearing-source-v3-alpha.png"
-production="$repo_dir/assets/moonwell-art/production"
+production="${MOONWELL_ART_OUTPUT:-$repo_dir/assets/moonwell-art/production}"
 work_dir=$(mktemp -d "${TMPDIR:-/var/tmp}/moonwell-bottom-right.XXXXXX")
 trap 'rm -rf "$work_dir"' EXIT
+mkdir -p "$production"
 
 # The generated key field has a slight compression gradient, so remove only
 # the border-connected magenta field. This preserves the deliberately sparse

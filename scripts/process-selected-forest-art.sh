@@ -8,7 +8,7 @@ set -euo pipefail
 
 root="$(cd "$(dirname "$0")/.." && pwd)"
 source="$root/assets/generated/moonwell-selected-forest-production-source-v1.png"
-output="$root/assets/moonwell-art/production"
+output="${MOONWELL_ART_OUTPUT:-$root/assets/moonwell-art/production}"
 work="$(mktemp -d "$root/.moonwell-selected-art.XXXXXX")"
 trap 'rm -rf "$work"' EXIT
 
@@ -103,24 +103,29 @@ magick "$work"/light-{0,1,2}.png +append \
 
 # Representative comparison: source-direction crop above, native production
 # strips enlarged with nearest-neighbour below for owner-visible inspection.
-magick "$source" -crop '1310x965+105+25' +repage -resize 655x483 \
-  "$work/reference.png"
-magick \
-  "$output/moonwell-keeper-walk-v5.png" \
-  "$output/moonwell-spruce-family-v2.png" \
-  "$output/moonwell-crescent-exit-states-v2.png" \
-  "$output/moonwell-root-platform-variants-v5.png" \
-  "$output/moonwell-foliage-variants-v1.png" \
-  "$output/moonwell-ground-texture-variants-v1.png" \
-  "$output/moonwell-stone-variants-v1.png" \
-  "$output/moonwell-mushroom-variants-v1.png" \
-  "$output/moonwell-firefly-loop-v4.png" \
-  "$output/moonwell-light-pool-variants-v1.png" \
-  -background '#08111f' -gravity west -splice 6x0 -append \
-  -filter point -resize 400% "$work/production.png"
-magick "$work/reference.png" -gravity center -background '#08111f' \
-  -extent 700x520 "$work/reference-card.png"
-magick "$work/production.png" -gravity center -background '#08111f' \
-  -extent 700x520 "$work/production-card.png"
-magick "$work/reference-card.png" "$work/production-card.png" +append \
-  PNG32:"$root/assets/generated/moonwell-selected-reference-sprite-comparison-v1.png"
+# Composite rebuilds may opt out so regenerating runtime art cannot rewrite a
+# retained proof image with metadata-only PNG differences.
+if [[ "${MOONWELL_WRITE_COMPARISON:-1}" == 1 ]]; then
+  magick "$source" -crop '1310x965+105+25' +repage -resize 655x483 \
+    "$work/reference.png"
+  magick \
+    "$output/moonwell-keeper-walk-v5.png" \
+    "$output/moonwell-spruce-family-v2.png" \
+    "$output/moonwell-crescent-exit-states-v2.png" \
+    "$output/moonwell-root-platform-variants-v5.png" \
+    "$output/moonwell-foliage-variants-v1.png" \
+    "$output/moonwell-ground-texture-variants-v1.png" \
+    "$output/moonwell-stone-variants-v1.png" \
+    "$output/moonwell-mushroom-variants-v1.png" \
+    "$output/moonwell-firefly-loop-v4.png" \
+    "$output/moonwell-light-pool-variants-v1.png" \
+    -background '#08111f' -gravity west -splice 6x0 -append \
+    -filter point -resize 400% "$work/production.png"
+  magick "$work/reference.png" -gravity center -background '#08111f' \
+    -extent 700x520 "$work/reference-card.png"
+  magick "$work/production.png" -gravity center -background '#08111f' \
+    -extent 700x520 "$work/production-card.png"
+  magick "$work/reference-card.png" "$work/production-card.png" +append \
+    -strip -define png:exclude-chunk=date,time \
+    PNG32:"$root/assets/generated/moonwell-selected-reference-sprite-comparison-v1.png"
+fi

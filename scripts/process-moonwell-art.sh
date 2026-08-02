@@ -7,7 +7,7 @@ set -euo pipefail
 
 root="$(cd "$(dirname "$0")/.." && pwd)"
 generated="$root/assets/generated"
-output="$root/assets/moonwell-art/production"
+output="${MOONWELL_ART_OUTPUT:-$root/assets/moonwell-art/production}"
 
 mkdir -p "$output"
 

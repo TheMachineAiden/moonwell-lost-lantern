@@ -39,7 +39,15 @@ geometry, not permission to render beyond the runtime footprint.
 
 Original handcrafted 16-bit pixel art, viewed in a slight top-down game perspective. Use chunky, deliberate pixel clusters; a crisp dark-navy one-pixel outline; simple readable silhouettes at 1x; and medium-low detail. No painterly gradients, airbrush blur, photorealistic texture, smooth vector curves, or excessive single-pixel noise.
 
-Use a restricted palette: midnight navy, deep teal, blue-violet, muted moss green, aged brown, pale silver, and pale moon-gold. Magenta is a tiny accent only. Reserve gold light for fireflies, lit lanterns, and the final altar. Avoid pure white and neon pink.
+Use a restricted environmental palette: midnight navy, continuous muted
+blue-green loam and moss, deep teal foliage, natural dark bark and roots, cool
+cyan/blue moonlight, pale silver, and restrained moon-gold. Purple, magenta,
+and violet must not form outlines, seams, halos, repeated marks, or edge
+accents on terrain, foliage, props, water, stones, mushrooms, canopy, or
+collider boundaries. Reserve amber for fireflies, lit lanterns, starroot seed
+lights, and the final altar. Luna and Eir retain their established character
+identity; localized magical objects should prefer cyan, pale neutral, teal, or
+amber. Avoid pure white and neon pink.
 
 Every object must look as though one pixel artist made it: identical outline weight, comparable texture density, and the same grounded baseline. The keeper is a compact one-tile visual, with feet aligned to its existing movement point.
 
@@ -53,7 +61,7 @@ Every object must look as though one pixel artist made it: identical outline wei
 
 ## Reusable generation instruction
 
-> Create a grid-aligned pixel-art game sprite for *Moonwell: The Lost Lantern*. Native tile size is 16 x 16 pixels. The requested object occupies **[FOOTPRINT]** tiles and must sit on the same 16-pixel ground baseline in every variant. Original handcrafted 16-bit pixel art, slight top-down view, chunky deliberate pixel clusters, crisp dark-navy 1-pixel outline, simple readable silhouette at 1x, and medium-low detail. Restricted palette: midnight navy, deep teal, blue-violet, muted moss green, aged brown, pale silver, pale moon-gold; tiny violet/magenta accent only. No character, text, UI, painterly gradients, blur, smooth vector shapes, photorealism, bright white, neon pink, or high-density texture. For animated props, produce exactly four equally sized horizontal frames with fixed anchor and baseline. Place the sprite on a perfectly flat #00ff00 chroma-key background with generous transparent-safe padding and no shadow outside the sprite.
+> Create a grid-aligned pixel-art game sprite for *Moonwell: The Lost Lantern*. Native tile size is 16 x 16 pixels. The requested object occupies **[FOOTPRINT]** tiles and must sit on the same 16-pixel ground baseline in every variant. Original handcrafted 16-bit pixel art, slight top-down view, chunky deliberate pixel clusters, crisp dark-navy 1-pixel outline, simple readable silhouette at 1x, and medium-low detail. Restricted environmental palette: midnight navy, deep teal, muted blue-green loam and moss, natural aged brown, cool cyan/blue moonlight, pale silver, and restrained moon-gold. Do not use purple, magenta, or violet for environmental outlines, seams, halos, repeated strokes, edge accents, or collision cues. No character, text, UI, painterly gradients, blur, smooth vector shapes, photorealism, bright white, neon pink, or high-density texture. For animated props, produce exactly four equally sized horizontal frames with fixed anchor and baseline. Place the sprite on a perfectly flat #00ff00 chroma-key background with generous transparent-safe padding and no shadow outside the sprite.
 
 ## Existing generated references
 
@@ -111,13 +119,21 @@ the trunk and visible base do. Decorative loam, light, and canopy layers never
 collide. The runtime contract is exported as `VISUAL_FOOTPRINTS` from
 `game-core.js` and is covered by deterministic tests.
 
-Starfall Grove consumes `moonwell-starroot-chime-loop-v1.png`, generated from
+Starfall Grove consumes `moonwell-starroot-chime-loop-v2.png`, rebuilt from
 the retained `moonwell-starroot-chime-source-v1.png` through
-`scripts/process-starroot-chime-art.sh`.
+`scripts/process-starroot-chime-art.sh` and the shared no-violet processor.
+
+`scripts/process-no-violet-environment-art.sh` is the authoritative final
+environmental pass. It rebuilds the source-derived family in an isolated
+directory, maps prohibited purple-family pixels to material-specific teal,
+bark, cyan, or amber-neutral colors, and writes only versioned production
+derivatives. Its predicate and complete runtime family are covered by pixel,
+silhouette-edge, tiled-seam, runtime-path, and byte-determinism tests.
 
 Lighting order is continuous loam → screen-composited moonlight → waterways
 and detail → canopy depth → baseline-sorted sprites → navy vignette. Lantern
 Glade deliberately keeps an open central route, a broad upper root shelf, and
 one dominant upper-right crescent instead of repeating large landmark trees.
-Amber is reserved for lantern/firefly focal points; violet marks memory and
-magic.
+Amber is reserved for lantern/firefly/starroot focal points. Memory and rune
+magic use cool cyan, pale neutral, and teal so they remain localized without
+creating terrain or collider-edge language.

@@ -6,10 +6,19 @@ set -eu
 # wakes inside the root knot. ImageMagick 7+ is required.
 repo_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 source="$repo_dir/assets/generated/moonwell-starroot-chime-source-v1.png"
-alpha_source="$repo_dir/assets/generated/moonwell-starroot-chime-source-v1-alpha.png"
-production="$repo_dir/assets/moonwell-art/production/moonwell-starroot-chime-loop-v1.png"
+production_dir="${MOONWELL_ART_OUTPUT:-$repo_dir/assets/moonwell-art/production}"
+production="$production_dir/moonwell-starroot-chime-loop-v1.png"
 work_dir=$(mktemp -d "${TMPDIR:-/var/tmp}/moonwell-starroot.XXXXXX")
 trap 'rm -rf "$work_dir"' EXIT
+mkdir -p "$production_dir"
+
+# Standalone regeneration retains the keyed provenance companion. Composite
+# rebuilds keep that intermediate isolated with the rest of their work files.
+if [ -n "${MOONWELL_ART_OUTPUT:-}" ]; then
+  alpha_source="$work_dir/moonwell-starroot-chime-source-v1-alpha.png"
+else
+  alpha_source="$repo_dir/assets/generated/moonwell-starroot-chime-source-v1-alpha.png"
+fi
 
 magick "$source" -alpha on -fuzz 10% -transparent '#ff00ff' \
   -strip -define png:exclude-chunk=date,time "$alpha_source"
