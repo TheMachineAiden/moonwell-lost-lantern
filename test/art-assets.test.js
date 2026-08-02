@@ -78,6 +78,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v1\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
+  assert.match(html,/game-core\.js\?v=moonwell-rooted-contact-4/);
+  assert.match(html,/game\.js\?v=moonwell-rooted-contact-4/);
 });
 
 test('Luna remains one-cell controlled while rendering smaller than ordinary rooted landmarks',()=>{
