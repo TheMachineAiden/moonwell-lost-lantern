@@ -7,12 +7,12 @@ const RENDER_WIDTH=WORLD_WIDTH*RENDER_SCALE;
 const RENDER_HEIGHT=WORLD_HEIGHT*RENDER_SCALE;
 const VISUAL_FOOTPRINTS=Object.freeze({
   keeper:Object.freeze({logical:Object.freeze({colliderWidth:10,colliderHeight:10,solid:true}),visual:Object.freeze({width:20,height:24,anchorOffsetX:-10,anchorOffsetY:-22})}),
-  tree:Object.freeze({logical:Object.freeze({cellsWide:1,cellsHigh:1,solid:true}),visual:Object.freeze({width:40,height:56,overhangLeft:12,overhangRight:12,overhangTop:40,overhangBottom:0})}),
-  exitTree:Object.freeze({logical:Object.freeze({cellsWide:1,cellsHigh:1,solidUntil:'open'}),visual:Object.freeze({width:40,height:56,overhangLeft:12,overhangRight:12,overhangTop:40,overhangBottom:0})}),
-  rootPlatform:Object.freeze({logical:Object.freeze({cellsWide:2,cellsHigh:1,solid:true}),visual:Object.freeze({width:64,height:24,overhangLeft:16,overhangRight:16,overhangTop:8,overhangBottom:0})}),
+  tree:Object.freeze({logical:Object.freeze({cellsWide:1,cellsHigh:1,solid:true}),visual:Object.freeze({perimeterWidth:40,perimeterHeight:56,interiorWidth:28,interiorHeight:40,overhangTop:40,overhangBottom:0})}),
+  exitTree:Object.freeze({logical:Object.freeze({cellsWide:1,cellsHigh:1,solidUntil:'open'}),visual:Object.freeze({width:48,height:64,overhangLeft:16,overhangRight:16,overhangTop:48,overhangBottom:0})}),
+  rootPlatform:Object.freeze({logical:Object.freeze({cellsWide:2,cellsHigh:1,solid:true}),visual:Object.freeze({width:96,height:32,overhangLeft:32,overhangRight:32,overhangTop:16,overhangBottom:0})}),
   eir:Object.freeze({logical:Object.freeze({cellsWide:1,cellsHigh:1,solid:false,interactionRadius:22}),visual:Object.freeze({width:32,height:48,anchorOffsetX:-16,anchorOffsetY:-44})}),
-  loamPatch:Object.freeze({logical:Object.freeze({solid:false}),visual:Object.freeze({width:64,height:48})}),
-  moonlightPool:Object.freeze({logical:Object.freeze({solid:false}),visual:Object.freeze({width:64,height:48})}),
+  loamPatch:Object.freeze({logical:Object.freeze({solid:false}),visual:Object.freeze({width:80,height:48})}),
+  moonlightPool:Object.freeze({logical:Object.freeze({solid:false}),visual:Object.freeze({width:112,height:66})}),
   canopyCurtain:Object.freeze({logical:Object.freeze({solid:false}),visual:Object.freeze({width:128,height:56})})
 });
 const MAP=['....................','....................','....................','....................','....................','....................','....................','....................','....................','....................','....................','....................','....................'];
@@ -24,14 +24,13 @@ const MEMORY_REVEAL_TIMING=Object.freeze({hold:3.25,fade:.75});
 const MEMORY_REVEAL_LAYOUT=Object.freeze({x:24,w:272,h:64,topY:12,bottomY:132,keeperSplitY:104,maxLineChars:42,maxLines:3});
 const MEMORY_DIALOGUE_TYPOGRAPHY=Object.freeze({bodyPx:13,titlePx:14,lineHeight:1.45});
 const WATCHER_DIALOGUE=Object.freeze({name:'Eir, Rootwatcher',riddle:'I travel without feet, keep no shape, and still make every path remember the moon. What am I?',choices:Object.freeze(['A memory','A shadow'])});
-const treeCells=[[3,2],[4,2],[13,2],[14,2],[7,4],[8,4],[11,6],[12,6],[5,8],[6,8]];
 const addedTreeCells=[
-  [[2,5],[3,4],[15,4],[16,4],[2,7],[3,7],[14,8],[15,8],[8,9],[9,9]],
+  [[2,5],[3,4],[15,4],[16,4],[2,7],[3,7],[14,8],[15,8],[6,10],[12,10]],
   [[2,3],[3,3],[8,2],[9,2],[14,3],[15,3],[5,9],[6,9],[14,9],[16,9]],
   [[2,3],[3,3],[6,3],[7,3],[15,3],[17,3],[3,9],[4,9],[13,9],[14,9]],
   [[2,3],[3,3],[7,3],[8,3],[15,3],[16,3],[3,8],[4,8],[13,8],[14,8]]
 ];
-const platformCells=[[[5,2],[13,7]],[[5,2],[13,7]],[[6,9],[13,6]],[[5,3],[16,6]]];
+const platformCells=[[[8,3]],[[5,2],[13,7]],[[6,9],[13,6]],[[5,3],[16,6]]];
 // Decorative cells never participate in collision. Moon/shadow patches are
 // value blocks; the remaining kinds are one-tile understory props.
 const groundDecorCells=[
@@ -54,7 +53,7 @@ const contains=(object,x,y)=>x>=object.x&&x<object.x+object.w&&y>=object.y&&y<ob
 function createWorldObjects(areaIndex,bridge,exitState=EXIT_STATES.CLOSED){
   const area=createAreas()[areaIndex];
   const exitCol=Math.floor(area.home.x/TILE_SIZE),exitRow=Math.floor(area.home.y/TILE_SIZE);
-  const ordinaryTrees=[...treeCells,...addedTreeCells[areaIndex]];
+  const ordinaryTrees=addedTreeCells[areaIndex];
   const objects=[...boundaryObjects(),...ordinaryTrees.map(([col,row],index)=>tileObject(`tree-${index}`,'tree',col,row,{solid:true})),tileObject(`exit-tree-${areaIndex}`,'exit-tree',exitCol,exitRow,{solid:exitState!==EXIT_STATES.OPEN,state:exitState})];
   platformCells[areaIndex].forEach(([col,row],index)=>objects.push({id:`platform-${areaIndex}-${index}`,kind:'platform',x:col*TILE_SIZE,y:row*TILE_SIZE,w:TILE_SIZE*2,h:TILE_SIZE,solid:true}));
   if(areaIndex===1){
@@ -68,7 +67,7 @@ function createWorldObjects(areaIndex,bridge,exitState=EXIT_STATES.CLOSED){
 }
 
 function createAreas(){return [
-  {name:'Lantern Glade',start:{x:24,y:24},home:{x:280,y:168},memory:{x:40,y:72,text:'A rain-silver leaf holds the storm’s first reflection. The lantern keeper was not alone on the path home.'},lights:[{x:264,y:24},{x:72,y:152},{x:168,y:88}]},
+  {name:'Lantern Glade',start:{x:56,y:152},home:{x:280,y:72},memory:{x:40,y:72,text:'A rain-silver leaf holds the storm’s first reflection. The lantern keeper was not alone on the path home.'},lights:[{x:264,y:24},{x:88,y:136},{x:168,y:88}]},
   {name:'Moonroot Crossing',start:{x:40,y:40},home:{x:40,y:168},flower:{x:264,y:72},watcher:{x:264,y:56},memory:{x:280,y:40,text:'A root-knot is tied with a violet thread. Someone marked the crossing for the next traveler.'},lights:[{x:248,y:152},{x:152,y:168}]},
   {name:'Whispering Hollow',start:{x:280,y:40},home:{x:40,y:168},runes:[{x:264,y:152},{x:152,y:72},{x:56,y:120}],memory:{x:264,y:56,text:'A small bell-shell remembers a child’s laugh. The hollow keeps gentle sounds as well as echoes.'},lights:[{x:168,y:136,hidden:true}]},
   {name:'Starfall Grove',start:{x:280,y:40},home:{x:56,y:168},bells:[{x:264,y:152},{x:168,y:72},{x:56,y:120}],lights:[{x:152,y:152,hidden:true},{x:232,y:56,hidden:true}]}

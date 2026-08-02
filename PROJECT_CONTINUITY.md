@@ -203,3 +203,35 @@ then look for the next small player-visible improvement.
 - `npm run check`: passed.
 - `npm test`: 24/24 passed, including render dimensions, overhang contracts,
   Eir raster paths, absence of SVG fallback, routes, colliders, and progression.
+
+## Corrected bottom-right clearing audit — 2026-08-02
+
+- Confirmed that the exact authoritative reference is the framed bottom-right
+  clearing in `assets/generated/moonwell-320x208-art-direction-source-v1.png`,
+  not the earlier ambiguous vignette label. A cache-isolated public pass against
+  merged revision `126cbdb6c0b73dab4fcb0e414ee88167e5242ee9` found an overly
+  repeated wall-to-wall thicket, weak central clearing, several competing
+  crescent/root motifs, undersized root shelf, and fragmented moonlight.
+- Added a newly generated separated production atlas and six transparent
+  runtime derivatives. Lantern Glade now uses one dominant upper-right crescent,
+  one broad upper root platform, a calm loamy central route, one strong cool
+  moonlight pool, restrained amber points, and side-weighted spruce enclosure.
+  The same calmer loam/light/canopy vocabulary carries across all four levels.
+- Preserved the 320 × 208 logical world and 16 px cells while revising visual
+  footprints. Perimeter/interior spruces render at 40 × 56 / 28 × 40, the
+  crescent at 48 × 64, the 2 × 1 platform at 96 × 32, loam at 80 × 48,
+  moonlight at 112 × 66, and canopy at 128 × 56. The only larger logical
+  collider exceptions remain the 2 × 1 platform and 2 × 2 Hollow sentinel.
+- Matched target / previous live / corrected-after proof is
+  `artifacts/qa/moonwell-bottom-right-reference-live-matched-v3.png`; the fresh
+  four-level sheet is
+  `artifacts/qa/moonwell-bottom-right-four-level-contact-sheet-v3.png`.
+- Desktop, 390 × 844 portrait, and 844 × 390 touch-landscape browser QA covered
+  normal keyboard/touch movement, left-edge collision, pause/resume, dialogue
+  retry/success/leave, portrait loading, rotation gate, dense scenes, responsive
+  fit, and all four developer scenes. Every reviewed console was clean and no
+  viewport had unacceptable overflow. A hidden-dialogue CSS regression found
+  during normal-input QA was fixed and covered by a deterministic assertion.
+- Figma node `14:2` adds the corrected matched proof, four-level contact sheet,
+  retained raster Eir production art, and revised collider/overhang table:
+  `https://www.figma.com/design/3mcJh1WvCC8tqOTg2cWLHl?node-id=14-2`.
