@@ -4,6 +4,9 @@ const MAP=['....................','....................','....................',
 const TOTAL_FIREFLIES=8;
 const HOLLOW_ECHO_RADIUS=15;
 const MEMORY_REVEAL_TIMING=Object.freeze({hold:3.25,fade:.75});
+// The reveal stays inside the 320 × 200 game canvas: the upper band is used
+// while the keeper is low, and the lower band is used while the keeper is high.
+const MEMORY_REVEAL_LAYOUT=Object.freeze({x:24,w:272,h:64,topY:12,bottomY:124,keeperSplitY:104,maxLineChars:42,maxLines:3});
 const treeCells=[[3,2],[4,2],[13,2],[14,2],[7,4],[8,4],[11,6],[12,6],[5,8],[6,8]];
 const addedTreeCells=[
   [[2,5],[3,4],[15,4],[16,4],[2,7],[3,7],[14,8],[15,8],[8,9],[9,9]],
@@ -57,6 +60,7 @@ function memoryRevealStateAt(seconds,reducedMotion=false){
   if(!reducedMotion&&seconds<MEMORY_REVEAL_TIMING.hold+MEMORY_REVEAL_TIMING.fade)return 'fading';
   return 'hidden'
 }
+function memoryRevealBoxForPlayer(playerY){return{x:MEMORY_REVEAL_LAYOUT.x,y:playerY<MEMORY_REVEAL_LAYOUT.keeperSplitY?MEMORY_REVEAL_LAYOUT.bottomY:MEMORY_REVEAL_LAYOUT.topY,w:MEMORY_REVEAL_LAYOUT.w,h:MEMORY_REVEAL_LAYOUT.h}}
 function isBlocked(x,y,areaIndex,bridge){return createWorldObjects(areaIndex,bridge).some(object=>object.solid&&contains(object,x,y))}
 function exitStateAt(seconds){
   if(seconds<EXIT_STATE_DURATIONS.opening)return EXIT_STATES.OPENING;
@@ -69,5 +73,5 @@ function createEchoReplay(trail,origin){
   return []
 }
 const canResolveEchoRune=(stage,echoHolding,player,runes)=>stage===2&&echoHolding&&nearPoint(player,runes[2]);
-globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,EXIT_STATES,EXIT_STATE_DURATIONS,addedTreeCells,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealStateAt,nearPoint,nextAreaIndex});
+globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,EXIT_STATES,EXIT_STATE_DURATIONS,addedTreeCells,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex});
 })();
