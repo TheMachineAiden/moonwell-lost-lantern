@@ -6,11 +6,14 @@ This is the visual contract for every Moonwell asset. It is intended to stop mix
 
 ## Native geometry
 
-- Game canvas: 320 x 200 native pixels.
+- Game canvas: 320 x 208 native pixels: exactly 20 × 13 complete tiles.
 - World tile: 16 x 16 native pixels.
 - All placement, collision, and sprite baselines snap to the 16-pixel tile grid.
 - Work at native resolution; scale only with nearest-neighbour filtering.
 - Leave a one-pixel transparent safety margin around sprites. Do not bake a cast shadow beyond the sprite footprint.
+- Scale the world equally on both axes. Prefer integer 2× desktop display
+  (640 × 416) whenever the responsive shell permits; never stretch to a
+  different X/Y ratio.
 
 ### Standard footprints
 
@@ -24,7 +27,7 @@ geometry, not permission to render beyond the runtime footprint.
 | Firefly, memory token | 1 x 1 tile (16 x 16) | Centre on the tile; animation must not change collision centre. |
 | Flower, rune stone | 1 x 1 tile (16 x 16) | May rise above its baseline, never spill sideways. |
 | Lantern | 1 x 1 tile (16 x 16) | Small character-scale destination point; its interaction remains centred on the existing home coordinate. |
-| Skybell | 2 x 2 tiles (32 x 32) | Deliberate landmark exception with a matching declared footprint. |
+| Skybell | 2 x 3 visual tiles (32 x 48) | Deliberate non-solid landmark exception; its interaction point stays on one tile centre. |
 | Tree | 1 x 1 tile (16 x 16) | One tile record, never a repeated oversized cluster. |
 | Sentinel | 2 x 2 tiles (32 x 32) | Deliberate solid landmark with an exact 2 × 2 mask. |
 | Fairy platform / root log | 2 x 1 tiles (32 x 16) | Flat, obvious standing surface with the same solid cells. |

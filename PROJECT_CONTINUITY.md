@@ -1,5 +1,17 @@
 # Moonwell visual art system — continuity record
 
+## Canonical 20 × 13 implementation — 2026-08-02
+
+- The current visual contract is 320 × 208 (20 × 13 complete 16-pixel
+  tiles). Earlier 320 × 200 notes below are retained as historical release
+  evidence and are superseded for current implementation work.
+- The approved four-level route system remains intact. The new v2 SVG/Figma
+  extension adds safe bands, footprint mapping, controlled overhang, ground
+  value hierarchy, and representative Keeper/exit/spruce/detail/platform art.
+- The runtime now keeps every bottom-row tree visible, scales the world equally
+  on both axes, centres ordinary anchors, and enriches all four areas with
+  deterministic non-solid edge detail and stepped value patches.
+
 ## Folder identity and context
 
 - **Repository:** Moonwell: The Lost Lantern

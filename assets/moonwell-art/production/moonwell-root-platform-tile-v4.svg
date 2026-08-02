@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="16" viewBox="0 0 32 16" shape-rendering="crispEdges" aria-label="Moonwell restrained two-cell root platform">
+  <path fill="#06182a" d="M2 4h6V2h7v1h8v2h7v8h-3v2H5v-1H1V7h1z"/>
+  <path fill="#76513c" d="M3 6h7V4h6v1h8v2h5v5h-5v2H7v-1H3z"/>
+  <path fill="#9a704e" d="M5 6h10v1h9v1h4v2H18v2H7v-1H4V8h1z"/>
+  <path fill="#174f48" d="M2 4h7V2h6v2h9v1h6v2h-8V6H11v1H3z"/>
+  <path fill="#4f8b68" d="M4 4h5V3h5v2h7v1H10v1H4zm18 1h6v1h-6z"/>
+  <path fill="#85b48b" d="M6 3h3v1H6zm10 2h4v1h-4z"/>
+  <path fill="#382d43" d="M12 9h7v1h-7zm12 3h3v1h-3z"/>
+  <path fill="#8b6e9f" d="M18 8h2v2h-2z"/>
+  <path fill="#d6c98c" d="M8 8h2v1H8z"/>
+</svg>
