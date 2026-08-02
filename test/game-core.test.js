@@ -5,7 +5,16 @@ import vm from 'node:vm';
 
 const context={};
 vm.runInNewContext(fs.readFileSync(new URL('../game-core.js',import.meta.url),'utf8'),context);
-const {TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,EXIT_STATES,addedTreeCells,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,watcherChoiceResult}=context.MoonwellCore;
+const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,EXIT_STATES,addedTreeCells,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,watcherChoiceResult}=context.MoonwellCore;
+
+test('the canonical world is a complete 20 by 13 tile canvas',()=>{
+  assert.equal(TILE_SIZE,16);
+  assert.equal(WORLD_WIDTH,320);
+  assert.equal(WORLD_HEIGHT,208);
+  const bottom=createWorldObjects(0,false).filter(object=>object.id.startsWith('edge-bottom-'));
+  assert.equal(bottom.length,20);
+  bottom.forEach(object=>assert.deepEqual({y:object.y,w:object.w,h:object.h},{y:192,w:16,h:16}));
+});
 
 test('Moonwell starts with four areas, eight fireflies, and three optional memories',()=>{
   const areas=createAreas();
@@ -33,7 +42,7 @@ test('collected memories hold long enough to read, then dissolve without motion 
 });
 
 test('memory reveals use a fixed in-canvas safe band with room for readable copy',()=>{
-  assert.equal(JSON.stringify(memoryRevealBoxForPlayer(40)),JSON.stringify({x:24,y:124,w:272,h:64}));
+  assert.equal(JSON.stringify(memoryRevealBoxForPlayer(40)),JSON.stringify({x:24,y:132,w:272,h:64}));
   assert.equal(JSON.stringify(memoryRevealBoxForPlayer(140)),JSON.stringify({x:24,y:12,w:272,h:64}));
   assert.equal(MEMORY_REVEAL_LAYOUT.maxLineChars,42);
   assert.equal(MEMORY_REVEAL_LAYOUT.maxLines,3);
@@ -57,7 +66,7 @@ test('Moonroot has a complete playable route from its flower to its lower shore 
       if(Math.hypot(x-target[0],y-target[1])<8)return true;
       for(const [deltaX,deltaY] of [[2,0],[-2,0],[0,2],[0,-2]]){
         const nextX=x+deltaX,nextY=y+deltaY,key=`${nextX},${nextY}`;
-        if(nextX<6||nextX>314||nextY<6||nextY>194||seen.has(key)||!canStand(nextX,nextY,bridge))continue;
+        if(nextX<6||nextX>314||nextY<6||nextY>202||seen.has(key)||!canStand(nextX,nextY,bridge))continue;
         seen.add(key);queue.push([nextX,nextY]);
       }
     }
@@ -100,6 +109,31 @@ test('world records keep ordinary blockers to one cell and landmark colliders to
   assert.equal(isBlocked(144,96,2,false),true);
   assert.equal(isBlocked(175,127,2,false),true);
   assert.equal(isBlocked(176,127,2,false),false);
+  const platform=glade.find(object=>object.kind==='platform');
+  assert.deepEqual({w:platform.w,h:platform.h,solid:platform.solid},{w:32,h:16,solid:true});
+});
+
+test('ground enrichment is deterministic, one-cell, and never adds collision',()=>{
+  for(let areaIndex=0;areaIndex<4;areaIndex++){
+    const first=createGroundDecor(areaIndex),second=createGroundDecor(areaIndex);
+    assert.equal(JSON.stringify(first),JSON.stringify(second));
+    assert.ok(first.length>=14);
+    first.forEach(item=>assert.deepEqual({w:item.w,h:item.h,solid:item.solid},{w:16,h:16,solid:false}));
+  }
+});
+
+test('keepers, exits, collectibles, and ordinary interactives use tile-centred anchors',()=>{
+  const centred=point=>point.x%16===8&&point.y%16===8;
+  for(const area of createAreas()){
+    assert.equal(centred(area.start),true);
+    assert.equal(centred(area.home),true);
+    area.lights.forEach(light=>assert.equal(centred(light),true));
+    if(area.memory)assert.equal(centred(area.memory),true);
+    if(area.flower)assert.equal(centred(area.flower),true);
+    if(area.watcher)assert.equal(centred(area.watcher),true);
+    area.runes?.forEach(rune=>assert.equal(centred(rune),true));
+    area.bells?.forEach(bell=>assert.equal(centred(bell),true));
+  }
 });
 
 test('every approved side-forest cluster has ten one-cell solid trees and preserves the marked routes',()=>{
@@ -115,7 +149,7 @@ test('every approved side-forest cluster has ten one-cell solid trees and preser
     const blocked=(x,y)=>objects.some(object=>object.solid&&x>=object.x&&x<object.x+object.w&&y>=object.y&&y<object.y+object.h);
     const canStand=(x,y)=>![[x-5,y-5],[x+5,y-5],[x-5,y+5],[x+5,y+5]].some(([pointX,pointY])=>blocked(pointX,pointY));
     const queue=[[start.x,start.y]],seen=new Set([`${start.x},${start.y}`]);
-    while(queue.length){const [x,y]=queue.shift();if(Math.hypot(x-target.x,y-target.y)<10)return true;for(const [dx,dy] of [[2,0],[-2,0],[0,2],[0,-2]]){const nextX=x+dx,nextY=y+dy,key=`${nextX},${nextY}`;if(nextX<6||nextX>314||nextY<6||nextY>194||seen.has(key)||!canStand(nextX,nextY))continue;seen.add(key);queue.push([nextX,nextY])}}
+    while(queue.length){const [x,y]=queue.shift();if(Math.hypot(x-target.x,y-target.y)<10)return true;for(const [dx,dy] of [[2,0],[-2,0],[0,2],[0,-2]]){const nextX=x+dx,nextY=y+dy,key=`${nextX},${nextY}`;if(nextX<6||nextX>314||nextY<6||nextY>202||seen.has(key)||!canStand(nextX,nextY))continue;seen.add(key);queue.push([nextX,nextY])}}
     return false;
   };
   addedTreeCells.forEach((cells,areaIndex)=>{
@@ -159,7 +193,7 @@ test('Whispering Hollow keeps a collision-safe route through the three echo rune
       if(Math.hypot(x-target.x,y-target.y)<8)return true;
       for(const [deltaX,deltaY] of [[2,0],[-2,0],[0,2],[0,-2]]){
         const nextX=x+deltaX,nextY=y+deltaY,key=`${nextX},${nextY}`;
-        if(nextX<6||nextX>314||nextY<6||nextY>194||seen.has(key)||!canStand(nextX,nextY))continue;
+        if(nextX<6||nextX>314||nextY<6||nextY>202||seen.has(key)||!canStand(nextX,nextY))continue;
         seen.add(key);queue.push([nextX,nextY]);
       }
     }
@@ -178,7 +212,7 @@ test('area progression ends cleanly at Starfall Grove',()=>{
 
 test('Eir is a one-cell, non-blocking Moonroot encounter with a retryable memory riddle',()=>{
   const watcher=createAreas()[1].watcher;
-  assert.deepEqual(JSON.parse(JSON.stringify(watcher)),{x:264,y:48});
+  assert.deepEqual(JSON.parse(JSON.stringify(watcher)),{x:264,y:56});
   assert.equal(isBlocked(watcher.x,watcher.y,1,false),false);
   assert.equal(WATCHER_DIALOGUE.choices.length,2);
   assert.equal(watcherChoiceResult(0).correct,true);

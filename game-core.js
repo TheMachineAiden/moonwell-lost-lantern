@@ -1,12 +1,14 @@
 (()=>{
 const TILE_SIZE=16;
+const WORLD_WIDTH=TILE_SIZE*20;
+const WORLD_HEIGHT=TILE_SIZE*13;
 const MAP=['....................','....................','....................','....................','....................','....................','....................','....................','....................','....................','....................','....................','....................'];
 const TOTAL_FIREFLIES=8;
 const HOLLOW_ECHO_RADIUS=15;
 const MEMORY_REVEAL_TIMING=Object.freeze({hold:3.25,fade:.75});
-// The reveal stays inside the 320 × 200 game canvas: the upper band is used
+// The reveal stays inside the 320 × 208 game canvas: the upper band is used
 // while the keeper is low, and the lower band is used while the keeper is high.
-const MEMORY_REVEAL_LAYOUT=Object.freeze({x:24,w:272,h:64,topY:12,bottomY:124,keeperSplitY:104,maxLineChars:42,maxLines:3});
+const MEMORY_REVEAL_LAYOUT=Object.freeze({x:24,w:272,h:64,topY:12,bottomY:132,keeperSplitY:104,maxLineChars:42,maxLines:3});
 const MEMORY_DIALOGUE_TYPOGRAPHY=Object.freeze({bodyPx:13,titlePx:14,lineHeight:1.45});
 const WATCHER_DIALOGUE=Object.freeze({name:'Eir, Rootwatcher',riddle:'I travel without feet, keep no shape, and still make every path remember the moon. What am I?',choices:Object.freeze(['A memory','A shadow'])});
 const treeCells=[[3,2],[4,2],[13,2],[14,2],[7,4],[8,4],[11,6],[12,6],[5,8],[6,8]];
@@ -17,6 +19,14 @@ const addedTreeCells=[
   [[2,3],[3,3],[7,3],[8,3],[15,3],[16,3],[3,8],[4,8],[13,8],[14,8]]
 ];
 const platformCells=[[[5,2],[13,7]],[[5,2],[13,7]],[[6,9],[13,6]],[[5,3],[16,6]]];
+// Decorative cells never participate in collision. Moon/shadow patches are
+// value blocks; the remaining kinds are one-tile understory props.
+const groundDecorCells=[
+  [['shadow',1,3],['shadow',4,6],['shadow',15,6],['shadow',17,8],['moon',5,5],['moon',9,5],['moon',13,6],['fern',1,9],['fern',17,4],['stone',4,10],['needles',10,2],['root',12,9],['mushroom',16,9],['firefly',7,10]],
+  [['shadow',1,4],['shadow',6,3],['shadow',16,2],['shadow',17,8],['moon',4,5],['moon',9,4],['moon',13,5],['fern',2,8],['fern',17,9],['stone',7,10],['needles',11,3],['root',12,8],['mushroom',4,4],['firefly',16,8]],
+  [['shadow',1,5],['shadow',5,2],['shadow',15,2],['shadow',17,7],['moon',5,6],['moon',9,5],['moon',13,7],['fern',2,8],['fern',17,9],['stone',7,10],['needles',11,3],['root',12,9],['mushroom',4,4],['firefly',15,8]],
+  [['shadow',1,5],['shadow',6,2],['shadow',15,2],['shadow',17,7],['moon',5,6],['moon',10,5],['moon',14,7],['fern',2,9],['fern',17,9],['stone',7,10],['needles',11,2],['root',12,9],['mushroom',5,4],['firefly',16,8]]
+];
 const EXIT_STATES=Object.freeze({CLOSED:'closed',OPENING:'opening',REVEALED:'revealed',OPEN:'open'});
 const EXIT_STATE_DURATIONS=Object.freeze({opening:.75,revealed:1.25});
 
@@ -45,11 +55,13 @@ function createWorldObjects(areaIndex,bridge,exitState=EXIT_STATES.CLOSED){
 }
 
 function createAreas(){return [
-  {name:'Lantern Glade',start:{x:25,y:25},home:{x:280,y:168},memory:{x:41,y:73,text:'A rain-silver leaf holds the storm’s first reflection. The lantern keeper was not alone on the path home.'},lights:[{x:264,y:27},{x:73,y:153},{x:168,y:88}]},
-  {name:'Moonroot Crossing',start:{x:40,y:40},home:{x:40,y:168},flower:{x:264,y:72},watcher:{x:264,y:48},memory:{x:280,y:41,text:'A root-knot is tied with a violet thread. Someone marked the crossing for the next traveler.'},lights:[{x:248,y:151},{x:152,y:169}]},
-  {name:'Whispering Hollow',start:{x:279,y:40},home:{x:46,y:168},runes:[{x:264,y:152},{x:152,y:72},{x:57,y:120}],memory:{x:266,y:57,text:'A small bell-shell remembers a child’s laugh. The hollow keeps gentle sounds as well as echoes.'},lights:[{x:162,y:128,hidden:true}]},
-  {name:'Starfall Grove',start:{x:276,y:40},home:{x:48,y:168},bells:[{x:258,y:150},{x:160,y:76},{x:62,y:118}],lights:[{x:146,y:150,hidden:true},{x:234,y:62,hidden:true}]}
+  {name:'Lantern Glade',start:{x:24,y:24},home:{x:280,y:168},memory:{x:40,y:72,text:'A rain-silver leaf holds the storm’s first reflection. The lantern keeper was not alone on the path home.'},lights:[{x:264,y:24},{x:72,y:152},{x:168,y:88}]},
+  {name:'Moonroot Crossing',start:{x:40,y:40},home:{x:40,y:168},flower:{x:264,y:72},watcher:{x:264,y:56},memory:{x:280,y:40,text:'A root-knot is tied with a violet thread. Someone marked the crossing for the next traveler.'},lights:[{x:248,y:152},{x:152,y:168}]},
+  {name:'Whispering Hollow',start:{x:280,y:40},home:{x:40,y:168},runes:[{x:264,y:152},{x:152,y:72},{x:56,y:120}],memory:{x:264,y:56,text:'A small bell-shell remembers a child’s laugh. The hollow keeps gentle sounds as well as echoes.'},lights:[{x:168,y:136,hidden:true}]},
+  {name:'Starfall Grove',start:{x:280,y:40},home:{x:56,y:168},bells:[{x:264,y:152},{x:168,y:72},{x:56,y:120}],lights:[{x:152,y:152,hidden:true},{x:232,y:56,hidden:true}]}
 ]}
+
+function createGroundDecor(areaIndex){return groundDecorCells[areaIndex].map(([kind,col,row],index)=>Object.freeze({id:`decor-${areaIndex}-${index}`,kind,x:col*TILE_SIZE,y:row*TILE_SIZE,w:TILE_SIZE,h:TILE_SIZE,solid:false}))}
 
 const countLights=areas=>areas.flatMap(area=>area.lights).filter(light=>light.got).length;
 const countMemories=areas=>areas.filter(area=>area.memory?.got).length;
@@ -76,5 +88,5 @@ function createEchoReplay(trail,origin){
 }
 const canResolveEchoRune=(stage,echoHolding,player,runes)=>stage===2&&echoHolding&&nearPoint(player,runes[2]);
 function watcherChoiceResult(choice){return choice===0?Object.freeze({correct:true,reply:'Yes. A memory carries a path after the feet have gone. The moonflower listens for that keeping.'}):Object.freeze({correct:false,reply:'A shadow follows, but it does not keep. Listen to the riddle once more; there is no harm in trying again.'})}
-globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,MEMORY_DIALOGUE_TYPOGRAPHY,WATCHER_DIALOGUE,EXIT_STATES,EXIT_STATE_DURATIONS,addedTreeCells,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,watcherChoiceResult});
+globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,MEMORY_DIALOGUE_TYPOGRAPHY,WATCHER_DIALOGUE,EXIT_STATES,EXIT_STATE_DURATIONS,addedTreeCells,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,watcherChoiceResult});
 })();

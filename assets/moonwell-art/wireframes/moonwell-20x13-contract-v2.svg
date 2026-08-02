@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="860" viewBox="0 0 1280 860" role="img" aria-labelledby="title desc">
+  <title id="title">Moonwell 320 by 208 visual and collision contract v2</title>
+  <desc id="desc">Canonical 20 by 13 tile canvas, UI safe bands, route hierarchy, and mappings between layout cells, visual footprints, and collider footprints.</desc>
+  <style>
+    .bg{fill:#07131f}.card{fill:#102438;stroke:#416982;stroke-width:2}.title{fill:#f9e7a0;font-family:Arial,sans-serif;font-size:25px;font-weight:700}.h{fill:#e2f4fa;font-family:Arial,sans-serif;font-size:18px;font-weight:700}.p{fill:#b9d5df;font-family:Arial,sans-serif;font-size:14px}.mono{fill:#d7edf2;font-family:monospace;font-size:13px}.grid{stroke:#31546a;stroke-width:1}.safe{fill:#413665;opacity:.78;stroke:#d8b4fe;stroke-width:1}.route{fill:none;stroke:#72d8df;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}.shadow{fill:#12323d}.moon{fill:#91c6c9}.tree{fill:#143d3b;stroke:#78b593;stroke-width:1}.collider{fill:#efc565;opacity:.3;stroke:#ffe6a2;stroke-width:2}.visual{fill:#1c5a51;stroke:#a5e0b3;stroke-width:1}.objective{fill:#f3ce6c}.magic{fill:#a78bca}.detail{fill:#6ea88d}.dim{fill:#7c9aa6}.accent{fill:#dbb5c8}.navy{fill:#06182a}.teal{fill:#1d6d67}.violet{fill:#6b4e86}.gold{fill:#f0c76a}.silver{fill:#d6e6df}.brown{fill:#76513c}
+  </style>
+  <rect class="bg" width="1280" height="860"/>
+  <text class="title" x="38" y="48">Moonwell v2 — canonical 320 × 208 / 20 × 13</text>
+  <text class="p" x="38" y="76">Extension to the approved four-level route system. One cell = 16 × 16 logical pixels. The older 320 × 200 crop is retired.</text>
+
+  <g transform="translate(38 104)">
+    <rect class="card" width="704" height="334" rx="12"/>
+    <text class="h" x="24" y="34">Primary acceptance scene · Lantern Glade</text>
+    <text class="p" x="24" y="58">Safe dialogue bands and the full bottom collider row now fit inside the same world.</text>
+    <g transform="translate(24 82)">
+      <rect width="640" height="208" fill="#164e63"/>
+      <path class="shadow" d="M0 0H640V32H480V48H352V32H176V48H0ZM0 176H144V160H288V176H432V160H560V176H640V208H0Z"/>
+      <rect class="safe" x="48" y="12" width="544" height="64" rx="4"/>
+      <rect class="safe" x="48" y="132" width="544" height="64" rx="4"/>
+      <path class="route" d="M48 40L48 106 176 106 320 88 464 106 552 168"/>
+      <g class="tree"><rect x="0" y="0" width="640" height="16"/><rect x="0" y="192" width="640" height="16"/><rect x="0" y="16" width="16" height="176"/><rect x="624" y="16" width="16" height="176"/></g>
+      <g class="moon"><rect x="160" y="80" width="48" height="16"/><rect x="416" y="112" width="64" height="16"/><rect x="272" y="144" width="80" height="16"/></g>
+      <g class="objective"><circle cx="528" cy="24" r="6"/><circle cx="144" cy="152" r="6"/><circle cx="336" cy="88" r="6"/></g>
+      <rect class="collider" x="544" y="160" width="32" height="32"/>
+      <path class="gold" d="M554 166h10v2h-4v2h-4v4h4v2h-6z"/>
+      <text class="mono" x="16" y="20">row 0</text><text class="mono" x="16" y="190">row 12 · visible + collidable</text>
+    </g>
+    <text class="mono" x="24" y="314">UI safe bands: y 12–76 and 132–196 · 12 px world margin · no HUD inside canvas</text>
+  </g>
+
+  <g transform="translate(770 104)">
+    <rect class="card" width="472" height="334" rx="12"/>
+    <text class="h" x="24" y="34">Footprint mapping</text>
+    <text class="p" x="24" y="58">Gold = logical collider. Green = rendered footprint.</text>
+    <g transform="translate(28 86)">
+      <rect class="visual" width="64" height="64"/><path class="collider" d="M0 0H64V64H0Z"/>
+      <path class="navy" d="M24 8h16v8h8v24h-8v16H24V40h-8V16h8z"/><path class="violet" d="M24 16h16v8H24zM20 24h24v16H20z"/><path class="gold" d="M40 32h8v8h-8z"/>
+      <text class="mono" x="0" y="88">Keeper 1×1</text>
+    </g>
+    <g transform="translate(152 86)">
+      <rect class="visual" width="64" height="64"/><path class="collider" d="M0 0H64V64H0Z"/>
+      <path class="navy" d="M24 0h16v8h8v16h8v16H8V24h8V8h8z"/><path class="teal" d="M24 8h16v8h8v16H16V16h8z"/><path class="brown" d="M28 40h12v24H28z"/>
+      <text class="mono" x="0" y="88">Tree 1×1</text>
+    </g>
+    <g transform="translate(276 86)">
+      <rect class="visual" width="128" height="64"/><path class="collider" d="M0 0H128V64H0Z"/>
+      <path class="navy" d="M0 24h128v32H0z"/><path class="brown" d="M8 24h112v24H8z"/><path class="teal" d="M16 16h24v8H16zm48-8h32v16H64zm40 8h16v8h-16z"/><path class="magic" d="M44 32h8v8h-8zm52 8h8v8h-8z"/>
+      <text class="mono" x="0" y="88">Root platform 2×1 exception</text>
+    </g>
+    <path class="grid" d="M28 86V150M92 86V150M152 86V150M216 86V150M276 86V150M340 86V150M404 86V150M28 86H92M28 150H92M152 86H216M152 150H216M276 86H404M276 150H404"/>
+    <text class="p" x="24" y="230">Visual overhang: foliage may rise ≤2 px within the world, but</text>
+    <text class="p" x="24" y="252">never widens a normal object’s collider or crosses the canvas.</text>
+    <text class="p" x="24" y="284">Rare 2×2 landmarks remain explicit shared draw/collision records.</text>
+    <text class="mono" x="24" y="312">cell → record → visual footprint → identical collider footprint</text>
+  </g>
+
+  <g transform="translate(38 466)">
+    <rect class="card" width="1204" height="348" rx="12"/>
+    <text class="h" x="24" y="36">Representative art language and hierarchy</text>
+    <text class="p" x="24" y="62">Edges stay dark and clustered; routes use restrained moonlit value patches; violet/pink belongs to memory, crossing, and objective moments.</text>
+    <g transform="translate(28 92)">
+      <rect width="176" height="176" fill="#133d46"/>
+      <path class="shadow" d="M0 0h176v44h-28v20H96V48H60V72H0zm0 136h44v-16h40v20h44v-24h48v60H0z"/>
+      <path class="moon" d="M52 80h72v20H84v16H44V96h8z"/>
+      <path class="navy" d="M72 28h32v12h14v30H58V40h14z"/><path class="teal" d="M76 36h24v10h10v16H66V46h10z"/><path class="brown" d="M82 62h12v22H82z"/><path class="gold" d="M94 64h8v8h-8z"/>
+      <path class="detail" d="M18 104h4v-8h4v8h4v8H18zm124-16h4v-8h4v8h4v8h-12z"/><path class="dim" d="M32 124h16v4H32zm86 18h12v5h-12z"/><path class="accent" d="M142 122h5v5h-5z"/>
+      <text class="mono" x="0" y="200">Keeper + moonlit lane</text>
+    </g>
+    <g transform="translate(244 92)">
+      <rect width="176" height="176" fill="#133d46"/>
+      <path class="navy" d="M22 8h28v20h12v42H8V30h14zM76 0h34v18h16v48H62V20h14zm58 16h22v16h12v52h-60V34h12z"/>
+      <path class="teal" d="M24 18h24v16h8v24H14V34h10zm54-8h28v16h12v28H68V26h10zm58 16h18v16h8v30h-46V42h20z"/>
+      <path class="brown" d="M32 58h10v34H32zm60-6h12v44H92zm50 18h10v38h-10z"/>
+      <path class="dim" d="M18 106h18v5H18zm56 16h8v-20h5v20h8v5H74zm68-4h14v4h-14z"/><path class="detail" d="M42 132h6v-12h5v12h6v8H42zm70 4h5v-9h5v9h6v6h-16z"/>
+      <text class="mono" x="0" y="200">Spruce cluster + dead sentinel</text>
+    </g>
+    <g transform="translate(460 92)">
+      <rect width="176" height="176" fill="#133d46"/>
+      <path class="shadow" d="M0 0h176v48H116v16H62V50H0zm0 136h46v-18h44v22h44v-16h42v52H0z"/>
+      <path class="moon" d="M18 76h94v18H76v18H34V96H18z"/>
+      <path class="navy" d="M114 18h42v14h10v54h-60V34h8z"/><path class="teal" d="M118 28h34v14h8v30h-48V42h6z"/><path class="brown" d="M130 68h16v48h-16z"/>
+      <path class="gold" d="M130 78h12v4h-4v4h-4v8h8v4h-12zM122 108h32v5h-32z"/>
+      <text class="mono" x="0" y="200">Exit crescent stays inside 1×1</text>
+    </g>
+    <g transform="translate(680 92)">
+      <text class="h" x="0" y="16">Value priority</text>
+      <rect class="objective" x="0" y="38" width="28" height="18"/><text class="p" x="40" y="53">1 · objective / firefly / exit mark</text>
+      <rect class="magic" x="0" y="70" width="28" height="18"/><text class="p" x="40" y="85">2 · memory / crossing / active rune</text>
+      <rect class="moon" x="0" y="102" width="28" height="18"/><text class="p" x="40" y="117">3 · readable route / ground light</text>
+      <rect class="detail" x="0" y="134" width="28" height="18"/><text class="p" x="40" y="149">4 · non-colliding edge detail</text>
+      <rect class="shadow" x="0" y="166" width="28" height="18"/><text class="p" x="40" y="181">5 · forest mass / frame</text>
+      <text class="mono" x="0" y="218">Fern · stone · needle · root · mushroom · firefly</text>
+      <text class="p" x="0" y="246">All ground details are deterministic, non-solid, and biased away</text>
+      <text class="p" x="0" y="268">from the approved traversal lanes and interaction centres.</text>
+    </g>
+  </g>
+</svg>

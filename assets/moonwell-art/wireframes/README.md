@@ -57,7 +57,7 @@ spills sideways into unblocked cells.
 
 ## Remaining art sequence
 
-1. Completed: the dedicated `tree-tile-v3` (16 × 16), `root-platform-tile-v3`
+1. Completed: the dedicated `tree-tile-v3` (16 × 16), restrained `root-platform-tile-v4`
    (32 × 16), and `sentinel-tile-v4` (32 × 32) sprites now render directly
    into their declared world-object records. The sentinel no longer rises one
    extra cell above its matching 2 × 2 collision footprint.
@@ -87,3 +87,17 @@ The approved layout now drives the production records in `game-core.js`.
 The runtime keeps ten additional one-cell trees per area and the single-cell
 exit state contract, with tiny collision-safe placement offsets where the
 diagram would otherwise cover an existing firefly or memory.
+
+# Canonical 20 × 13 extension (v2)
+
+- `moonwell-20x13-contract-v2.svg` and its PNG render establish 320 × 208 as
+  the complete native world, show both 64-pixel dialogue safe bands, map
+  layout cells to visual/collider footprints, and record the new value and
+  landmark hierarchy.
+- `forest-density-layout-v1.svg` remains the approved four-level route and
+  collider-cell authority; v2 extends rather than replaces that evidence.
+- Editable Figma system: https://www.figma.com/design/3mcJh1WvCC8tqOTg2cWLHl
+
+All actor, collectible, exit, and ordinary-interactive anchors now sit on tile
+centres. Ordinary trees and props remain 1 × 1; root platforms remain the
+declared 2 × 1 exception and the Hollow sentinel remains 2 × 2.

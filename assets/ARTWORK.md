@@ -70,3 +70,27 @@ pickup radius, and lantern destination radius are unchanged. Source prompt:
 “tiny violet-hooded young lantern keeper, tiny brass crescent lantern as a
 point of light, and tiny yellow-white fireflies; crisp limited-palette pixel
 art on a flat magenta chroma-key background.”
+
+## 320 × 208 art-direction pass — 2026-08-02
+
+`generated/moonwell-320x208-art-direction-source-v1.png` is the retained
+project-bound image-assisted concept sheet for the complete 20 × 13 world
+pass. It was generated with the built-in image-generation workflow in
+stylized-concept mode using the fresh pre-change Lantern Glade screenshots,
+the approved forest-density concept, and the existing keeper/platform sprites
+as visual references.
+
+Prompt summary: “Create a cohesive Moonwell pixel-art direction sheet for a
+canonical 320 × 208 / 20 × 13 world: a brighter violet Keeper with one warm
+lantern accent; a one-cell spruce exit marked by an in-cell crescent/glowing
+root; clustered Scandinavian spruce and a dead sentinel; restrained ferns,
+stones, needles, roots, mushrooms and fireflies; stepped moonlit/shadow ground
+patches; and a quieter mossy 2 × 1 root platform. Preserve dark navy/teal,
+pale silver and moon-gold hierarchy; reserve violet/pink for memories and
+objectives; crisp limited-palette pixels, no UI or text.”
+
+The concept is not referenced or transferred by the runtime. Deterministic geometry and the
+selected production interpretation are code-native: the editable v2 Figma
+system and SVG wireframes define cells/footprints; runtime details are compact
+canvas primitives; the quieter platform and crescent exit mark are tile-exact
+SVGs.
