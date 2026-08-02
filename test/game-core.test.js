@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const context={};
 vm.runInNewContext(fs.readFileSync(new URL('../game-core.js',import.meta.url),'utf8'),context);
-const {TOTAL_FIREFLIES,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,EXIT_STATES,addedTreeCells,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex}=context.MoonwellCore;
+const {TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,EXIT_STATES,addedTreeCells,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex}=context.MoonwellCore;
 
 test('Moonwell starts with four areas, eight fireflies, and three optional memories',()=>{
   const areas=createAreas();
@@ -37,6 +37,7 @@ test('memory reveals use a fixed in-canvas safe band with room for readable copy
   assert.equal(JSON.stringify(memoryRevealBoxForPlayer(140)),JSON.stringify({x:24,y:12,w:272,h:64}));
   assert.equal(MEMORY_REVEAL_LAYOUT.maxLineChars,42);
   assert.equal(MEMORY_REVEAL_LAYOUT.maxLines,3);
+  assert.deepEqual(JSON.parse(JSON.stringify(MEMORY_DIALOGUE_TYPOGRAPHY)),{bodyPx:13,titlePx:14,lineHeight:1.45});
 });
 
 test('the Moonroot bridge opens across the entire two-tile water crossing',()=>{
