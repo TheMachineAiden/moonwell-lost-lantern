@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const context={};
 vm.runInNewContext(fs.readFileSync(new URL('../game-core.js',import.meta.url),'utf8'),context);
-const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,EXIT_STATES,addedTreeCells,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,watcherChoiceResult}=context.MoonwellCore;
+const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,EXIT_STATES,addedTreeCells,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,watcherChoiceResult}=context.MoonwellCore;
 
 test('the canonical world is a complete 20 by 13 tile canvas',()=>{
   assert.equal(TILE_SIZE,16);
@@ -14,6 +14,19 @@ test('the canonical world is a complete 20 by 13 tile canvas',()=>{
   const bottom=createWorldObjects(0,false).filter(object=>object.id.startsWith('edge-bottom-'));
   assert.equal(bottom.length,20);
   bottom.forEach(object=>assert.deepEqual({y:object.y,w:object.w,h:object.h},{y:192,w:16,h:16}));
+});
+
+test('logical cells are decoupled from the two-times luminous render surface',()=>{
+  assert.deepEqual({RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT},{RENDER_SCALE:2,RENDER_WIDTH:640,RENDER_HEIGHT:416});
+  assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.tree)),{
+    logical:{cellsWide:1,cellsHigh:1,solid:true},visual:{width:40,height:56,overhangLeft:12,overhangRight:12,overhangTop:40,overhangBottom:0}
+  });
+  assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.rootPlatform)),{
+    logical:{cellsWide:2,cellsHigh:1,solid:true},visual:{width:64,height:24,overhangLeft:16,overhangRight:16,overhangTop:8,overhangBottom:0}
+  });
+  assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.eir)),{
+    logical:{cellsWide:1,cellsHigh:1,solid:false,interactionRadius:22},visual:{width:32,height:48,anchorOffsetX:-16,anchorOffsetY:-44}
+  });
 });
 
 test('Moonwell starts with four areas, eight fireflies, and three optional memories',()=>{

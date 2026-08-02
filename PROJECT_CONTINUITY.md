@@ -174,3 +174,32 @@ then look for the next small player-visible improvement.
   all viewports had zero horizontal overflow, collision assertions remained
   true, production assets resolved successfully, and every reviewed console
   was clean.
+
+## Luminous reference rebuild — 2026-08-02
+
+- Re-audited the cache-isolated public baseline against the retained approved
+  vignette. Material gaps were flat teal ground, repeated tiny silhouettes,
+  sparse enclosure, weak light pools, little canopy depth, and no loamy floor.
+- Rebuilt all four levels on a 640 × 416 render surface while preserving the
+  320 × 208 logical world, 16-pixel movement grid, routes, puzzles, dialogue,
+  progression, and touch contract.
+- Added overlapping loam, cool screen-composited moonlight, tall y-sorted
+  spruce overhangs, top and foreground canopy curtains, amber focus glows,
+  and a deep navy vignette. Direct matched proof is retained at
+  `artifacts/qa/moonwell-baseline-reference-after-matched.png`; the all-level
+  sheet is `artifacts/qa/moonwell-luminous-four-level-contact-sheet.png`.
+- Replaced the old drawn Watcher with an image-generated four-frame raster Eir
+  sprite and an image-generated 512 × 512 dialogue portrait. Runtime tests
+  prohibit SVG/drawn-sigil fallback and retained-source loading.
+- The visual/collider mapping and every deliberate exception are documented in
+  `assets/moonwell-art/ART_DIRECTION.md` and exported from `game-core.js`.
+- The editable production system is extended at Figma node `11:2` with the
+  semantic palette, live scene proof, Eir idle strip and portrait, four-level
+  contact sheet, layer order, and the same exported collider/overhang table:
+  `https://www.figma.com/design/3mcJh1WvCC8tqOTg2cWLHl?node-id=11-2`.
+
+### Deterministic verification
+
+- `npm run check`: passed.
+- `npm test`: 24/24 passed, including render dimensions, overhang contracts,
+  Eir raster paths, absence of SVG fallback, routes, colliders, and progression.

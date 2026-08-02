@@ -2,6 +2,19 @@
 const TILE_SIZE=16;
 const WORLD_WIDTH=TILE_SIZE*20;
 const WORLD_HEIGHT=TILE_SIZE*13;
+const RENDER_SCALE=2;
+const RENDER_WIDTH=WORLD_WIDTH*RENDER_SCALE;
+const RENDER_HEIGHT=WORLD_HEIGHT*RENDER_SCALE;
+const VISUAL_FOOTPRINTS=Object.freeze({
+  keeper:Object.freeze({logical:Object.freeze({colliderWidth:10,colliderHeight:10,solid:true}),visual:Object.freeze({width:20,height:24,anchorOffsetX:-10,anchorOffsetY:-22})}),
+  tree:Object.freeze({logical:Object.freeze({cellsWide:1,cellsHigh:1,solid:true}),visual:Object.freeze({width:40,height:56,overhangLeft:12,overhangRight:12,overhangTop:40,overhangBottom:0})}),
+  exitTree:Object.freeze({logical:Object.freeze({cellsWide:1,cellsHigh:1,solidUntil:'open'}),visual:Object.freeze({width:40,height:56,overhangLeft:12,overhangRight:12,overhangTop:40,overhangBottom:0})}),
+  rootPlatform:Object.freeze({logical:Object.freeze({cellsWide:2,cellsHigh:1,solid:true}),visual:Object.freeze({width:64,height:24,overhangLeft:16,overhangRight:16,overhangTop:8,overhangBottom:0})}),
+  eir:Object.freeze({logical:Object.freeze({cellsWide:1,cellsHigh:1,solid:false,interactionRadius:22}),visual:Object.freeze({width:32,height:48,anchorOffsetX:-16,anchorOffsetY:-44})}),
+  loamPatch:Object.freeze({logical:Object.freeze({solid:false}),visual:Object.freeze({width:64,height:48})}),
+  moonlightPool:Object.freeze({logical:Object.freeze({solid:false}),visual:Object.freeze({width:64,height:48})}),
+  canopyCurtain:Object.freeze({logical:Object.freeze({solid:false}),visual:Object.freeze({width:128,height:56})})
+});
 const MAP=['....................','....................','....................','....................','....................','....................','....................','....................','....................','....................','....................','....................','....................'];
 const TOTAL_FIREFLIES=8;
 const HOLLOW_ECHO_RADIUS=15;
@@ -88,5 +101,5 @@ function createEchoReplay(trail,origin){
 }
 const canResolveEchoRune=(stage,echoHolding,player,runes)=>stage===2&&echoHolding&&nearPoint(player,runes[2]);
 function watcherChoiceResult(choice){return choice===0?Object.freeze({correct:true,reply:'Yes. A memory carries a path after the feet have gone. The moonflower listens for that keeping.'}):Object.freeze({correct:false,reply:'A shadow follows, but it does not keep. Listen to the riddle once more; there is no harm in trying again.'})}
-globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,MEMORY_DIALOGUE_TYPOGRAPHY,WATCHER_DIALOGUE,EXIT_STATES,EXIT_STATE_DURATIONS,addedTreeCells,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,watcherChoiceResult});
+globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,MEMORY_DIALOGUE_TYPOGRAPHY,WATCHER_DIALOGUE,EXIT_STATES,EXIT_STATE_DURATIONS,addedTreeCells,areaComplete,canResolveEchoRune,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,watcherChoiceResult});
 })();

@@ -69,3 +69,29 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
   `moonwell-after-selected-reference-four-levels.png`,
   `moonwell-after-selected-reference-portrait.png`, and
   `moonwell-after-selected-reference-touch-landscape.png`.
+
+## Luminous rebuild acceptance — 2026-08-02
+
+- Matched 640 × 416 proof is
+  `artifacts/qa/moonwell-baseline-reference-after-matched.png`: baseline,
+  retained reference crop, and rebuilt Lantern Glade at the same play ratio.
+- All four rebuilt 640 × 416 canvases and the contact sheet are under
+  `artifacts/qa/`. They visibly retain continuous loam, layered spruce canopy,
+  moonlight, amber light points, navy enclosure, and distinct level landmarks.
+- Deterministic suite: 24/24. It covers the 320 × 208 logical / 640 × 416
+  visual split, tree/platform/Eir overhang mapping, unchanged route and
+  collider behavior, production asset dimensions, raster Eir/portrait paths,
+  and the absence of an SVG/drawn-sigil fallback.
+- Browser acceptance includes desktop keyboard movement and edge collision,
+  portrait rotation-gate fit, touch-landscape movement/pause, Eir dialogue at
+  all three presentations, required-element visibility, clean consoles, and
+  zero unacceptable overflow.
+- Final measured presentation: desktop 1200 × 780 uses a 640 × 416 CSS and
+  intrinsic canvas with logical audit 320 × 208 at renderScale 2; portrait
+  390 × 844 uses a 320 × 208 screen and a 307 × 129 dialogue with no internal
+  scroll; touch landscape 844 × 390 uses a 440 × 286 preview (600 × 390 while
+  playing) and a 414 × 251 dialogue with no internal scroll. The portrait
+  decodes at 512 × 512. Document scroll width equals viewport width in all
+  three checks, and all final consoles are empty.
+- Editable Figma production system: node `11:2` in
+  `https://www.figma.com/design/3mcJh1WvCC8tqOTg2cWLHl?node-id=11-2`.

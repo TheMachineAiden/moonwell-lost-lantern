@@ -75,3 +75,33 @@ The owner-selected forest production family is recreated by
 platform (2 × 32 × 16), foliage/ground/stone/light pools (3 × 16 × 16),
 mushrooms (2 × 16 × 16), and fireflies (4 × 16 × 16). These are the current
 runtime sources for the shared forest vocabulary across all four areas.
+
+## Luminous visual/logical contract — current runtime
+
+Gameplay remains a deterministic 20 × 13 grid of 16-pixel logical cells, but
+the canvas now renders at 640 × 416 (2× logical resolution). Overhanging
+production art is baseline-anchored and y-sorted independently from collision.
+This is the authoritative mapping:
+
+| Runtime object | Logical footprint / collider | Visual footprint and anchor |
+| --- | --- | --- |
+| Keeper | 10 × 10 px solid movement box | 20 × 24 px; anchor −10, −22 from movement point |
+| Ordinary spruce | 1 × 1 cell, solid | 40 × 56 px; 12 px left/right and 40 px top overhang |
+| Crescent exit | 1 × 1 cell, solid through `revealed`; non-solid at `open` | 40 × 56 px; same overhang as spruce |
+| Root platform | 2 × 1 cells, solid | 64 × 24 px; 16 px side and 8 px top overhang |
+| Eir | one non-solid cell-centred interaction anchor, radius 22 px | 32 × 48 px; anchor −16, −44; four raster idle frames |
+| Loam patch | no collider | 64 × 48 px overlapping floor layer |
+| Moonlight pool | no collider | 64 × 48 px screen-composited illumination |
+| Canopy curtain | no collider | 128 × 56 px enclosing background/foreground layer |
+
+The only deliberate larger logical collider exceptions remain the 2 × 1 root
+platform and 2 × 2 Hollow sentinel. Eir is deliberately non-blocking so her
+larger portrait-scale world silhouette cannot trap the player. Spruce and exit
+overhangs do not enlarge their predictable one-cell collider; their roots and
+shared baselines communicate that cell. Decorative loam, light, and canopy
+layers never collide. The runtime contract is exported as `VISUAL_FOOTPRINTS`
+from `game-core.js` and is covered by deterministic tests.
+
+Lighting order is continuous loam → screen-composited moonlight → waterways
+and detail → canopy depth → baseline-sorted sprites → navy vignette. Amber is
+reserved for lantern/firefly focal points; violet marks memory and magic.

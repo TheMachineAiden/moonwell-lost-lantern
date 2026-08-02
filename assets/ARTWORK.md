@@ -122,3 +122,32 @@ Representative source-to-sprite evidence is retained as
 `generated/moonwell-selected-reference-sprite-comparison-v1.png`. Desktop
 before/after captures, the four-level production contact sheet, portrait, and
 touch-landscape captures are retained beside it under `generated/`.
+
+## Luminous forest rebuild and Eir production art — 2026-08-02
+
+The post-release rebuild uses three new retained, project-bound generation
+sources: `generated/moonwell-luminous-forest-production-source-v2.png`,
+`generated/moonwell-eir-rootwatcher-sprite-source-v1.png`, and
+`generated/moonwell-eir-rootwatcher-portrait-source-v1.png`. The approved
+`moonwell-320x208-art-direction-source-v1.png` vignette was supplied to the
+configured image-generation workflow as the visual reference.
+
+Environment prompt summary: “Build a transparent-ready pixel-art production
+atlas that carries the approved forest vignette into play: six large
+asymmetric Scandinavian spruces, two enclosing canopy curtains, continuous
+loamy floor patches, pale moonlight pools, and root platforms; deep navy and
+teal depth, warm amber points, restrained violet magic, flat #ff00ff key, no
+text or sample scene.”
+
+Eir sprite prompt summary: “Four coherent full-body idle frames of Eir,
+Rootwatcher: an older woman in a dark teal hood with silver hair, crescent
+brooch, root staff, and amber lantern, matching Moonwell’s 16-bit forest art;
+fixed baseline, flat magenta key.” Portrait prompt summary: “A larger square
+classic 16-bit JRPG dialogue portrait of the same Eir, framed by deep spruce,
+with cool moonlight on her hood and warm lantern light on her face and staff.”
+
+`scripts/process-luminous-forest-art.sh` performs fixed chroma-key crops and
+packs the production files. Runtime code loads only the transparent PNG
+derivatives. It never loads the retained sources and contains no SVG or
+canvas-drawn Eir substitute. The exact Eir portrait shown in dialogue is
+`moonwell-art/production/moonwell-eir-rootwatcher-portrait-v1.png`.
