@@ -28,9 +28,9 @@ geometry, not permission to render beyond the runtime footprint.
 | Flower, rune stone | 1 x 1 tile (16 x 16) | May rise above its baseline, never spill sideways. |
 | Lantern | 1 x 1 tile (16 x 16) | Small character-scale destination point; its interaction remains centred on the existing home coordinate. |
 | Skybell | 2 x 3 visual tiles (32 x 48) | Deliberate non-solid landmark exception; its interaction point stays on one tile centre. |
-| Tree | 1 x 1 tile (16 x 16) | One tile record, never a repeated oversized cluster. |
+| Tree | 1 x 1 logical tile (16 x 16) | One predictable root collider; perimeter art may overhang to 40 × 56 px and interior art to 28 × 40 px. |
 | Sentinel | 2 x 2 tiles (32 x 32) | Deliberate solid landmark with an exact 2 × 2 mask. |
-| Fairy platform / root log | 2 x 1 tiles (32 x 16) | Flat, obvious standing surface with the same solid cells. |
+| Fairy platform / root log | 2 x 1 logical tiles (32 x 16) | Flat, obvious standing surface; art may overhang to 96 × 32 px while the two cells remain the complete solid mask. |
 | Bridge segment | 1 x 1 tile (16 x 16) | Repeat as separate tile records across a passable span. |
 | Moonwell endgame altar | 2 x 2 tiles (32 x 32) | Simple focal object; declare its collision choice with the record. |
 | Water | 1 x 1 tile (16 x 16) | Seamless on all four edges. |
@@ -76,6 +76,13 @@ platform (2 × 32 × 16), foliage/ground/stone/light pools (3 × 16 × 16),
 mushrooms (2 × 16 × 16), and fireflies (4 × 16 × 16). These are the current
 runtime sources for the shared forest vocabulary across all four areas.
 
+The corrected bottom-right clearing family is recreated by
+`scripts/process-bottom-right-clearing-art.sh` from the retained v3 generation
+source. It adds a singular crescent landmark, broad root shelf, calmer loam
+patches, canopy clusters, three moonlight pools, and an amber firefly loop. The
+runtime loads only the keyed/cropped production derivatives, never the source
+atlas or concept sheet.
+
 ## Luminous visual/logical contract — current runtime
 
 Gameplay remains a deterministic 20 × 13 grid of 16-pixel logical cells, but
@@ -86,12 +93,12 @@ This is the authoritative mapping:
 | Runtime object | Logical footprint / collider | Visual footprint and anchor |
 | --- | --- | --- |
 | Keeper | 10 × 10 px solid movement box | 20 × 24 px; anchor −10, −22 from movement point |
-| Ordinary spruce | 1 × 1 cell, solid | 40 × 56 px; 12 px left/right and 40 px top overhang |
-| Crescent exit | 1 × 1 cell, solid through `revealed`; non-solid at `open` | 40 × 56 px; same overhang as spruce |
-| Root platform | 2 × 1 cells, solid | 64 × 24 px; 16 px side and 8 px top overhang |
+| Ordinary spruce | 1 × 1 cell, solid | Perimeter 40 × 56 px; interior 28 × 40 px; both retain a one-cell root |
+| Crescent exit | 1 × 1 cell, solid through `revealed`; non-solid at `open` | 48 × 64 px; 16 px left/right and 48 px top overhang |
+| Root platform | 2 × 1 cells, solid | 96 × 32 px; 32 px side and 16 px top overhang |
 | Eir | one non-solid cell-centred interaction anchor, radius 22 px | 32 × 48 px; anchor −16, −44; four raster idle frames |
-| Loam patch | no collider | 64 × 48 px overlapping floor layer |
-| Moonlight pool | no collider | 64 × 48 px screen-composited illumination |
+| Loam patch | no collider | 80 × 48 px overlapping floor layer |
+| Moonlight pool | no collider | 112 × 66 px dominant screen-composited illumination; secondary pools may be smaller |
 | Canopy curtain | no collider | 128 × 56 px enclosing background/foreground layer |
 
 The only deliberate larger logical collider exceptions remain the 2 × 1 root
@@ -103,5 +110,8 @@ layers never collide. The runtime contract is exported as `VISUAL_FOOTPRINTS`
 from `game-core.js` and is covered by deterministic tests.
 
 Lighting order is continuous loam → screen-composited moonlight → waterways
-and detail → canopy depth → baseline-sorted sprites → navy vignette. Amber is
-reserved for lantern/firefly focal points; violet marks memory and magic.
+and detail → canopy depth → baseline-sorted sprites → navy vignette. Lantern
+Glade deliberately keeps an open central route, a broad upper root shelf, and
+one dominant upper-right crescent instead of repeating large landmark trees.
+Amber is reserved for lantern/firefly focal points; violet marks memory and
+magic.

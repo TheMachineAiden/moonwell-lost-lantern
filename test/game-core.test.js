@@ -19,10 +19,13 @@ test('the canonical world is a complete 20 by 13 tile canvas',()=>{
 test('logical cells are decoupled from the two-times luminous render surface',()=>{
   assert.deepEqual({RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT},{RENDER_SCALE:2,RENDER_WIDTH:640,RENDER_HEIGHT:416});
   assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.tree)),{
-    logical:{cellsWide:1,cellsHigh:1,solid:true},visual:{width:40,height:56,overhangLeft:12,overhangRight:12,overhangTop:40,overhangBottom:0}
+    logical:{cellsWide:1,cellsHigh:1,solid:true},visual:{perimeterWidth:40,perimeterHeight:56,interiorWidth:28,interiorHeight:40,overhangTop:40,overhangBottom:0}
+  });
+  assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.exitTree)),{
+    logical:{cellsWide:1,cellsHigh:1,solidUntil:'open'},visual:{width:48,height:64,overhangLeft:16,overhangRight:16,overhangTop:48,overhangBottom:0}
   });
   assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.rootPlatform)),{
-    logical:{cellsWide:2,cellsHigh:1,solid:true},visual:{width:64,height:24,overhangLeft:16,overhangRight:16,overhangTop:8,overhangBottom:0}
+    logical:{cellsWide:2,cellsHigh:1,solid:true},visual:{width:96,height:32,overhangLeft:32,overhangRight:32,overhangTop:16,overhangBottom:0}
   });
   assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.eir)),{
     logical:{cellsWide:1,cellsHigh:1,solid:false,interactionRadius:22},visual:{width:32,height:48,anchorOffsetX:-16,anchorOffsetY:-44}
@@ -113,8 +116,8 @@ test('the exit tree state sequence cannot remove its collider before the fully p
 test('world records keep ordinary blockers to one cell and landmark colliders to their declared footprint',()=>{
   const glade=createWorldObjects(0,false);
   const tree=glade.find(object=>object.id==='tree-0');
-  assert.deepEqual({x:tree.x,y:tree.y,w:tree.w,h:tree.h,solid:tree.solid},{x:48,y:32,w:16,h:16,solid:true});
-  assert.equal(isBlocked(48,32,0,false),true);
+  assert.deepEqual({x:tree.x,y:tree.y,w:tree.w,h:tree.h,solid:tree.solid},{x:32,y:80,w:16,h:16,solid:true});
+  assert.equal(isBlocked(32,80,0,false),true);
   assert.equal(isBlocked(112,32,0,false),false);
   const hollow=createWorldObjects(2,false);
   const sentinel=hollow.find(object=>object.id==='sentinel');
@@ -124,6 +127,17 @@ test('world records keep ordinary blockers to one cell and landmark colliders to
   assert.equal(isBlocked(176,127,2,false),false);
   const platform=glade.find(object=>object.kind==='platform');
   assert.deepEqual({w:platform.w,h:platform.h,solid:platform.solid},{w:32,h:16,solid:true});
+});
+
+test('Lantern Glade composes its corrected landmark clearing without changing simple collider rules',()=>{
+  const area=createAreas()[0];
+  assert.deepEqual(JSON.parse(JSON.stringify(area.home)),{x:280,y:72});
+  const objects=createWorldObjects(0,false);
+  const exit=objects.find(object=>object.kind==='exit-tree');
+  const platforms=objects.filter(object=>object.kind==='platform');
+  assert.deepEqual({x:exit.x,y:exit.y,w:exit.w,h:exit.h,solid:exit.solid},{x:272,y:64,w:16,h:16,solid:true});
+  assert.equal(platforms.length,1);
+  assert.deepEqual({x:platforms[0].x,y:platforms[0].y,w:platforms[0].w,h:platforms[0].h},{x:128,y:48,w:32,h:16});
 });
 
 test('ground enrichment is deterministic, one-cell, and never adds collision',()=>{

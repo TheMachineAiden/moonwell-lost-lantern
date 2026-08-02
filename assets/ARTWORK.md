@@ -151,3 +151,31 @@ packs the production files. Runtime code loads only the transparent PNG
 derivatives. It never loads the retained sources and contains no SVG or
 canvas-drawn Eir substitute. The exact Eir portrait shown in dialogue is
 `moonwell-art/production/moonwell-eir-rootwatcher-portrait-v1.png`.
+
+## Corrected bottom-right clearing production family — 2026-08-02
+
+The authoritative target is the framed bottom-right clearing in
+`generated/moonwell-320x208-art-direction-source-v1.png`. Its exact matched
+crop is retained at `artifacts/qa/moonwell-reference-vignette-matched.png`.
+That crop and the luminous v2 production source were supplied as visual
+references to the configured built-in image-generation workflow. The new,
+unmodified project-bound output is retained as
+`generated/moonwell-bottom-right-clearing-source-v3.png`; its keyed alpha
+companion is `generated/moonwell-bottom-right-clearing-source-v3-alpha.png`.
+
+Prompt summary: “Create a separated transparent-ready 16-bit pixel-art
+production atlas, not a sample scene: one dominant crescent-trunk spruce, one
+broad mossy root platform, four continuous loamy forest-floor patches, two
+enclosing spruce-canopy clusters, three soft cool moonlight pools, and four
+restrained amber firefly points. Match the supplied bottom-right clearing's
+deep navy negative space, teal depth, moss, roots, stone, and restrained
+violet; keep generous spacing on a flat magenta key; no text, UI, characters,
+grid, watermark, or baked composition.”
+
+`scripts/process-bottom-right-clearing-art.sh` reproducibly removes the
+border-connected magenta key, crops the approved cells, point-scales them, and
+writes the six production PNGs named `moonwell-clearing-*-v*.png`. Runtime code
+loads those derivatives only. The matched comparison and four-level contact
+sheet are retained at
+`artifacts/qa/moonwell-bottom-right-reference-live-matched-v3.png` and
+`artifacts/qa/moonwell-bottom-right-four-level-contact-sheet-v3.png`.
