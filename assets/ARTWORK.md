@@ -259,3 +259,24 @@ covered by no-purple pixel and byte-determinism tests.
 
 `artifacts/qa/moonwell-home-screen-icon-scale-proof.png` is the retained
 deterministic native/small-size visual check built by the same script.
+
+## Vertical Moonroot bridge and half-size Eir — 2026-08-03
+
+`assets/generated/moonwell-vertical-bridge-source-v1.png` is the retained
+project-bound image-generation source for Moonroot Crossing's north-to-south
+bridge. The configured built-in image workflow used the former bridge strip
+and the authoritative 320 × 208 Moonwell art-direction sheet as references.
+The prompt requested one top-down bridge with continuous horizontal planks,
+root-rope rails, bark/moss/cyan materials, and a removable flat magenta field.
+
+The deterministic no-violet processor keys, trims, point-reduces, and
+palette-normalizes that source to the transparent 32 × 64 production asset
+`moonwell-bridge-vertical-v4.png`. It occupies exactly two columns by four
+rows and is drawn only after Eir's three-riddle sequence is complete. The old
+moonflower pressure trigger and horizontal bridge strip are no longer loaded,
+preloaded, drawn, collided with, or described by the runtime.
+
+Eir's retained `moonwell-eir-rootwatcher-idle-v2.png` bytes and four-frame
+timing remain unchanged. Runtime drawing alone scales each 64 × 96 cell to
+16 × 24 with nearest-neighbor rendering at anchor −8,−22. Her established
+one-cell non-solid encounter anchor and 22-pixel talk radius are unchanged.

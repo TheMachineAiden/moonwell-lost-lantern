@@ -11,7 +11,7 @@ const VISUAL_FOOTPRINTS=Object.freeze({
   exitTree:Object.freeze({logical:Object.freeze({cellsWide:1,cellsHigh:1,solidUntil:'open'}),visual:Object.freeze({width:48,height:64,overhangLeft:16,overhangRight:16,overhangTop:48,overhangBottom:0})}),
   rootPlatform:Object.freeze({logical:Object.freeze({cellsWide:2,cellsHigh:1,solid:true,colliderWidth:40,colliderHeight:14,colliderOffsetX:-4,colliderOffsetY:2}),visual:Object.freeze({width:48,height:24,overhangLeft:4,overhangRight:4,overhangTop:8,overhangBottom:0})}),
   starrootChime:Object.freeze({logical:Object.freeze({cellsWide:1,cellsHigh:1,solid:false,interactionRadius:15}),visual:Object.freeze({width:24,height:24,anchorOffsetX:-12,anchorOffsetY:-16})}),
-  eir:Object.freeze({logical:Object.freeze({cellsWide:1,cellsHigh:1,solid:false,interactionRadius:22}),visual:Object.freeze({width:32,height:48,anchorOffsetX:-16,anchorOffsetY:-44})}),
+  eir:Object.freeze({logical:Object.freeze({cellsWide:1,cellsHigh:1,solid:false,interactionRadius:22}),visual:Object.freeze({width:16,height:24,anchorOffsetX:-8,anchorOffsetY:-22})}),
   loamPatch:Object.freeze({logical:Object.freeze({solid:false}),visual:Object.freeze({width:80,height:48})}),
   moonlightPool:Object.freeze({logical:Object.freeze({solid:false}),visual:Object.freeze({width:112,height:66})}),
   canopyCurtain:Object.freeze({logical:Object.freeze({cellsWide:20,cellsHigh:1,rootRow:2,solid:true,colliderWidth:20,colliderHeight:12,colliderOffsetX:-2,colliderOffsetY:4}),visual:Object.freeze({width:128,height:56,clusters:3,rootContactY:48})})
@@ -24,14 +24,24 @@ const MEMORY_REVEAL_TIMING=Object.freeze({hold:3.25,fade:.75});
 // while the keeper is low, and the lower band is used while the keeper is high.
 const MEMORY_REVEAL_LAYOUT=Object.freeze({x:24,w:272,h:64,topY:12,bottomY:132,keeperSplitY:104,maxLineChars:42,maxLines:3});
 const MEMORY_DIALOGUE_TYPOGRAPHY=Object.freeze({bodyPx:13,titlePx:14,lineHeight:1.45});
-const WATCHER_DIALOGUE=Object.freeze({name:'Eir, Rootwatcher',riddle:'I travel without feet, keep no shape, and still make every path remember the moon. What am I?',choices:Object.freeze(['A memory','A shadow'])});
+const WATCHER_DIALOGUE=Object.freeze({
+  name:'Eir, Rootwatcher',
+  intro:'The bridge roots wake for a keeper who can listen. Three little riddles, Luna—shall we make the crossing remember?',
+  solved:'Moon, echo, lantern—three bright answers. The roots remember their shape, and the bridge grows from shore to shore.',
+  riddles:Object.freeze([
+    Object.freeze({question:'I glow after sunset and change my round face. What am I?',choices:Object.freeze(['The moon','A mushroom']),answer:0,correct:'The moon! It shows the forest where night begins.',wrong:'Mushrooms like moonlight, but their faces do not wax and wane. Try once more.'}),
+    Object.freeze({question:'I have no mouth, but I answer when you call. What am I?',choices:Object.freeze(['An echo','A root']),answer:0,correct:'An echo! Even the hollow likes to answer back.',wrong:'Roots listen quietly, but they do not call your words back. Have another guess.'}),
+    Object.freeze({question:'I carry a tiny sun and never burn my hand. What am I?',choices:Object.freeze(['A raindrop','A lantern']),answer:1,correct:'A lantern! That is the warm answer the bridge was waiting for.',wrong:'A raindrop can sparkle, but it cannot carry a steady flame. One more try.'})
+  ])
+});
+const MOONROOT_BRIDGE_LAYOUT=Object.freeze({water:Object.freeze({firstCol:1,lastCol:18,firstRow:5,lastRow:8}),bridge:Object.freeze({col:9,row:5,cols:2,rows:4})});
 const addedTreeCells=[
   [[2,5],[3,4],[15,4],[16,4],[2,7],[3,7],[14,8],[15,8],[6,10],[12,10]],
   [[2,3],[3,3],[8,2],[9,2],[14,3],[15,3],[5,9],[6,9],[14,9],[16,9]],
   [[2,3],[3,3],[6,3],[7,3],[15,3],[17,3],[3,9],[4,9],[13,9],[14,9]],
   [[2,3],[3,3],[7,3],[8,3],[15,3],[16,3],[3,8],[4,8],[13,8],[14,8]]
 ];
-const platformCells=[[[8,3]],[[5,2],[13,7]],[[6,9],[13,6]],[[5,3],[16,6]]];
+const platformCells=[[[8,3]],[[5,2],[11,9]],[[6,9],[13,6]],[[5,3],[16,6]]];
 // These three overlapping clusters are the unchanged top-canopy composition.
 // Their dense visible root face spans the world at row 2, so the same declared
 // layout also creates one seam-free line of collision-only root footprints.
@@ -69,10 +79,12 @@ function createWorldObjects(areaIndex,bridge,exitState=EXIT_STATES.CLOSED){
   const objects=[...boundaryObjects(),...ordinaryTrees.map(([col,row],index)=>tileObject(`tree-${index}`,'tree',col,row,{solid:true})),tileObject(`exit-tree-${areaIndex}`,'exit-tree',exitCol,exitRow,{solid:exitState!==EXIT_STATES.OPEN,state:exitState})];
   platformCells[areaIndex].forEach(([col,row],index)=>objects.push({id:`platform-${areaIndex}-${index}`,kind:'platform',x:col*TILE_SIZE,y:row*TILE_SIZE,w:TILE_SIZE*2,h:TILE_SIZE,solid:true}));
   if(areaIndex===1){
-    for(let row=6;row<8;row++)for(let col=1;col<19;col++){
-      const bridgeCell=bridge&&col>=8&&col<12;
-      objects.push(tileObject(`water-${col}-${row}`,bridgeCell?'bridge':'water',col,row,{solid:!bridgeCell,frame:col-8}))
+    const water=MOONROOT_BRIDGE_LAYOUT.water,span=MOONROOT_BRIDGE_LAYOUT.bridge;
+    for(let row=water.firstRow;row<=water.lastRow;row++)for(let col=water.firstCol;col<=water.lastCol;col++){
+      const bridgeCell=col>=span.col&&col<span.col+span.cols&&row>=span.row&&row<span.row+span.rows;
+      if(!(bridge&&bridgeCell))objects.push(tileObject(`water-${col}-${row}`,'water',col,row,{solid:true}))
     }
+    if(bridge)objects.push({id:'moonroot-bridge',kind:'bridge',x:span.col*TILE_SIZE,y:span.row*TILE_SIZE,w:span.cols*TILE_SIZE,h:span.rows*TILE_SIZE,solid:false,orientation:'vertical'});
   }
   if(areaIndex===2)objects.push({id:'sentinel',kind:'sentinel',x:144,y:96,w:TILE_SIZE*2,h:TILE_SIZE*2,solid:true});
   return objects
@@ -80,7 +92,7 @@ function createWorldObjects(areaIndex,bridge,exitState=EXIT_STATES.CLOSED){
 
 function createAreas(){return [
   {name:'Lantern Glade',start:{x:56,y:152},home:{x:280,y:72},memory:{x:40,y:72,text:'A rain-silver leaf holds the storm’s first reflection. The lantern keeper was not alone on the path home.'},lights:[{x:264,y:56},{x:88,y:136},{x:168,y:88}]},
-  {name:'Moonroot Crossing',start:{x:40,y:72},home:{x:40,y:168},flower:{x:264,y:72},watcher:{x:264,y:56},memory:{x:280,y:88,text:'A root-knot is tied with a violet thread. Someone marked the crossing for the next traveler.'},lights:[{x:248,y:152},{x:152,y:168}]},
+  {name:'Moonroot Crossing',start:{x:40,y:72},home:{x:40,y:168},watcher:{x:248,y:72},memory:{x:280,y:168,text:'A root-knot is tied with a silver thread. Someone marked the crossing for the next traveler.'},lights:[{x:248,y:168},{x:152,y:168}]},
   {name:'Whispering Hollow',start:{x:280,y:72},home:{x:40,y:168},runes:[{x:264,y:152},{x:152,y:72},{x:56,y:120}],memory:{x:264,y:56,text:'A small seed-shell remembers a child’s laugh. The hollow keeps gentle sounds as well as echoes.'},lights:[{x:168,y:136,hidden:true}]},
   {name:'Starfall Grove',start:{x:280,y:72},home:{x:56,y:168},starroots:[{x:264,y:152},{x:168,y:72},{x:56,y:120}],lights:[{x:152,y:152,hidden:true},{x:232,y:56,hidden:true}]}
 ]}
@@ -111,6 +123,6 @@ function createEchoReplay(trail,origin){
   return []
 }
 const canResolveEchoRune=(stage,echoHolding,player,runes)=>stage===2&&echoHolding&&nearPoint(player,runes[2]);
-function watcherChoiceResult(choice){return choice===0?Object.freeze({correct:true,reply:'Yes. A memory carries a path after the feet have gone. The moonflower listens for that keeping.'}):Object.freeze({correct:false,reply:'A shadow follows, but it does not keep. Listen to the riddle once more; there is no harm in trying again.'})}
-globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,MEMORY_DIALOGUE_TYPOGRAPHY,WATCHER_DIALOGUE,EXIT_STATES,EXIT_STATE_DURATIONS,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,watcherChoiceResult});
+function watcherChoiceResult(step,choice){const riddle=WATCHER_DIALOGUE.riddles[step];if(!riddle)return Object.freeze({correct:false,complete:false,nextStep:step,reply:'Eir has no more riddles to ask.'});const correct=choice===riddle.answer,nextStep=correct?step+1:step;return Object.freeze({correct,complete:correct&&nextStep===WATCHER_DIALOGUE.riddles.length,nextStep,reply:correct?riddle.correct:riddle.wrong})}
+globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,MEMORY_DIALOGUE_TYPOGRAPHY,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,EXIT_STATES,EXIT_STATE_DURATIONS,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,watcherChoiceResult});
 })();

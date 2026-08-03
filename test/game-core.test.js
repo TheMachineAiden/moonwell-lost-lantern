@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const context={};
 vm.runInNewContext(fs.readFileSync(new URL('../game-core.js',import.meta.url),'utf8'),context);
-const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,EXIT_STATES,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,watcherChoiceResult}=context.MoonwellCore;
+const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,EXIT_STATES,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,watcherChoiceResult}=context.MoonwellCore;
 
 test('the canonical world is a complete 20 by 13 tile canvas',()=>{
   assert.equal(TILE_SIZE,16);
@@ -34,7 +34,7 @@ test('logical cells are decoupled from the two-times luminous render surface',()
     logical:{cellsWide:1,cellsHigh:1,solid:false,interactionRadius:15},visual:{width:24,height:24,anchorOffsetX:-12,anchorOffsetY:-16}
   });
   assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.eir)),{
-    logical:{cellsWide:1,cellsHigh:1,solid:false,interactionRadius:22},visual:{width:32,height:48,anchorOffsetX:-16,anchorOffsetY:-44}
+    logical:{cellsWide:1,cellsHigh:1,solid:false,interactionRadius:22},visual:{width:16,height:24,anchorOffsetX:-8,anchorOffsetY:-22}
   });
   assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.canopyCurtain)),{
     logical:{cellsWide:20,cellsHigh:1,rootRow:2,solid:true,colliderWidth:20,colliderHeight:12,colliderOffsetX:-2,colliderOffsetY:4},visual:{width:128,height:56,clusters:3,rootContactY:48}
@@ -71,7 +71,7 @@ test('top-edge collectibles and encounters stay on the clear side of the rooted 
   const canStand=(objects,point)=>![[point.x-5,point.y-5],[point.x+5,point.y-5],[point.x-5,point.y+5],[point.x+5,point.y+5]].some(([pointX,pointY])=>objects.some(object=>object.solid&&pointX>=collisionRectFor(object).x&&pointX<collisionRectFor(object).x+collisionRectFor(object).w&&pointY>=collisionRectFor(object).y&&pointY<collisionRectFor(object).y+collisionRectFor(object).h));
   createAreas().forEach((area,areaIndex)=>{
     const objects=createWorldObjects(areaIndex,areaIndex===1);
-    const interactives=[...area.lights,area.memory,area.flower,area.watcher,...(area.runes||[]),...(area.starroots||[])].filter(Boolean).filter(point=>point.y<=72);
+    const interactives=[...area.lights,area.memory,area.watcher,...(area.runes||[]),...(area.starroots||[])].filter(Boolean).filter(point=>point.y<=72);
     interactives.forEach(point=>assert.equal(canStand(objects,point),true,`${area.name} top-edge anchor ${point.x},${point.y}`));
   });
 });
@@ -109,18 +109,21 @@ test('memory reveals use a fixed in-canvas safe band with room for readable copy
   assert.deepEqual(JSON.parse(JSON.stringify(MEMORY_DIALOGUE_TYPOGRAPHY)),{bodyPx:13,titlePx:14,lineHeight:1.45});
 });
 
-test('the Moonroot bridge opens across the entire two-tile water crossing',()=>{
+test('the Moonroot bridge is a narrow four-cell north-to-south crossing',()=>{
+  assert.deepEqual(JSON.parse(JSON.stringify(MOONROOT_BRIDGE_LAYOUT)),{water:{firstCol:1,lastCol:18,firstRow:5,lastRow:8},bridge:{col:9,row:5,cols:2,rows:4}});
   assert.equal(isBlocked(160,100,1,false),true);
   assert.equal(isBlocked(160,100,1,true),false);
-  assert.equal(isBlocked(160,116,1,true),false);
+  assert.equal(isBlocked(160,132,1,true),false);
   assert.equal(isBlocked(80,100,1,true),true);
   assert.equal(isBlocked(8,8,0,false),true);
+  const bridge=createWorldObjects(1,true).find(object=>object.kind==='bridge');
+  assert.deepEqual(JSON.parse(JSON.stringify(bridge)),{id:'moonroot-bridge',kind:'bridge',x:144,y:80,w:32,h:64,solid:false,orientation:'vertical'});
 });
 
-test('Moonroot has a complete playable route from its flower to its lower shore only after the bridge opens',()=>{
+test('Moonroot has a complete playable route from Eir to its lower shore only after all riddles open the bridge',()=>{
   const canStand=(x,y,bridge)=>![[x-5,y-5],[x+5,y-5],[x-5,y+5],[x+5,y+5]].some(([pointX,pointY])=>isBlocked(pointX,pointY,1,bridge));
   const routeExists=bridge=>{
-    const start=[264,72],target=[248,151],queue=[start],seen=new Set([start.join(',')]);
+    const start=[248,72],target=[248,168],queue=[start],seen=new Set([start.join(',')]);
     while(queue.length){
       const [x,y]=queue.shift();
       if(Math.hypot(x-target[0],y-target[1])<8)return true;
@@ -229,7 +232,6 @@ test('keepers, exits, collectibles, and ordinary interactives use tile-centred a
     assert.equal(centred(area.home),true);
     area.lights.forEach(light=>assert.equal(centred(light),true));
     if(area.memory)assert.equal(centred(area.memory),true);
-    if(area.flower)assert.equal(centred(area.flower),true);
     if(area.watcher)assert.equal(centred(area.watcher),true);
     area.runes?.forEach(rune=>assert.equal(centred(rune),true));
     area.starroots?.forEach(starroot=>assert.equal(centred(starroot),true));
@@ -240,7 +242,7 @@ test('every approved side-forest cluster has ten one-cell solid trees and preser
   const areas=createAreas();
   const requiredRoutes=[
     [areas[0].start,...areas[0].lights,areas[0].home],
-    [areas[1].start,areas[1].flower,{x:160,y:88},{x:160,y:144},areas[1].home],
+    [areas[1].start,areas[1].watcher,{x:160,y:72},{x:160,y:152},...areas[1].lights,areas[1].home],
     [areas[2].start,...areas[2].runes,areas[2].home],
     [areas[3].start,...areas[3].starroots,...areas[3].lights,areas[3].home]
   ];
@@ -310,12 +312,21 @@ test('area progression ends cleanly at Starfall Grove',()=>{
   assert.equal(nextAreaIndex(3,areas),null);
 });
 
-test('Eir is a one-cell, non-blocking Moonroot encounter with a retryable memory riddle',()=>{
+test('Eir is a half-size, non-blocking Moonroot encounter with three retryable riddles',()=>{
   const watcher=createAreas()[1].watcher;
-  assert.deepEqual(JSON.parse(JSON.stringify(watcher)),{x:264,y:56});
+  assert.deepEqual(JSON.parse(JSON.stringify(watcher)),{x:248,y:72});
   assert.equal(isBlocked(watcher.x,watcher.y,1,false),false);
-  assert.equal(WATCHER_DIALOGUE.choices.length,2);
-  assert.equal(watcherChoiceResult(0).correct,true);
-  assert.equal(watcherChoiceResult(1).correct,false);
-  assert.match(watcherChoiceResult(1).reply,/no harm/i);
+  assert.equal('flower' in createAreas()[1],false);
+  assert.equal(WATCHER_DIALOGUE.riddles.length,3);
+  const firstWrong=watcherChoiceResult(0,1);
+  assert.deepEqual({correct:firstWrong.correct,complete:firstWrong.complete,nextStep:firstWrong.nextStep},{correct:false,complete:false,nextStep:0});
+  assert.match(firstWrong.reply,/try once more/i);
+  const firstCorrect=watcherChoiceResult(0,0);
+  assert.deepEqual({correct:firstCorrect.correct,complete:firstCorrect.complete,nextStep:firstCorrect.nextStep},{correct:true,complete:false,nextStep:1});
+  const secondCorrect=watcherChoiceResult(1,0);
+  assert.deepEqual({correct:secondCorrect.correct,complete:secondCorrect.complete,nextStep:secondCorrect.nextStep},{correct:true,complete:false,nextStep:2});
+  const finalWrong=watcherChoiceResult(2,0);
+  assert.deepEqual({correct:finalWrong.correct,complete:finalWrong.complete,nextStep:finalWrong.nextStep},{correct:false,complete:false,nextStep:2});
+  const finalCorrect=watcherChoiceResult(2,1);
+  assert.deepEqual({correct:finalCorrect.correct,complete:finalCorrect.complete,nextStep:finalCorrect.nextStep},{correct:true,complete:true,nextStep:3});
 });

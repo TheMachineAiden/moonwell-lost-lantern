@@ -107,7 +107,7 @@ This is the authoritative mapping:
 | Crescent exit | 1 × 1 cell, solid through `revealed`; non-solid at `open` | 48 × 64 px; 16 px left/right and 48 px top overhang |
 | Root platform | 40 × 14 px contact mask at −4,+2 from its 2 × 1 record | 48 × 24 px; 4 px side and 8 px top overhang |
 | Starroot chime | non-solid one-cell interaction anchor, radius 15 px | 24 × 24 px; anchor −12,−16; rooted baseline and fixed silhouette |
-| Eir | one non-solid cell-centred interaction anchor, radius 22 px | 32 × 48 px; anchor −16, −44; four raster idle frames |
+| Eir | one non-solid cell-centred interaction anchor, radius 22 px | 16 × 24 px runtime draw; anchor −8, −22; four unchanged 64 × 96 raster source cells |
 | Loam patch | no collider | 80 × 48 px overlapping floor layer |
 | Moonlight pool | no collider | 112 × 66 px dominant screen-composited illumination; secondary pools may be smaller |
 | Top canopy curtain | 20 one-cell root records across row 2; each uses the rooted 20 × 12 px mask at −2,+4 and is collision-only because the art is drawn as a shared backdrop | Three unchanged 128 × 56 px overlapping clusters; their visible root contact ends at y=48 |
