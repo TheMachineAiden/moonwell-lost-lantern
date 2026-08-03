@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const context={};
 vm.runInNewContext(fs.readFileSync(new URL('../game-core.js',import.meta.url),'utf8'),context);
-const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,EXIT_STATES,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,watcherChoiceResult}=context.MoonwellCore;
+const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,EXIT_STATES,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,watcherChoiceResult}=context.MoonwellCore;
 
 test('the canonical world is a complete 20 by 13 tile canvas',()=>{
   assert.equal(TILE_SIZE,16);
@@ -35,6 +35,44 @@ test('logical cells are decoupled from the two-times luminous render surface',()
   });
   assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.eir)),{
     logical:{cellsWide:1,cellsHigh:1,solid:false,interactionRadius:22},visual:{width:32,height:48,anchorOffsetX:-16,anchorOffsetY:-44}
+  });
+  assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.canopyCurtain)),{
+    logical:{cellsWide:20,cellsHigh:1,rootRow:2,solid:true,colliderWidth:20,colliderHeight:12,colliderOffsetX:-2,colliderOffsetY:4},visual:{width:128,height:56,clusters:3,rootContactY:48}
+  });
+});
+
+test('every visible top-canopy root cell maps to a seam-free blocker in all four areas',()=>{
+  assert.deepEqual(JSON.parse(JSON.stringify(TOP_CANOPY_LAYOUT)),[
+    {x:-6,y:-3,w:128,h:56,frameOffset:0},
+    {x:96,y:-4,w:128,h:56,frameOffset:1},
+    {x:202,y:-2,w:128,h:56,frameOffset:0}
+  ]);
+  assert.deepEqual(JSON.parse(JSON.stringify(TOP_CANOPY_ROOT_CELLS)),Array.from({length:20},(_,col)=>[col,2]));
+  for(let areaIndex=0;areaIndex<4;areaIndex++){
+    const roots=createWorldObjects(areaIndex,areaIndex===1).filter(object=>object.kind==='canopy-root');
+    assert.equal(roots.length,20);
+    roots.forEach((root,col)=>{
+      assert.deepEqual({id:root.id,x:root.x,y:root.y,w:root.w,h:root.h,solid:root.solid,collisionOnly:root.collisionOnly},{id:`canopy-root-${col}`,x:col*16,y:32,w:16,h:16,solid:true,collisionOnly:true});
+      assert.deepEqual(JSON.parse(JSON.stringify(collisionRectFor(root))),{x:col*16-2,y:36,w:20,h:12});
+      assert.equal(isBlocked(col*16+8,47,areaIndex,areaIndex===1),true,`area ${areaIndex}, canopy root ${col}`);
+    });
+  }
+});
+
+test('all area spawns sit below visible tree roots on clear reachable cells',()=>{
+  const canStand=(objects,x,y)=>![[x-5,y-5],[x+5,y-5],[x-5,y+5],[x+5,y+5]].some(([pointX,pointY])=>objects.some(object=>object.solid&&pointX>=collisionRectFor(object).x&&pointX<collisionRectFor(object).x+collisionRectFor(object).w&&pointY>=collisionRectFor(object).y&&pointY<collisionRectFor(object).y+collisionRectFor(object).h));
+  createAreas().forEach((area,areaIndex)=>{
+    assert.equal(canStand(createWorldObjects(areaIndex,areaIndex===1),area.start.x,area.start.y),true,`${area.name} spawn`);
+    assert.ok(area.start.y>=72,`${area.name} remains below the top-canopy contact face`);
+  });
+});
+
+test('top-edge collectibles and encounters stay on the clear side of the rooted boundary',()=>{
+  const canStand=(objects,point)=>![[point.x-5,point.y-5],[point.x+5,point.y-5],[point.x-5,point.y+5],[point.x+5,point.y+5]].some(([pointX,pointY])=>objects.some(object=>object.solid&&pointX>=collisionRectFor(object).x&&pointX<collisionRectFor(object).x+collisionRectFor(object).w&&pointY>=collisionRectFor(object).y&&pointY<collisionRectFor(object).y+collisionRectFor(object).h));
+  createAreas().forEach((area,areaIndex)=>{
+    const objects=createWorldObjects(areaIndex,areaIndex===1);
+    const interactives=[...area.lights,area.memory,area.flower,area.watcher,...(area.runes||[]),...(area.starroots||[])].filter(Boolean).filter(point=>point.y<=72);
+    interactives.forEach(point=>assert.equal(canStand(objects,point),true,`${area.name} top-edge anchor ${point.x},${point.y}`));
   });
 });
 

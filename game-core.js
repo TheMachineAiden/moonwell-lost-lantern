@@ -14,7 +14,7 @@ const VISUAL_FOOTPRINTS=Object.freeze({
   eir:Object.freeze({logical:Object.freeze({cellsWide:1,cellsHigh:1,solid:false,interactionRadius:22}),visual:Object.freeze({width:32,height:48,anchorOffsetX:-16,anchorOffsetY:-44})}),
   loamPatch:Object.freeze({logical:Object.freeze({solid:false}),visual:Object.freeze({width:80,height:48})}),
   moonlightPool:Object.freeze({logical:Object.freeze({solid:false}),visual:Object.freeze({width:112,height:66})}),
-  canopyCurtain:Object.freeze({logical:Object.freeze({solid:false}),visual:Object.freeze({width:128,height:56})})
+  canopyCurtain:Object.freeze({logical:Object.freeze({cellsWide:20,cellsHigh:1,rootRow:2,solid:true,colliderWidth:20,colliderHeight:12,colliderOffsetX:-2,colliderOffsetY:4}),visual:Object.freeze({width:128,height:56,clusters:3,rootContactY:48})})
 });
 const MAP=['....................','....................','....................','....................','....................','....................','....................','....................','....................','....................','....................','....................','....................'];
 const TOTAL_FIREFLIES=8;
@@ -32,6 +32,15 @@ const addedTreeCells=[
   [[2,3],[3,3],[7,3],[8,3],[15,3],[16,3],[3,8],[4,8],[13,8],[14,8]]
 ];
 const platformCells=[[[8,3]],[[5,2],[13,7]],[[6,9],[13,6]],[[5,3],[16,6]]];
+// These three overlapping clusters are the unchanged top-canopy composition.
+// Their dense visible root face spans the world at row 2, so the same declared
+// layout also creates one seam-free line of collision-only root footprints.
+const TOP_CANOPY_LAYOUT=Object.freeze([
+  Object.freeze({x:-6,y:-3,w:128,h:56,frameOffset:0}),
+  Object.freeze({x:96,y:-4,w:128,h:56,frameOffset:1}),
+  Object.freeze({x:202,y:-2,w:128,h:56,frameOffset:0})
+]);
+const TOP_CANOPY_ROOT_CELLS=Object.freeze(Array.from({length:20},(_,col)=>Object.freeze([col,2])));
 // Decorative cells never participate in collision. Moon/shadow patches are
 // value blocks; the remaining kinds are one-tile understory props.
 const groundDecorCells=[
@@ -48,9 +57,10 @@ const boundaryObjects=()=>{
   const objects=[];
   for(let col=0;col<20;col++){objects.push(tileObject(`edge-top-${col}`,'tree',col,0,{solid:true}));objects.push(tileObject(`edge-bottom-${col}`,'tree',col,12,{solid:true}))}
   for(let row=1;row<12;row++){objects.push(tileObject(`edge-left-${row}`,'tree',0,row,{solid:true}));objects.push(tileObject(`edge-right-${row}`,'tree',19,row,{solid:true}))}
+  TOP_CANOPY_ROOT_CELLS.forEach(([col,row])=>objects.push(tileObject(`canopy-root-${col}`,'canopy-root',col,row,{solid:true,collisionOnly:true})));
   return objects
 };
-const collisionRectFor=object=>object.kind==='tree'?{x:object.x-2,y:object.y+4,w:20,h:12}:object.kind==='exit-tree'?{x:object.x-4,y:object.y+4,w:24,h:12}:object.kind==='platform'?{x:object.x-4,y:object.y+2,w:40,h:14}:{x:object.x,y:object.y,w:object.w,h:object.h};
+const collisionRectFor=object=>object.kind==='tree'||object.kind==='canopy-root'?{x:object.x-2,y:object.y+4,w:20,h:12}:object.kind==='exit-tree'?{x:object.x-4,y:object.y+4,w:24,h:12}:object.kind==='platform'?{x:object.x-4,y:object.y+2,w:40,h:14}:{x:object.x,y:object.y,w:object.w,h:object.h};
 const contains=(object,x,y)=>{const collider=collisionRectFor(object);return x>=collider.x&&x<collider.x+collider.w&&y>=collider.y&&y<collider.y+collider.h};
 function createWorldObjects(areaIndex,bridge,exitState=EXIT_STATES.CLOSED){
   const area=createAreas()[areaIndex];
@@ -69,10 +79,10 @@ function createWorldObjects(areaIndex,bridge,exitState=EXIT_STATES.CLOSED){
 }
 
 function createAreas(){return [
-  {name:'Lantern Glade',start:{x:56,y:152},home:{x:280,y:72},memory:{x:40,y:72,text:'A rain-silver leaf holds the storm’s first reflection. The lantern keeper was not alone on the path home.'},lights:[{x:264,y:24},{x:88,y:136},{x:168,y:88}]},
-  {name:'Moonroot Crossing',start:{x:40,y:40},home:{x:40,y:168},flower:{x:264,y:72},watcher:{x:264,y:56},memory:{x:280,y:40,text:'A root-knot is tied with a violet thread. Someone marked the crossing for the next traveler.'},lights:[{x:248,y:152},{x:152,y:168}]},
-  {name:'Whispering Hollow',start:{x:280,y:40},home:{x:40,y:168},runes:[{x:264,y:152},{x:152,y:72},{x:56,y:120}],memory:{x:264,y:56,text:'A small seed-shell remembers a child’s laugh. The hollow keeps gentle sounds as well as echoes.'},lights:[{x:168,y:136,hidden:true}]},
-  {name:'Starfall Grove',start:{x:280,y:40},home:{x:56,y:168},starroots:[{x:264,y:152},{x:168,y:72},{x:56,y:120}],lights:[{x:152,y:152,hidden:true},{x:232,y:56,hidden:true}]}
+  {name:'Lantern Glade',start:{x:56,y:152},home:{x:280,y:72},memory:{x:40,y:72,text:'A rain-silver leaf holds the storm’s first reflection. The lantern keeper was not alone on the path home.'},lights:[{x:264,y:56},{x:88,y:136},{x:168,y:88}]},
+  {name:'Moonroot Crossing',start:{x:40,y:72},home:{x:40,y:168},flower:{x:264,y:72},watcher:{x:264,y:56},memory:{x:280,y:88,text:'A root-knot is tied with a violet thread. Someone marked the crossing for the next traveler.'},lights:[{x:248,y:152},{x:152,y:168}]},
+  {name:'Whispering Hollow',start:{x:280,y:72},home:{x:40,y:168},runes:[{x:264,y:152},{x:152,y:72},{x:56,y:120}],memory:{x:264,y:56,text:'A small seed-shell remembers a child’s laugh. The hollow keeps gentle sounds as well as echoes.'},lights:[{x:168,y:136,hidden:true}]},
+  {name:'Starfall Grove',start:{x:280,y:72},home:{x:56,y:168},starroots:[{x:264,y:152},{x:168,y:72},{x:56,y:120}],lights:[{x:152,y:152,hidden:true},{x:232,y:56,hidden:true}]}
 ]}
 
 function createGroundDecor(areaIndex){return groundDecorCells[areaIndex].map(([kind,col,row],index)=>Object.freeze({id:`decor-${areaIndex}-${index}`,kind,x:col*TILE_SIZE,y:row*TILE_SIZE,w:TILE_SIZE,h:TILE_SIZE,solid:false}))}
@@ -102,5 +112,5 @@ function createEchoReplay(trail,origin){
 }
 const canResolveEchoRune=(stage,echoHolding,player,runes)=>stage===2&&echoHolding&&nearPoint(player,runes[2]);
 function watcherChoiceResult(choice){return choice===0?Object.freeze({correct:true,reply:'Yes. A memory carries a path after the feet have gone. The moonflower listens for that keeping.'}):Object.freeze({correct:false,reply:'A shadow follows, but it does not keep. Listen to the riddle once more; there is no harm in trying again.'})}
-globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,MEMORY_DIALOGUE_TYPOGRAPHY,WATCHER_DIALOGUE,EXIT_STATES,EXIT_STATE_DURATIONS,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,watcherChoiceResult});
+globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,MEMORY_DIALOGUE_TYPOGRAPHY,WATCHER_DIALOGUE,EXIT_STATES,EXIT_STATE_DURATIONS,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,watcherChoiceResult});
 })();

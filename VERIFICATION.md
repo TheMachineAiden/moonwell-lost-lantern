@@ -145,3 +145,27 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
   a passable bridge; Whispering Hollow still reports its sentinel blocked.
 - Figma production evidence: palette contract and matched proof at node `26:2`;
   four-level contact sheet and audit evidence at node `26:3`.
+
+## Top-canopy collision acceptance — 2026-08-03
+
+- Deterministic suite: 43/43. The unchanged three-cluster canopy layout and its
+  20 logical row-2 root cells are exported together. Tests audit all 80
+  per-area records, exact 20 × 12 contact rectangles, overlapping seams, clear
+  arrival/interaction anchors, and full required routes through all four areas.
+- Desktop normal input reproduced the original failure before the correction:
+  Whispering Hollow began at y=40 inside the tree art and Up moved Luna through
+  it to y≈22.54. After correction, repeated desktop Up input in Starfall stops
+  at y≈53.45; additional inputs leave the position unchanged. Touch-landscape
+  stops at y=54 and likewise rejects the next Up press.
+- Every cache-isolated developer scene reports 20 canopy-root colliders from
+  x=−2 through x=322 with y=36, height 12. All four were visually reviewed at
+  1440 × 900; the repositioned Lantern firefly, Moonroot memory, and arrival
+  anchors are visibly clear without changing the enclosing art.
+- Desktop start/prologue skip, movement, P pause, and Escape resume pass.
+  Portrait 390 × 844 × 3 has document width 390, no horizontal overflow, and a
+  fully fitting rotation gate. Touch landscape 844 × 390 × 3 has document
+  width 844, a 600 × 390 game surface, fitting 116 × 116 steering and 44 × 44
+  pause controls, normal touch movement, and pause/Continue.
+- The preserved console across desktop, portrait, touch, and all scene
+  navigations is empty. Current production assets and the cache-busted
+  `game-core.js` / `game.js` requests all return 200 or 304 locally.
