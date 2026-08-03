@@ -43,11 +43,12 @@ Use a restricted environmental palette: midnight navy, continuous muted
 blue-green loam and moss, deep teal foliage, natural dark bark and roots, cool
 cyan/blue moonlight, pale silver, and restrained moon-gold. Purple, magenta,
 and violet must not form outlines, seams, halos, repeated marks, or edge
-accents on terrain, foliage, props, water, stones, mushrooms, canopy, or
-collider boundaries. Reserve amber for fireflies, lit lanterns, starroot seed
-lights, and the final altar. Luna and Eir retain their established character
-identity; localized magical objects should prefer cyan, pale neutral, teal, or
-amber. Avoid pure white and neon pink.
+accents on terrain, foliage, props, water, stones, mushrooms, canopy,
+characters, portraits, or collider boundaries. Reserve amber for fireflies,
+lit lanterns, starroot seed lights, and the final altar. Luna and Eir retain
+their established silhouettes and identities through navy, teal, cyan, natural
+skin/bark tones, pale neutral, and amber instead of purple-family accents.
+Avoid pure white and neon pink.
 
 Every object must look as though one pixel artist made it: identical outline weight, comparable texture density, and the same grounded baseline. The keeper is a compact one-tile visual, with feet aligned to its existing movement point.
 
@@ -126,11 +127,14 @@ the retained `moonwell-starroot-chime-source-v1.png` through
 `scripts/process-starroot-chime-art.sh` and the shared no-violet processor.
 
 `scripts/process-no-violet-environment-art.sh` is the authoritative final
-environmental pass. It rebuilds the source-derived family in an isolated
+runtime-art pass. It rebuilds the source-derived family in an isolated
 directory, maps prohibited purple-family pixels to material-specific teal,
-bark, cyan, or amber-neutral colors, and writes only versioned production
-derivatives. Its predicate and complete runtime family are covered by pixel,
-silhouette-edge, tiled-seam, runtime-path, and byte-determinism tests.
+bark, cyan, amber-neutral, or character-outline colors, and writes only
+versioned production derivatives. Luna's four-cell native master is
+`source/moonwell-luna-walk-v6.xpm`, a deliberate 16 px reduction tied by hash
+to the approved high-resolution owner handoff. Its predicate and complete
+runtime family are covered by pixel, silhouette-edge, tiled-seam,
+runtime-path, feature-presence, and byte-determinism tests.
 
 Lighting order is continuous loam → screen-composited moonlight → waterways
 and detail → canopy depth → baseline-sorted sprites → navy vignette. Lantern

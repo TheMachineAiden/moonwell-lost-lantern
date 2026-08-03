@@ -1,9 +1,10 @@
 #!/bin/sh
 set -eu
 
-# Rebuild every runtime environmental raster from retained generated sources,
-# then replace purple-family pixels with material-specific bark, teal, or
-# moonlit-cyan hues. Luna and Eir are deliberately outside this processor.
+# Rebuild every runtime raster derived from retained generated sources, then
+# replace purple-family pixels with material-specific bark, teal, moonlit-cyan,
+# or character-outline hues. Luna's native master is a deliberate 16 px
+# reduction of the approved owner handoff, not a blind atlas downsample.
 # ImageMagick 7+ is required.
 repo_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 production="$repo_dir/assets/moonwell-art/production"
@@ -11,6 +12,24 @@ work_dir=$(mktemp -d "${TMPDIR:-/var/tmp}/moonwell-no-violet.XXXXXX")
 trap 'rm -rf "$work_dir"' EXIT
 legacy="$work_dir/source-derived"
 mkdir -p "$legacy" "$production"
+
+luna_handoff="$repo_dir/artifacts/owner-handoffs/luna-regeneration-v1/luna-icon-language-generated-alpha-v1.png"
+luna_native="$repo_dir/assets/moonwell-art/source/moonwell-luna-walk-v6.xpm"
+luna_handoff_sha256='b22e8061da8334e7569fa45bba5def95304175fa04bfcfd68f12c24ee4c58c92'
+luna_native_sha256='4fc272c15c14587e5de150555297c8fa686acd9148111dc55e9d6e9bc0e2106a'
+
+digest() {
+  shasum -a 256 "$1" | awk '{print $1}'
+}
+
+if [ "$(digest "$luna_handoff")" != "$luna_handoff_sha256" ]; then
+  printf '%s\n' 'Approved Luna owner handoff changed; review the native reduction before rebuilding.' >&2
+  exit 1
+fi
+if [ "$(digest "$luna_native")" != "$luna_native_sha256" ]; then
+  printf '%s\n' 'Luna native master changed without an updated reviewed-source digest.' >&2
+  exit 1
+fi
 
 MOONWELL_ART_OUTPUT="$legacy" bash "$repo_dir/scripts/process-moonwell-art.sh"
 MOONWELL_ART_OUTPUT="$legacy" MOONWELL_WRITE_COMPARISON=0 \
@@ -22,6 +41,7 @@ MOONWELL_ART_OUTPUT="$legacy" sh "$repo_dir/scripts/process-starroot-chime-art.s
 # The predicate selects saturated purple/magenta/violet pixels while leaving
 # navy moonlight, brown bark, neutral highlights, and cyan pixels intact.
 purple_predicate='r>g*1.08 && b>g*1.12 && b>r*.58 && (max(r,b)-g)>.035'
+character_purple_predicate='r>g*1.06 && b>g*1.10 && b>r*.30 && (max(r,b)-g)>.035'
 
 recolor() {
   input="$legacy/$1"
@@ -40,6 +60,20 @@ recolor() {
     -colorspace sRGB "$shifted"
   magick "$input" "$shifted" "$mask" -compose over -composite \
     -strip -define png:exclude-chunk=date,time "$output"
+}
+
+flat_recolor() {
+  input="$legacy/$1"
+  output="$production/$2"
+  color="$3"
+  mask="$work_dir/$2-mask.png"
+  fill="$work_dir/$2-fill.png"
+  dimensions=$(magick identify -format '%wx%h' "$input")
+
+  magick "$input" -alpha off -fx "$character_purple_predicate ? 1 : 0" "$mask"
+  magick -size "$dimensions" "xc:$color" "$fill"
+  magick "$input" "$fill" "$mask" -compose over -composite \
+    -strip -define png:exclude-chunk=date,time PNG32:"$output"
 }
 
 # Deep, muted teal for foliage, loam, silhouettes, and small ground detail.
@@ -70,4 +104,16 @@ recolor moonwell-moonflower-v2.png moonwell-moonflower-v3.png 52% .40 .84
 recolor moonwell-rune-stone-v2.png moonwell-rune-stone-v3.png 52% .42 .82
 recolor moonwell-starroot-chime-loop-v1.png moonwell-starroot-chime-loop-v2.png 44% .42 .76
 
-printf '%s\n' "Rebuilt no-violet environmental runtime family in $production"
+# Eir's retained keyed sheet leaves saturated magenta/fuchsia fringe after the
+# 64 x 96 frame reduction. Replace it with the established near-black outline;
+# the larger portrait maps its sparse purple undergrowth accents to muted teal.
+flat_recolor moonwell-eir-rootwatcher-idle-v1.png moonwell-eir-rootwatcher-idle-v2.png '#081928'
+flat_recolor moonwell-eir-rootwatcher-portrait-v1.png moonwell-eir-rootwatcher-portrait-v2.png '#0F4559'
+
+# The reviewed native master uses palette samples from the approved high-res
+# handoff and preserves its cowlick, teal cloak, side-on gait, and amber lamp in
+# four exact 16 x 16 cells. The handoff hash above prevents accidental drift.
+magick "$luna_native" -strip -define png:exclude-chunk=date,time \
+  PNG32:"$production/moonwell-keeper-walk-v6.png"
+
+printf '%s\n' "Rebuilt no-violet Moonwell runtime family in $production"
