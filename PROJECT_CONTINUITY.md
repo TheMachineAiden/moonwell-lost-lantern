@@ -318,3 +318,38 @@ then look for the next small player-visible improvement.
   viewport width, consoles are empty, and all 23 eagerly loaded production
   image requests complete successfully. Moonroot water/bridge and Hollow
   sentinel audit assertions remain correct.
+
+## Top boundary rooted-collision correction — 2026-08-03
+
+- Traced the reported walk-through defect to the three 128 × 56 top-canopy
+  clusters. They were rendered as visibly rooted trees down to the playfield
+  but were classified as non-solid decoration; only the shallower row-0 spruce
+  anchors had collision.
+- Exported the unchanged canopy composition as `TOP_CANOPY_LAYOUT` and mapped
+  its continuous visible contact face to 20 collision-only `canopy-root`
+  records across logical row 2. Each record reuses the established 20 × 12
+  rooted tree mask, so adjacent cells overlap by four pixels and cannot drift
+  into passable seams. The overhead foliage remains visual overhang.
+- Moved the three invalid top-band arrival anchors to the nearest clear
+  tile-centred row and moved only the two affected top-band pickups (Lantern
+  Glade's first firefly and Moonroot's optional memory) to adjacent clear
+  anchors. Encounter order, routes, art, puzzles, water, exits, sentinel,
+  controls, install metadata, and no-violet assets are unchanged.
+- Added a cache-busted runtime URL and deterministic coverage for the exact
+  visual layout, all 80 canopy-root instances across four areas, collider
+  rectangles, seam-free blocking, clear spawns and interactives, and every
+  required route.
+
+### Verification
+
+- `npm run check`, 43/43 tests, `npm run build`, byte-identical icon and
+  environmental regeneration, and `git diff --check` pass.
+- Desktop keyboard and 844 × 390 × 3 touch input both stop Luna at the visible
+  root face after repeated Up input; further input does not move her into the
+  canopy. All four developer scenes expose 20 matching root colliders and were
+  visually reviewed. Moonroot water/bridge and Hollow sentinel checks remain
+  correct.
+- Desktop play/start/pause/resume, the 390 × 844 × 3 portrait rotation gate,
+  and touch-landscape movement/pause/Continue pass. Reviewed layouts have no
+  horizontal overflow, required controls fit, all current asset/script requests
+  succeed, and the preserved browser console is empty.

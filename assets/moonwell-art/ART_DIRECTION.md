@@ -109,15 +109,17 @@ This is the authoritative mapping:
 | Eir | one non-solid cell-centred interaction anchor, radius 22 px | 32 × 48 px; anchor −16, −44; four raster idle frames |
 | Loam patch | no collider | 80 × 48 px overlapping floor layer |
 | Moonlight pool | no collider | 112 × 66 px dominant screen-composited illumination; secondary pools may be smaller |
-| Canopy curtain | no collider | 128 × 56 px enclosing background/foreground layer |
+| Top canopy curtain | 20 one-cell root records across row 2; each uses the rooted 20 × 12 px mask at −2,+4 and is collision-only because the art is drawn as a shared backdrop | Three unchanged 128 × 56 px overlapping clusters; their visible root contact ends at y=48 |
 
 The only larger logical collider exception remains the 2 × 2 Hollow sentinel.
 The root platform uses a 40 × 14 perceived-contact mask around its 2 × 1 record
 so its shelf face and collision agree. Eir and starroot chimes are deliberately
 non-blocking. Spruce canopy overhang does not enlarge its rooted contact mask;
-the trunk and visible base do. Decorative loam, light, and canopy layers never
-collide. The runtime contract is exported as `VISUAL_FOOTPRINTS` from
-`game-core.js` and is covered by deterministic tests.
+the trunk and visible base do. Decorative loam and light layers never collide.
+The top canopy is not decorative ground: its three clusters read as one dense,
+rooted boundary, so its declared row-2 root cells block while the overhead
+foliage remains visual overhang. The runtime contract and shared canopy layout
+are exported from `game-core.js` and covered by deterministic tests.
 
 Starfall Grove consumes `moonwell-starroot-chime-loop-v2.png`, rebuilt from
 the retained `moonwell-starroot-chime-source-v1.png` through

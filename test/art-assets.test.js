@@ -119,8 +119,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v2\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-no-violet-5/);
-  assert.match(html,/game\.js\?v=moonwell-no-violet-5/);
+  assert.match(html,/game-core\.js\?v=moonwell-canopy-collision-6/);
+  assert.match(html,/game\.js\?v=moonwell-canopy-collision-6/);
 });
 
 test('environmental rasters contain no prohibited purple-family silhouette or seam pixels',()=>{
@@ -184,4 +184,12 @@ test('normal keyboard and touch presses produce deterministic collision-aware mo
   assert.match(source,/function keyNudge\(direction\).*canMove\(player\.x\+dx,player\.y\)/);
   assert.match(source,/if\(!event\.repeat\)keyNudge\(direction\)/);
   assert.match(source,/keyNudge\(steer\(event\)\)/);
+});
+
+test('the unchanged top-canopy renderer consumes the same exported layout as its root colliders',()=>{
+  const source=read('game.js').toString(),html=read('index.html').toString();
+  assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
+  assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
+  assert.match(html,/game-core\.js\?v=moonwell-canopy-collision-6/);
+  assert.match(html,/game\.js\?v=moonwell-canopy-collision-6/);
 });
