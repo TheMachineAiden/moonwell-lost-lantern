@@ -404,3 +404,24 @@ then look for the next small player-visible improvement.
 - Luna now renders natively at 26 × 40 from anchor −13,−39. Her 10 × 10 solid
   movement box, entity depth point, routes, puzzles, and gameplay balance are
   unchanged. Eir's corrected v2 assets and all icon/PWA assets remain intact.
+
+## Exact half-size Luna v7 runtime draw — 2026-08-03
+
+- The owner-approved v7 source and 104 × 40 four-frame atlas remain unchanged.
+  Runtime source crops stay 26 × 40 and now draw at exactly 13 × 20 with
+  image smoothing disabled; no art-processing script or raster changed.
+- Player and Hollow echo rendering share centered horizontal offset −6.5 and
+  grounded vertical offset −19.5. On Moonwell's 2× intrinsic render surface,
+  these half-pixel logical offsets become whole physical pixels, preserving the
+  complete 23 × 38 figure silhouette, common foot baseline, crisp pixels, and
+  the existing four-frame order and timing.
+- The 10 × 10 movement/collision footprint, interaction reach, entity depth,
+  routes, colliders, camera, scenes, Eir, dialogue, controls, and PWA assets are
+  unchanged. Only Luna's player/echo draw geometry and `game.js` cache key
+  changed at runtime.
+- The visual-judgment pass compared public 26 × 40 and local 13 × 20 rendering
+  at the same actual 640 × 416 game scale. All four scenes passed beside Eir,
+  spruces, Rootwatcher-scale scenery, water, paths, platforms, runes, starroots,
+  props, and the altar. Retained comparison attachments are
+  `moonwell-luna-current-26x40-public-baseline-area-2.png` and
+  `moonwell-luna-half-runtime-area-2.png`.

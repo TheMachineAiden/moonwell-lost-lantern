@@ -121,7 +121,7 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
   assert.match(html,/game-core\.js\?v=moonwell-luna-exact-8/);
-  assert.match(html,/game\.js\?v=moonwell-luna-exact-8/);
+  assert.match(html,/game\.js\?v=moonwell-luna-half-9/);
 });
 
 test('environmental rasters contain no prohibited purple-family silhouette or seam pixels',()=>{
@@ -155,8 +155,11 @@ test('Eir retains the corrected no-purple character palette',()=>{
 
 test('exact owner Luna source reduces literally to four readable padded frames',()=>{
   const ownerSource='artifacts/owner-handoffs/luna-exact-owner-source-2026-08-03.png';
+  const runtimeAtlas='assets/moonwell-art/production/moonwell-keeper-walk-v7.png';
   assert.deepEqual(dimensions(ownerSource),[1995,788]);
   assert.equal(createHash('sha256').update(read(ownerSource)).digest('hex'),'50258352972739d24748684eb433c50aefad4393d08b0b1461e3c82e49a86249');
+  assert.deepEqual(dimensions(runtimeAtlas),[104,40]);
+  assert.equal(createHash('sha256').update(read(runtimeAtlas)).digest('hex'),'a287641c02f9e243d5f58d8188e7a54084c42a92150542ce52adfa29e8315f07');
   const processor=read('scripts/process-no-violet-environment-art.sh').toString();
   assert.match(processor,/luna-exact-owner-source-2026-08-03\.png/);
   assert.match(processor,/-filter point -resize 23x38/);
@@ -209,12 +212,13 @@ test('no-violet runtime regeneration is byte-identical',()=>{
   assert.equal(digest(retainedStarrootAlpha),starrootAlphaBefore,'composite regeneration rewrote a retained generated source companion');
 });
 
-test('Luna keeps one-cell control under the larger exact-source visual overhang',()=>{
+test('Luna draws the unchanged v7 atlas at exact half size over one-cell control',()=>{
   const source=read('game.js').toString();
   assert.match(source,/moonwell-keeper-walk-v7\.png/);
-  assert.match(source,/player\.y-39/);
-  assert.match(source,/frame\*26,0,26,40,-13,0,26,40/);
-  assert.match(source,/ctx\.drawImage\(keeperArt,0,0,26,40,-13,0,26,40\)/);
+  assert.match(source,/KEEPER_SOURCE_WIDTH=26,KEEPER_SOURCE_HEIGHT=40,KEEPER_DRAW_WIDTH=13,KEEPER_DRAW_HEIGHT=20,KEEPER_DRAW_X=-6\.5,KEEPER_DRAW_Y=-19\.5/);
+  assert.match(source,/walking&&!reduce\.matches\?Math\.floor\(walkClock\/\.11\)%4:0/);
+  assert.match(source,/frame\*KEEPER_SOURCE_WIDTH,0,KEEPER_SOURCE_WIDTH,KEEPER_SOURCE_HEIGHT,KEEPER_DRAW_X,KEEPER_DRAW_Y,KEEPER_DRAW_WIDTH,KEEPER_DRAW_HEIGHT/);
+  assert.match(source,/ctx\.drawImage\(keeperArt,0,0,KEEPER_SOURCE_WIDTH,KEEPER_SOURCE_HEIGHT,KEEPER_DRAW_X,KEEPER_DRAW_Y,KEEPER_DRAW_WIDTH,KEEPER_DRAW_HEIGHT\)/);
   assert.match(source,/ctx\.imageSmoothingEnabled=false/);
   assert.match(source,/canMove=.*wall\(x-5,y-5\).*wall\(x\+5,y\+5\)/);
 });
@@ -242,5 +246,5 @@ test('the unchanged top-canopy renderer consumes the same exported layout as its
   assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
   assert.match(html,/game-core\.js\?v=moonwell-luna-exact-8/);
-  assert.match(html,/game\.js\?v=moonwell-luna-exact-8/);
+  assert.match(html,/game\.js\?v=moonwell-luna-half-9/);
 });

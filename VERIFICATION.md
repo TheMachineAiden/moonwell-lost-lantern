@@ -240,3 +240,32 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
   rotation gate, fitted modal, and zero horizontal overflow. Eir's dialogue,
   wrong-answer retry, and leave flow passed. Local console remained empty and
   all requested assets/scripts returned 200 or 304.
+
+## Exact half-size Luna v7 acceptance — 2026-08-03
+
+- Identity: the retained 1995 × 788 owner source remains SHA-256
+  `50258352972739d24748684eb433c50aefad4393d08b0b1461e3c82e49a86249`;
+  the unchanged 104 × 40 v7 atlas remains SHA-256
+  `a287641c02f9e243d5f58d8188e7a54084c42a92150542ce52adfa29e8315f07`.
+  Focused assertions pin both dimensions and hashes.
+- Geometry: the four unchanged 26 × 40 source cells draw at exactly 13 × 20
+  from offsets −6.5,−19.5 with smoothing disabled. Browser Canvas2D inspection
+  at the 2× intrinsic render scale found every complete 23 × 38 figure, with
+  frame centers within one physical pixel of the anchor, feet ending one pixel
+  above it, and 14–20 visible warm-lantern pixels per frame. Frame selection and
+  `.11` walk timing are unchanged.
+- Actual-scale visual judgment: public 26 × 40 and requested 13 × 20 draws were
+  compared at 640 × 416 across Lantern Glade, Moonroot Crossing, Whispering
+  Hollow, and Starfall Grove. The requested render is exactly half-size, crisp,
+  fully unclipped, centered, grounded, and readable beside Eir, trees, paths,
+  water, root platforms, runes, starroots, props, and altar scenery. Evidence is
+  retained as `moonwell-luna-current-26x40-public-baseline-area-2.png` and
+  `moonwell-luna-half-runtime-area-2.png`.
+- Local interaction QA: desktop 1440 × 900 passed entry, prologue skip,
+  keyboard movement, pause, and Escape resume. Touch landscape 844 × 390 × 3
+  passed entry, movement buttons, pause/Continue, a fitted 600 × 390 canvas,
+  116 × 116 movement control, and zero document overflow. Portrait
+  390 × 844 × 3 retained its complete rotation gate, fitted 320 × 208 canvas,
+  and zero horizontal overflow. Eir's dialogue passed wrong-answer retry,
+  correct-answer response, and leave. All four developer scenes, local console,
+  and 200/304 network health passed.
