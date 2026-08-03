@@ -425,3 +425,26 @@ then look for the next small player-visible improvement.
   props, and the altar. Retained comparison attachments are
   `moonwell-luna-current-26x40-public-baseline-area-2.png` and
   `moonwell-luna-half-runtime-area-2.png`.
+
+## Route and narrative-affordance pass — 2026-08-03
+
+- Whispering Hollow's lower-left route pinch was opened by removing tree cell
+  `[3,9]`; the neighboring tree remains, so the forest composition still reads
+  densely. The post-sentinel memory now sits at `(264,88)`. All-scene route
+  coverage enforces an eight-pixel comfort envelope for keyboard and touch.
+- Ambient ground sparkles are now `glowmoss`: static, dim cyan marks that cannot
+  be confused with the animated amber firefly collectibles.
+- Starfall Grove's center landmark is the Moonwell altar. Its visual is always
+  present, its base is solid, it wakes after the three starroots, and the two
+  released lights must be returned to it to finish. There is no competing exit
+  tree or decorative platform-shaped affordance in the finale.
+- The lower-shore Moonroot memory is explicitly a post-crossing discovery. Its
+  wording describes evidence of an earlier safe crossing and cannot be read as
+  a riddle hint or bridge instruction.
+- The prologue now lives inside the game screen as a quiet vertical story drift.
+  Skip and Enter require a player action before fullscreen/gameplay, while
+  reduced-motion users receive an immediate, static, fully readable version.
+- Sol's spatial review favored the retained forest density, `(264,88)` memory,
+  a 32 × 24 altar grounded at y=112 with a small solid base and 22-pixel reach,
+  and a flat upward drift instead of a perspective crawl. Those recommendations
+  define the implemented geometry and presentation.

@@ -67,7 +67,7 @@ test('luminous production assets preserve exact render footprints',()=>{
 });
 
 test('all four areas receive the selected forest floor vocabulary without new collision',()=>{
-  const required=['shadow','moon','fern','stone','needles','root','mushroom','firefly'];
+  const required=['shadow','moon','fern','stone','needles','root','mushroom','glowmoss'];
   for(let area=0;area<4;area++){
     const decor=context.globalThis.MoonwellCore.createGroundDecor(area);
     required.forEach(kind=>assert.ok(decor.some(item=>item.kind===kind),`area ${area} lacks ${kind}`));
@@ -121,8 +121,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v2\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-eir-riddles-10/);
-  assert.match(html,/game\.js\?v=moonwell-vertical-bridge-10/);
+  assert.match(html,/game-core\.js\?v=moonwell-returning-light-11/);
+  assert.match(html,/game\.js\?v=moonwell-returning-light-11/);
 });
 
 test('environmental rasters contain no prohibited purple-family silhouette or seam pixels',()=>{
@@ -245,10 +245,39 @@ test('normal keyboard and touch presses produce deterministic collision-aware mo
   assert.match(source,/keyNudge\(steer\(event\)\)/);
 });
 
+test('ambient glowmoss cannot be mistaken for a collectible firefly',()=>{
+  const source=read('game.js').toString(),core=read('game-core.js').toString();
+  assert.match(source,/kind==='glowmoss'/);
+  assert.doesNotMatch(source,/kind==='firefly'/);
+  assert.doesNotMatch(core,/\['firefly',/);
+  assert.match(source,/#397a72.*#64a89a.*#8bd0c0/);
+});
+
+test('Starfall altar has an undistorted draw, solid base, and explicit return finale',()=>{
+  const source=read('game.js').toString(),core=read('game-core.js').toString();
+  assert.match(source,/ctx\.drawImage\(art\.altar,point\.x-16,point\.y-24,32,24\)/);
+  assert.match(core,/moonwell-altar-base'.*x:176,y:104,w:28,h:8,solid:true,collisionOnly:true/);
+  assert.match(source,/Return them to the awakened Moonwell altar/);
+  assert.match(source,/nearPoint\(player,place\.altar,place\.altar\.interactionRadius\)\)finish\(\)/);
+  assert.doesNotMatch(core,/name:'Starfall Grove'[^\n]*home:/);
+});
+
+test('the in-canvas prologue drifts, stays skippable, and becomes static for reduced motion',()=>{
+  const source=read('game.js').toString(),html=read('index.html').toString();
+  assert.match(source,/class=\"prologue-stage\"/);
+  assert.match(source,/Skip prologue/);
+  assert.match(source,/Enter the forest/);
+  assert.match(source,/setTimeout\(\(\)=>\{enterButton\.hidden=false/);
+  assert.match(html,/@keyframes moonwell-prologue-drift/);
+  assert.match(html,/@media\(prefers-reduced-motion:reduce\).*\.prologue-copy\{[^}]*animation:none/s);
+  assert.match(source,/if\(reduce\.matches\)enterButton\.hidden=false/);
+  assert.doesNotMatch(source,/setTimeout\([^)]*begin/);
+});
+
 test('the unchanged top-canopy renderer consumes the same exported layout as its root colliders',()=>{
   const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-eir-riddles-10/);
-  assert.match(html,/game\.js\?v=moonwell-vertical-bridge-10/);
+  assert.match(html,/game-core\.js\?v=moonwell-returning-light-11/);
+  assert.match(html,/game\.js\?v=moonwell-returning-light-11/);
 });

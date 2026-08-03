@@ -306,3 +306,35 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
   retained their established composition. Local console was empty and every
   observed request returned 200 or 304. All 45 tests, syntax checks, production
   build, and source-to-dist identity checks pass.
+
+## Route clarity, altar finale, and in-canvas prologue — 2026-08-03
+
+- Route clearance: Whispering Hollow's required route now has one fewer tree at
+  the lower-left pinch, and its memory moved to x=264, y=88. A deterministic
+  navigation test checks every required pickup, interaction, bridge crossing,
+  and finale route in all four scenes with an eight-logical-pixel comfort
+  envelope around Luna's movement box.
+- Clear visual semantics: decorative firefly-like ground marks are now static,
+  low-contrast cyan `glowmoss`, with no amber collectible sprite, white core,
+  halo, or animation. The genuine collectible fireflies remain animated amber.
+  Starfall Grove's central platform is now explicitly the Moonwell altar: it is
+  always visible, wakes after all three starroots, releases the final two
+  lights, and completes the story only when Luna returns those lights to it.
+  Its 32 × 24 visual, 28 × 8 solid base, and 22-pixel interaction reach agree.
+- Story sequencing: the Moonroot memory remains on the far shore and now reads
+  as proof that another keeper crossed safely, not as bridge-opening guidance.
+  The final area's obsolete exit tree was removed so the awakened altar is the
+  single, unambiguous destination.
+- Prologue: the former timer-driven cards are replaced by a semantic, skippable
+  14-second Moonwell-native upward drift inside the game screen. It never starts
+  play without a trusted Enter/Skip action. Reduced motion shows the complete
+  copy statically and exposes Enter immediately; Escape remains a normal pause
+  control after the prologue DOM is removed.
+- Local validation: syntax checks, all 50 tests, deterministic art regeneration,
+  production build, source-to-dist identity, and `git diff --check` pass.
+  Desktop normal input completed the two-light altar return and reached the
+  ending. The opening, moving, ready, and reduced-motion prologue states; all
+  four scenes; 844 × 390 touch landscape; and 390 × 844 portrait were visually
+  reviewed. Controls remain at least 44 pixels tall, layouts do not overflow,
+  and the browser console is empty with all observed requests returning 200 or
+  304.

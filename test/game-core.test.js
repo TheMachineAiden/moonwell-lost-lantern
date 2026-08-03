@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const context={};
 vm.runInNewContext(fs.readFileSync(new URL('../game-core.js',import.meta.url),'utf8'),context);
-const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,EXIT_STATES,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,watcherChoiceResult}=context.MoonwellCore;
+const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,starfallAltarState,watcherChoiceResult}=context.MoonwellCore;
 
 test('the canonical world is a complete 20 by 13 tile canvas',()=>{
   assert.equal(TILE_SIZE,16);
@@ -32,6 +32,12 @@ test('logical cells are decoupled from the two-times luminous render surface',()
   });
   assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.starrootChime)),{
     logical:{cellsWide:1,cellsHigh:1,solid:false,interactionRadius:15},visual:{width:24,height:24,anchorOffsetX:-12,anchorOffsetY:-16}
+  });
+  assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.moonwellAltar)),{
+    logical:{cellsWide:2,cellsHigh:2,solid:true,colliderWidth:28,colliderHeight:8,colliderOffsetX:-14,colliderOffsetY:-8,interactionRadius:22},visual:{width:32,height:24,anchorOffsetX:-16,anchorOffsetY:-24}
+  });
+  assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.glowmoss)),{
+    logical:{solid:false,collectible:false},visual:{width:16,height:16}
   });
   assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.eir)),{
     logical:{cellsWide:1,cellsHigh:1,solid:false,interactionRadius:22},visual:{width:16,height:24,anchorOffsetX:-8,anchorOffsetY:-22}
@@ -109,6 +115,14 @@ test('memory reveals use a fixed in-canvas safe band with room for readable copy
   assert.deepEqual(JSON.parse(JSON.stringify(MEMORY_DIALOGUE_TYPOGRAPHY)),{bodyPx:13,titlePx:14,lineHeight:1.45});
 });
 
+test('Moonroot memory is an optional far-shore discovery, never bridge guidance',()=>{
+  const memory=createAreas()[1].memory;
+  assert.deepEqual({x:memory.x,y:memory.y},{x:280,y:168});
+  assert.match(memory.text,/^On the far shore,/);
+  assert.match(memory.text,/proof that another keeper once crossed safely\.$/);
+  assert.doesNotMatch(memory.text,/open|riddle|answer|wake the bridge/i);
+});
+
 test('the Moonroot bridge is a narrow four-cell north-to-south crossing',()=>{
   assert.deepEqual(JSON.parse(JSON.stringify(MOONROOT_BRIDGE_LAYOUT)),{water:{firstCol:1,lastCol:18,firstRow:5,lastRow:8},bridge:{col:9,row:5,cols:2,rows:4}});
   assert.equal(isBlocked(160,100,1,false),true);
@@ -139,9 +153,9 @@ test('Moonroot has a complete playable route from Eir to its lower shore only af
   assert.equal(routeExists(true),true);
 });
 
-test('each exit stays a solid one-cell tree until its fully parted state',()=>{
+test('the first three exits stay solid until parted while Starfall ends at its altar',()=>{
   const areas=createAreas();
-  areas.forEach((area,index)=>{
+  areas.slice(0,3).forEach((area,index)=>{
     const col=Math.floor(area.home.x/16),row=Math.floor(area.home.y/16);
     for(const state of [EXIT_STATES.CLOSED,EXIT_STATES.OPENING,EXIT_STATES.REVEALED]){
       const exit=createWorldObjects(index,false,state).find(object=>object.id===`exit-tree-${index}`);
@@ -150,6 +164,19 @@ test('each exit stays a solid one-cell tree until its fully parted state',()=>{
     const openExit=createWorldObjects(index,false,EXIT_STATES.OPEN).find(object=>object.id===`exit-tree-${index}`);
     assert.equal(openExit.solid,false);
   });
+  assert.equal(areas[3].home,undefined);
+  assert.deepEqual(JSON.parse(JSON.stringify(areas[3].altar)),JSON.parse(JSON.stringify(STARFALL_ALTAR)));
+  assert.equal(createWorldObjects(3,false).some(object=>object.kind==='exit-tree'),false);
+  const base=createWorldObjects(3,false).find(object=>object.kind==='altar-base');
+  assert.deepEqual(JSON.parse(JSON.stringify(base)),{id:'moonwell-altar-base',kind:'altar-base',x:176,y:104,w:28,h:8,solid:true,collisionOnly:true});
+});
+
+test('Starfall altar progresses from landmark to awakened return point',()=>{
+  assert.equal(starfallAltarState(false,false),STARFALL_ALTAR_STATES.DORMANT);
+  assert.equal(starfallAltarState(true,false),STARFALL_ALTAR_STATES.AWAKE);
+  assert.equal(starfallAltarState(true,true),STARFALL_ALTAR_STATES.READY);
+  assert.equal(isBlocked(190,108,3,false),true);
+  assert.equal(isBlocked(190,96,3,false),false);
 });
 
 test('the exit tree state sequence cannot remove its collider before the fully parted glimmer',()=>{
@@ -229,7 +256,7 @@ test('keepers, exits, collectibles, and ordinary interactives use tile-centred a
   const centred=point=>point.x%16===8&&point.y%16===8;
   for(const area of createAreas()){
     assert.equal(centred(area.start),true);
-    assert.equal(centred(area.home),true);
+    if(area.home)assert.equal(centred(area.home),true);
     area.lights.forEach(light=>assert.equal(centred(light),true));
     if(area.memory)assert.equal(centred(area.memory),true);
     if(area.watcher)assert.equal(centred(area.watcher),true);
@@ -238,24 +265,24 @@ test('keepers, exits, collectibles, and ordinary interactives use tile-centred a
   }
 });
 
-test('every approved side-forest cluster has ten one-cell solid trees and preserves the marked routes',()=>{
+test('every intended route has an eight-pixel comfort envelope around trees and props',()=>{
   const areas=createAreas();
   const requiredRoutes=[
-    [areas[0].start,...areas[0].lights,areas[0].home],
-    [areas[1].start,areas[1].watcher,{x:160,y:72},{x:160,y:152},...areas[1].lights,areas[1].home],
-    [areas[2].start,...areas[2].runes,areas[2].home],
-    [areas[3].start,...areas[3].starroots,...areas[3].lights,areas[3].home]
+    [areas[0].start,...areas[0].lights,areas[0].memory,areas[0].home],
+    [areas[1].start,areas[1].watcher,{x:160,y:72},{x:160,y:152},...areas[1].lights,areas[1].memory,areas[1].home],
+    [areas[2].start,...areas[2].runes,...areas[2].lights,areas[2].memory,areas[2].home],
+    [areas[3].start,...areas[3].starroots,...areas[3].lights,areas[3].altar]
   ];
   const routeExists=(areaIndex,bridge,start,target)=>{
     const objects=createWorldObjects(areaIndex,bridge,EXIT_STATES.OPEN);
-    const blocked=(x,y)=>objects.some(object=>{if(!object.solid)return false;const collider=collisionRectFor(object);return x>=collider.x&&x<collider.x+collider.w&&y>=collider.y&&y<collider.y+collider.h});
-    const canStand=(x,y)=>![[x-5,y-5],[x+5,y-5],[x-5,y+5],[x+5,y+5]].some(([pointX,pointY])=>blocked(pointX,pointY));
+    const comfortRadius=8;
+    const canStand=(x,y)=>!objects.some(object=>{if(!object.solid)return false;const collider=collisionRectFor(object);return x+comfortRadius>collider.x&&x-comfortRadius<collider.x+collider.w&&y+comfortRadius>collider.y&&y-comfortRadius<collider.y+collider.h});
     const queue=[[start.x,start.y]],seen=new Set([`${start.x},${start.y}`]);
     while(queue.length){const [x,y]=queue.shift();if(Math.hypot(x-target.x,y-target.y)<10)return true;for(const [dx,dy] of [[2,0],[-2,0],[0,2],[0,-2]]){const nextX=x+dx,nextY=y+dy,key=`${nextX},${nextY}`;if(nextX<6||nextX>314||nextY<6||nextY>202||seen.has(key)||!canStand(nextX,nextY))continue;seen.add(key);queue.push([nextX,nextY])}}
     return false;
   };
   addedTreeCells.forEach((cells,areaIndex)=>{
-    assert.equal(cells.length,10);
+    assert.equal(cells.length,areaIndex===2?9:10);
     const objects=createWorldObjects(areaIndex,areaIndex===1);
     cells.forEach(([col,row])=>{const tree=objects.find(object=>object.x===col*16&&object.y===row*16);assert.deepEqual({w:tree.w,h:tree.h,solid:tree.solid},{w:16,h:16,solid:true})});
     requiredRoutes[areaIndex].slice(1).reduce((from,to)=>{assert.equal(routeExists(areaIndex,areaIndex===1,from,to),true,`area ${areaIndex}: ${from.x},${from.y} to ${to.x},${to.y}`);return to},requiredRoutes[areaIndex][0]);
