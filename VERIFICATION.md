@@ -269,3 +269,40 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
   and zero horizontal overflow. Eir's dialogue passed wrong-answer retry,
   correct-answer response, and leave. All four developer scenes, local console,
   and 200/304 network health passed.
+
+## Half-size Eir and vertical Moonroot riddle crossing — 2026-08-03
+
+- Eir identity and scale: the retained four-frame v2 strip is unchanged at
+  SHA-256 `4bc70c41fd73e083af2f1654ee38273981da949928c57229b553831f6d22a4cd`.
+  Each 64 × 96 cell now draws at exactly 16 × 24 from −8,−22 with smoothing
+  disabled. Her fixed ground contact, frame timing, non-solid anchor, and
+  22-pixel interaction radius are unchanged.
+- Riddle progression: Moonroot contains no runtime moonflower/pressure trigger.
+  Eir asks three concise moon, echo, and lantern riddles. Browser normal-input
+  checks passed wrong-answer feedback and same-riddle retry, correct-answer
+  feedback, leaving and resuming at the next retained step, all three correct
+  answers, the final bridge reveal, and the solved-state follow-up. The bridge
+  is absent and its corridor solid before completion; it appears and becomes
+  passable only after the final correct answer.
+- Vertical layout: the new bridge is one 32 × 64 transparent production asset
+  with a 2 × 4-cell north-to-south contract at x=144, y=80. Its retained source
+  SHA-256 is `2be0a36c497445282ffe7e971d6a994b4066dd8e765d2fe4a5ff6f7c9b734f91`;
+  the deterministic no-violet runtime SHA-256 is
+  `f08046bae24d93b0d783b1b08a1a0adfe73aed2b6f08337a779893e730a8de1d`.
+  The water is four rows deep, stays solid outside the narrow bridge, and has
+  complete collision-safe routes from the north-shore spawn through Eir and
+  the bridge to both lower-shore lights, memory, and exit.
+- Responsive interaction: desktop 1440 × 900 passed the entire dialogue flow
+  and a physical Arrow-key crossing to y=153 on the lower shore. Portrait
+  390 × 844 × 3 fit the 307 × 129 dialogue with no inner scroll or horizontal
+  document overflow. Touch landscape 844 × 390 × 3 fit the 564 × 216 dialogue,
+  600 × 390 game screen, 116 × 116 movement control, and 44 × 44 pause control;
+  the Talk button reopened Eir normally and touch movement changed Luna's
+  collision-aware position.
+- Regression and visual review: all four 640 × 416 scenes were reviewed at
+  desktop scale. Moonroot reads as a vertical crossing with the bridge centered
+  between distinct north and south shores; the former water-platform was moved
+  onto the south shore. Lantern Glade, Whispering Hollow, and Starfall Grove
+  retained their established composition. Local console was empty and every
+  observed request returned 200 or 304. All 45 tests, syntax checks, production
+  build, and source-to-dist identity checks pass.

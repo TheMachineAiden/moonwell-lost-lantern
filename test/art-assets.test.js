@@ -27,8 +27,7 @@ const environmentalFrames={
   'assets/moonwell-art/production/moonwell-clearing-firefly-loop-v6.png':16,
   'assets/moonwell-art/production/moonwell-light-pool-variants-v2.png':16,
   'assets/moonwell-art/production/moonwell-memory-loop-v3.png':16,
-  'assets/moonwell-art/production/moonwell-moonflower-v3.png':32,
-  'assets/moonwell-art/production/moonwell-bridge-segment-v3.png':16,
+  'assets/moonwell-art/production/moonwell-bridge-vertical-v4.png':32,
   'assets/moonwell-art/production/moonwell-rune-stone-v3.png':32,
   'assets/moonwell-art/production/moonwell-starroot-chime-loop-v2.png':24,
   'assets/moonwell-art/production/moonwell-sentinel-tile-v5.png':32,
@@ -61,6 +60,7 @@ test('luminous production assets preserve exact render footprints',()=>{
     'assets/moonwell-art/production/moonwell-mushroom-variants-v2.png':[32,16],
     'assets/moonwell-art/production/moonwell-clearing-firefly-loop-v6.png':[64,16],
     'assets/moonwell-art/production/moonwell-light-pool-variants-v2.png':[48,16],
+    'assets/moonwell-art/production/moonwell-bridge-vertical-v4.png':[32,64],
     'assets/moonwell-art/production/moonwell-starroot-chime-loop-v2.png':[96,24]
   };
   for(const [path,size] of Object.entries(expected))assert.deepEqual(dimensions(path),size,path);
@@ -94,6 +94,7 @@ test('runtime references only production derivatives, never retained generation 
     'moonwell-mushroom-variants-v2.png',
     'moonwell-clearing-firefly-loop-v6.png',
     'moonwell-light-pool-variants-v2.png',
+    'moonwell-bridge-vertical-v4.png',
     'moonwell-starroot-chime-loop-v2.png'
   ].forEach(asset=>assert.match(source,new RegExp(asset.replaceAll('.','\\.'))));
   assert.doesNotMatch(source,/selected-forest-production-source|luminous-forest-production-source|bottom-right-clearing-source|eir-rootwatcher-(?:sprite|portrait)-source|320x208-art-direction-source/);
@@ -120,8 +121,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v2\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-luna-exact-8/);
-  assert.match(html,/game\.js\?v=moonwell-luna-half-9/);
+  assert.match(html,/game-core\.js\?v=moonwell-eir-riddles-10/);
+  assert.match(html,/game\.js\?v=moonwell-vertical-bridge-10/);
 });
 
 test('environmental rasters contain no prohibited purple-family silhouette or seam pixels',()=>{
@@ -228,10 +229,13 @@ test('Eir dialogue uses raster production art and has no SVG or drawn-sigil fall
   const html=read('index.html').toString();
   assert.match(source,/moonwell-eir-rootwatcher-idle-v2\.png/);
   assert.match(source,/moonwell-eir-rootwatcher-portrait-v2\.png/);
+  assert.match(source,/frame\*64,0,64,96,point\.x-8,point\.y-22,16,24/);
+  assert.match(source,/Math\.hypot\(player\.x-point\.x,player\.y-point\.y\)>22/);
   assert.match(source,/data-qa-required','Eir dialogue/);
   assert.match(html,/<canvas[^>]+width="640"[^>]+height="416"/);
   assert.match(html,/\.watcher-dialogue\[hidden\]\{display:none\}/);
   assert.doesNotMatch(source+html,/eir[^\n"']*\.svg|watcher-dialogue__sigil/i);
+  assert.doesNotMatch(source+html,/moonflower|bridge-segment/i);
 });
 
 test('normal keyboard and touch presses produce deterministic collision-aware movement',()=>{
@@ -245,6 +249,6 @@ test('the unchanged top-canopy renderer consumes the same exported layout as its
   const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-luna-exact-8/);
-  assert.match(html,/game\.js\?v=moonwell-luna-half-9/);
+  assert.match(html,/game-core\.js\?v=moonwell-eir-riddles-10/);
+  assert.match(html,/game\.js\?v=moonwell-vertical-bridge-10/);
 });

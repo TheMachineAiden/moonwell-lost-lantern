@@ -33,6 +33,14 @@ MOONWELL_ART_OUTPUT="$legacy" sh "$repo_dir/scripts/process-luminous-forest-art.
 MOONWELL_ART_OUTPUT="$legacy" sh "$repo_dir/scripts/process-bottom-right-clearing-art.sh"
 MOONWELL_ART_OUTPUT="$legacy" sh "$repo_dir/scripts/process-starroot-chime-art.sh"
 
+# The vertical bridge is a project-bound image-generation source on a flat
+# magenta field. Key, trim, and point-reduce it to the exact 2 × 4-cell span
+# before the shared palette pass below.
+magick "$repo_dir/assets/generated/moonwell-vertical-bridge-source-v1.png" \
+  -alpha on -fuzz 16% -transparent 'rgb(241,11,238)' -trim +repage \
+  -filter point -resize '32x64!' -channel A -threshold 50% +channel \
+  -strip -define png:exclude-chunk=date,time PNG32:"$legacy/moonwell-bridge-vertical-v4-keyed.png"
+
 # The predicate selects saturated purple/magenta/violet pixels while leaving
 # navy moonlight, brown bark, neutral highlights, and cyan pixels intact.
 purple_predicate='r>g*1.08 && b>g*1.12 && b>r*.58 && (max(r,b)-g)>.035'
@@ -89,6 +97,7 @@ recolor moonwell-clearing-root-platform-v2.png moonwell-clearing-root-platform-v
 recolor moonwell-clearing-crescent-landmark-v4.png moonwell-clearing-crescent-landmark-v5.png 8% .52 .70
 recolor moonwell-crescent-exit-overhang-v3.png moonwell-crescent-exit-overhang-v4.png 8% .52 .70
 recolor moonwell-bridge-segment-v2.png moonwell-bridge-segment-v3.png 8% .48 .72
+recolor moonwell-bridge-vertical-v4-keyed.png moonwell-bridge-vertical-v4.png 8% .48 .72
 recolor moonwell-altar-v2.png moonwell-altar-v3.png 8% .44 .72
 
 # Local magical objects use cool moonlit cyan or restrained amber-neutral,
