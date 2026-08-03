@@ -216,6 +216,29 @@ Eir's idle fringe becomes near-black navy and portrait undergrowth becomes
 muted teal. Runtime dimensions and anchors remain 14 × 18 over Luna's 10 × 10
 movement box, and 32 × 48 over Eir's non-solid interaction point.
 
+## Exact-source Luna correction — 2026-08-03
+
+The owner superseded the preceding Luna abstraction with the exact
+`generated-image.png` attachment now retained byte-for-byte as
+`artifacts/owner-handoffs/luna-exact-owner-source-2026-08-03.png`. Its
+sidecar records the 1995 × 788 dimensions and SHA-256 provenance. This image,
+not the earlier v6 XPM or regeneration handoff, is authoritative for Luna.
+
+Visual comparison at actual runtime scale showed that 16 × 28 and 20 × 34
+literal reductions lost the supplied face, clothing shapes, and lantern frame.
+A 23 × 38 literal figure is the smallest version that keeps the cyan cowlick,
+eye and face, deep-teal hair and cloak silhouette, stride, and warm framed
+lantern readable. The deterministic no-violet processor converts only the
+magenta generation background and fringe to transparency, point-reduces each
+of the four supplied poses, and pads it into a 26 × 40 cell with safe frame
+edges and a shared one-pixel ground margin. It performs no redraw, generated
+replacement, palette reinterpretation, or per-frame motion invention.
+
+The v7 runtime atlas is `moonwell-keeper-walk-v7.png` (104 × 40). It renders
+at its native 26 × 40 footprint from anchor −13,−39 while Luna's existing
+10 × 10 movement and collision box remains unchanged. Eir, world art, routes,
+colliders, and install icons are independent and unchanged.
+
 ## Moonwell home-screen icon — 2026-08-03
 
 `assets/generated/moonwell-home-screen-icon-generated-raw-v1.png` is the

@@ -102,7 +102,7 @@ This is the authoritative mapping:
 
 | Runtime object | Logical footprint / collider | Visual footprint and anchor |
 | --- | --- | --- |
-| Luna | 10 × 10 px solid movement box | 14 × 18 px; anchor −7, −17 from the precise foot point |
+| Luna | 10 × 10 px solid movement box | 26 × 40 px; anchor −13, −39 from the precise foot point; four direct-reduction v7 cells |
 | Ordinary spruce | rooted 20 × 12 px mask at −2,+4 from its 1-cell anchor | Perimeter 40 × 56 px; interior 24 × 40 px; canopy overhang is passable, trunk/root contact is not |
 | Crescent exit | 1 × 1 cell, solid through `revealed`; non-solid at `open` | 48 × 64 px; 16 px left/right and 48 px top overhang |
 | Root platform | 40 × 14 px contact mask at −4,+2 from its 2 × 1 record | 48 × 24 px; 4 px side and 8 px top overhang |

@@ -206,3 +206,37 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
   at `artifacts/qa/moonwell-character-four-area-contact-sheet.png`,
   `artifacts/qa/moonwell-character-context-moonroot-local.png`, and
   `artifacts/qa/moonwell-eir-dialogue-local-desktop.png`.
+
+## Exact owner-source Luna v7 acceptance — 2026-08-03
+
+- Provenance: the exact owner attachment is retained as
+  `artifacts/owner-handoffs/luna-exact-owner-source-2026-08-03.png` at
+  1995 × 788 with SHA-256
+  `50258352972739d24748684eb433c50aefad4393d08b0b1461e3c82e49a86249`.
+  Its sidecar records the original `generated-image.png` name and P10313262
+  owner handoff. The deterministic processor rejects any source hash drift.
+- Selection: the requested visual-judgment pass compared literal 16 × 28,
+  20 × 34, 24 × 40, 28 × 46, and 32 × 54 treatments at actual game scale.
+  A 23 × 38 figure padded into a 26 × 40 cell is the smallest treatment that
+  retains the supplied face/eye, hair and cowlick, cloak shape, stride, and
+  framed warm lantern. The final sheet is
+  `artifacts/qa/moonwell-luna-v7-source-reduction-context-contact-sheet.png`.
+- Processing: only magenta-background transparency cleanup, point reduction,
+  shared baseline alignment, and safe cell padding are applied. Four focused
+  frame assertions cover source identity, dimensions, hair/cowlick, teal/cyan
+  clothing, skin/face, lantern, common baseline, transparent ground margin,
+  clear frame edges, and zero keyed chroma residue. Regeneration is
+  byte-identical.
+- Gameplay: Luna renders at native 26 × 40 from anchor −13,−39 while her
+  existing 10 × 10 movement box and depth point remain unchanged. All root,
+  platform, route, Moonroot water/bridge, Hollow sentinel/echo, Eir, exit, and
+  progression tests pass. Eir v2 and all app-icon/PWA assets are unchanged.
+- Validation: `npm run check`, all 45 tests, and `npm run build` pass. Desktop
+  1440 × 900 normal input passed prologue skip, animated keyboard movement,
+  P pause, and Escape resume. All four developer scenes were visually reviewed
+  at actual 640 × 416 scale. Touch landscape 844 × 390 × 3 passed movement,
+  pause/Continue, fitted 600 × 390 canvas, fitted 116 × 116 movement control,
+  and fitted 44 × 44 pause control. Portrait 390 × 844 × 3 retained the full
+  rotation gate, fitted modal, and zero horizontal overflow. Eir's dialogue,
+  wrong-answer retry, and leave flow passed. Local console remained empty and
+  all requested assets/scripts returned 200 or 304.
