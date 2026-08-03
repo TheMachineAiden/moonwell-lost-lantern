@@ -388,3 +388,19 @@ then look for the next small player-visible improvement.
   lamp remain readable. Eir's idle strip and 512 × 512 dialogue portrait are
   clean at runtime scale. The preserved console is empty and all current
   character/script requests returned 200 or 304.
+
+## Exact owner-source Luna v7 — 2026-08-03
+
+- Owner correction supersedes the prior manually authored v6 abstraction.
+  The exact 1995 × 788 `generated-image.png` attachment is retained with its
+  original bytes, dimensions, date, project provenance, and SHA-256.
+- Actual-scale visual comparison selected a 23 × 38 direct figure reduction
+  padded into four 26 × 40 cells. Smaller 16 × 28 and 20 × 34 candidates lost
+  the supplied face, garment shapes, and lantern frame; larger candidates did
+  not materially improve recognition in context.
+- The processor performs only chroma transparency cleanup, point reduction,
+  shared-baseline placement, and safe frame padding. It does not redraw Luna
+  or use the prior v6 XPM as an art target.
+- Luna now renders natively at 26 × 40 from anchor −13,−39. Her 10 × 10 solid
+  movement box, entity depth point, routes, puzzles, and gameplay balance are
+  unchanged. Eir's corrected v2 assets and all icon/PWA assets remain intact.

@@ -3,8 +3,9 @@ set -eu
 
 # Rebuild every runtime raster derived from retained generated sources, then
 # replace purple-family pixels with material-specific bark, teal, moonlit-cyan,
-# or character-outline hues. Luna's native master is a deliberate 16 px
-# reduction of the approved owner handoff, not a blind atlas downsample.
+# or character-outline hues. Luna v7 is a direct point reduction of the exact
+# owner attachment: transparency, a shared baseline, and frame padding are the
+# only transformations applied to her four supplied poses.
 # ImageMagick 7+ is required.
 repo_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 production="$repo_dir/assets/moonwell-art/production"
@@ -13,21 +14,15 @@ trap 'rm -rf "$work_dir"' EXIT
 legacy="$work_dir/source-derived"
 mkdir -p "$legacy" "$production"
 
-luna_handoff="$repo_dir/artifacts/owner-handoffs/luna-regeneration-v1/luna-icon-language-generated-alpha-v1.png"
-luna_native="$repo_dir/assets/moonwell-art/source/moonwell-luna-walk-v6.xpm"
-luna_handoff_sha256='b22e8061da8334e7569fa45bba5def95304175fa04bfcfd68f12c24ee4c58c92'
-luna_native_sha256='4fc272c15c14587e5de150555297c8fa686acd9148111dc55e9d6e9bc0e2106a'
+luna_owner_source="$repo_dir/artifacts/owner-handoffs/luna-exact-owner-source-2026-08-03.png"
+luna_owner_source_sha256='50258352972739d24748684eb433c50aefad4393d08b0b1461e3c82e49a86249'
 
 digest() {
   shasum -a 256 "$1" | awk '{print $1}'
 }
 
-if [ "$(digest "$luna_handoff")" != "$luna_handoff_sha256" ]; then
-  printf '%s\n' 'Approved Luna owner handoff changed; review the native reduction before rebuilding.' >&2
-  exit 1
-fi
-if [ "$(digest "$luna_native")" != "$luna_native_sha256" ]; then
-  printf '%s\n' 'Luna native master changed without an updated reviewed-source digest.' >&2
+if [ "$(digest "$luna_owner_source")" != "$luna_owner_source_sha256" ]; then
+  printf '%s\n' 'Exact Luna owner source changed; review provenance before rebuilding.' >&2
   exit 1
 fi
 
@@ -110,10 +105,26 @@ recolor moonwell-starroot-chime-loop-v1.png moonwell-starroot-chime-loop-v2.png 
 flat_recolor moonwell-eir-rootwatcher-idle-v1.png moonwell-eir-rootwatcher-idle-v2.png '#081928'
 flat_recolor moonwell-eir-rootwatcher-portrait-v1.png moonwell-eir-rootwatcher-portrait-v2.png '#0F4559'
 
-# The reviewed native master uses palette samples from the approved high-res
-# handoff and preserves its cowlick, teal cloak, side-on gait, and amber lamp in
-# four exact 16 x 16 cells. The handoff hash above prevents accidental drift.
-magick "$luna_native" -strip -define png:exclude-chunk=date,time \
-  PNG32:"$production/moonwell-keeper-walk-v6.png"
+# The attachment is four 499 px-wide poses on a magenta generation background.
+# For each pose, key only that background family into alpha, trim transparent
+# space, point-reduce the literal figure to 38 px high, and place it in a
+# 26 x 40 cell with safe side padding and a shared one-pixel ground margin.
+# No pixel clusters are redrawn or recolored. The fourth source slice is
+# naturally 498 px wide.
+luna_frames=
+for frame in 0 1 2 3; do
+  offset=$((frame * 499))
+  output="$work_dir/luna-frame-$frame.png"
+  magick "$luna_owner_source" -crop "499x788+$offset+0" +repage \
+    -alpha set -channel A -fx 'r>.45 && b>.45 && g<min(r,b)*.45 ? 0 : 1' +channel \
+    -trim +repage -filter point -resize 23x38 \
+    -gravity south -background none -extent 26x39 \
+    -gravity north -extent 26x40 \
+    -strip -define png:exclude-chunk=date,time PNG32:"$output"
+  luna_frames="$luna_frames $output"
+done
+# shellcheck disable=SC2086 # one controlled path per generated frame
+magick $luna_frames +append -strip -define png:exclude-chunk=date,time \
+  PNG32:"$production/moonwell-keeper-walk-v7.png"
 
 printf '%s\n' "Rebuilt no-violet Moonwell runtime family in $production"
