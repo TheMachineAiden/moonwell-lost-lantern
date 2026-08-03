@@ -149,8 +149,9 @@ with cool moonlight on her hood and warm lantern light on her face and staff.”
 `scripts/process-luminous-forest-art.sh` performs fixed chroma-key crops and
 packs the production files. Runtime code loads only the transparent PNG
 derivatives. It never loads the retained sources and contains no SVG or
-canvas-drawn Eir substitute. The exact Eir portrait shown in dialogue is
-`moonwell-art/production/moonwell-eir-rootwatcher-portrait-v1.png`.
+canvas-drawn Eir substitute. The v1 Eir derivatives remain the reproducible
+keyed intermediates. The exact current dialogue portrait is the no-violet
+`moonwell-art/production/moonwell-eir-rootwatcher-portrait-v2.png`.
 
 ## Corrected bottom-right clearing production family — 2026-08-02
 
@@ -188,9 +189,32 @@ tree/canopy silhouettes, roots and root shelves, stones, mushrooms, water,
 decorative detail, magical terrain props, or tiled seams. The retained
 generated sources remain unchanged as provenance; the deterministic
 `scripts/process-no-violet-environment-art.sh` rebuilds them into new
-versioned teal/bark/cyan/amber-neutral production derivatives. Luna and Eir
-remain outside that environmental processor so their established character
-art and collision/interaction contracts are preserved.
+versioned teal/bark/cyan/amber-neutral production derivatives. The same final
+pass now also removes the keyed-source magenta/fuchsia fringe from all four Eir
+idle frames, maps sparse purple portrait accents to muted teal, and emits the
+reviewed Luna runtime atlas without changing either character's collision or
+interaction contract.
+
+## Luna handoff reduction and Eir outline correction — 2026-08-03
+
+The approved Luna generation is retained intact under
+`artifacts/owner-handoffs/luna-regeneration-v1/`. It is a high-resolution
+four-pose reference, not a runtime sheet. Whole-figure downsample prototypes
+made the cowlick and lantern disappear, so the production reduction was
+authored deliberately at Moonwell's native scale in
+`moonwell-art/source/moonwell-luna-walk-v6.xpm`. Its colors are sampled from
+the approved teal/cyan, skin, navy, and amber families; every frame preserves
+the connected cowlick, cloak edge, framed warm lantern, fixed ground margin,
+and source walk-pose intent inside an exact 16 × 16 cell.
+
+The final processor verifies the approved alpha handoff and native master by
+SHA-256 before emitting `moonwell-keeper-walk-v6.png`. It also derives
+`moonwell-eir-rootwatcher-idle-v2.png` and
+`moonwell-eir-rootwatcher-portrait-v2.png` from the retained Eir sources. The
+strict character predicate covers violet, purple, magenta, and fuchsia pixels;
+Eir's idle fringe becomes near-black navy and portrait undergrowth becomes
+muted teal. Runtime dimensions and anchors remain 14 × 18 over Luna's 10 × 10
+movement box, and 32 × 48 over Eir's non-solid interaction point.
 
 ## Moonwell home-screen icon — 2026-08-03
 

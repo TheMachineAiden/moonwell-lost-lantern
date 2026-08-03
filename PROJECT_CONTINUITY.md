@@ -353,3 +353,38 @@ then look for the next small player-visible improvement.
   and touch-landscape movement/pause/Continue pass. Reviewed layouts have no
   horizontal overflow, required controls fit, all current asset/script requests
   succeed, and the preserved browser console is empty.
+
+## Luna native reduction and Rootwatcher no-violet correction — 2026-08-03
+
+- Traced Eir's purple outline to magenta/fuchsia key fringe surviving the
+  retained generated idle sheet's 64 × 96 frame reduction. The portrait also
+  retained sparse purple undergrowth accents because character rasters were
+  exempted from the earlier environmental processor.
+- The authoritative final processor now maps Eir's four-frame fringe to
+  near-black navy and the portrait accents to muted teal, producing versioned
+  v2 runtime derivatives. A stricter character predicate rejects purple,
+  violet, magenta, and fuchsia across both rendered scales.
+- Retained the approved Luna high-resolution source under
+  `artifacts/owner-handoffs/luna-regeneration-v1/`. Blind whole-figure
+  reductions were rejected because they lost the cowlick and lamp. The
+  reviewed native master instead preserves a connected cowlick, teal/cyan
+  cloak, amber framed lantern, four gait poses, common baseline, and ground
+  margin in four exact 16 × 16 cells.
+- Luna still renders at 14 × 18 over the unchanged 10 × 10 movement box. Eir
+  remains a 32 × 48 non-solid encounter. Top-root colliders, routes, puzzles,
+  world art, install metadata, and icon/PWA files are unchanged.
+
+### Local verification
+
+- `npm test`: 45/45 passed, including strict character palette coverage,
+  retained-source hashes, per-frame Luna feature checks, and byte-identical
+  regeneration of all runtime art.
+- Desktop normal keyboard movement and P/Escape pause/resume passed. Touch
+  landscape normal movement and pause/Continue passed; the 600 × 390 canvas,
+  116 × 116 steering control, and 44 × 44 pause control fit. Portrait
+  390 × 844 × 3 kept the full rotation gate and zero horizontal overflow.
+- All four 640 × 416 scenes were reviewed at actual scale. Luna stays smaller
+  than Eir, rooted trees, platforms, and landmarks; her cyan cowlick and amber
+  lamp remain readable. Eir's idle strip and 512 × 512 dialogue portrait are
+  clean at runtime scale. The preserved console is empty and all current
+  character/script requests returned 200 or 304.

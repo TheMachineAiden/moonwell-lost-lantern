@@ -169,3 +169,40 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
 - The preserved console across desktop, portrait, touch, and all scene
   navigations is empty. Current production assets and the cache-busted
   `game-core.js` / `game.js` requests all return 200 or 304 locally.
+
+## Luna and Rootwatcher character-art acceptance — 2026-08-03
+
+- Source trace: Eir's four retained 470 × 836 keyed cells are reduced by
+  `process-luminous-forest-art.sh`; magenta/fuchsia key fringe survived the
+  64 × 96 frame reduction and appeared as the reported outline. The same v1
+  portrait source retained sparse purple undergrowth accents. The final
+  no-violet processor now derives versioned v2 strip and portrait assets with
+  navy/teal replacements at both runtime scales.
+- Luna provenance: the approved 1995 × 788 RGB and alpha files are retained at
+  `artifacts/owner-handoffs/luna-regeneration-v1/`. The processor checks the
+  approved alpha SHA-256 before using the reviewed 64 × 16 native master. Each
+  16 × 16 frame has a connected cyan cowlick, teal cloak clusters, at least two
+  amber lantern pixels, a shared walking baseline, and a one-pixel ground
+  margin.
+- Release profile: `npm run check`, 45/45 tests, `npm run build`,
+  `git diff --check`, byte-identical runtime regeneration, byte-identical icon
+  regeneration, and source/dist asset comparisons passed. All runtime rasters
+  remain exhaustively classified; strict character checks find zero purple,
+  violet, magenta, or fuchsia pixels.
+- Gameplay contract: Luna still draws at 14 × 18 over the unchanged 10 × 10
+  collision footprint; Eir still draws at 32 × 48 over a non-solid interaction
+  anchor. All route, tree/root, water/bridge, sentinel, echo, and progression
+  tests pass. Browser audit still reports twenty top-root colliders,
+  Moonroot water blocked, and its revealed bridge passable.
+- Desktop 1440 × 900 normal-input coverage passed start, prologue skip,
+  movement, P pause, Escape resume, Eir riddle retry/leave, and all four
+  developer scenes. Portrait 390 × 844 × 3 has a complete rotation gate and
+  no horizontal overflow. Touch landscape 844 × 390 × 3 passed movement and
+  pause/Continue; its 600 × 390 canvas, 116 × 116 steering, and 44 × 44 pause
+  control all fit.
+- Final local console is empty. The Luna v6 strip, Eir v2 strip, Eir v2
+  portrait, complete production family, and cache-busted scripts returned 200
+  or 304; the portrait decoded at 512 × 512. Actual-scale evidence is retained
+  at `artifacts/qa/moonwell-character-four-area-contact-sheet.png`,
+  `artifacts/qa/moonwell-character-context-moonroot-local.png`, and
+  `artifacts/qa/moonwell-eir-dialogue-local-desktop.png`.
