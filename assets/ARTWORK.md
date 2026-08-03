@@ -191,3 +191,24 @@ generated sources remain unchanged as provenance; the deterministic
 versioned teal/bark/cyan/amber-neutral production derivatives. Luna and Eir
 remain outside that environmental processor so their established character
 art and collision/interaction contracts are preserved.
+
+## Moonwell home-screen icon — 2026-08-03
+
+`assets/generated/moonwell-home-screen-icon-generated-raw-v1.png` is the
+retained high-resolution image-generation output. The deterministic
+`scripts/process-home-screen-icon-source.sh` rebuilds the approved,
+no-violet `assets/generated/moonwell-home-screen-icon-source-v1.png` from it,
+normalizing the five isolated near-black violet pixels into blue-green night.
+The resulting text-free icon centers Luna, the Lost Lantern, and a cyan
+moonwell on a deeply padded teal/bark forest field so its essential focal
+silhouette remains in Android's maskable safe zone and iOS's rounded-square
+crop.
+
+`scripts/process-home-screen-icon.sh` deterministically produces the complete
+opaque production family under `assets/moonwell-art/app-icon/`: 1024, 512,
+192, Apple 180, browser 32/16, and a declared 512 maskable icon, plus the
+multi-resolution root `favicon.ico`. The source and every derivative are
+covered by no-purple pixel and byte-determinism tests.
+
+`artifacts/qa/moonwell-home-screen-icon-scale-proof.png` is the retained
+deterministic native/small-size visual check built by the same script.
