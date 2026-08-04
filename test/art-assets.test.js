@@ -294,6 +294,7 @@ test('phone portrait uses a full-viewport Moonwell orientation interstitial befo
 test('844 by 390 phone landscape keeps entry compact and prologue at the undistorted viewport maximum',()=>{
   const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(html,/body:not\(\.playing\):not\(\.prologue-active\) h1.*\.hud.*\.touch\{display:none\}/);
+  assert.match(html,/body:not\(\.playing\):not\(\.prologue-active\) \.screen\{margin:0 auto\}/);
   assert.match(html,/\.entry-controls\{display:none\}/);
   assert.match(html,/body\.prologue-active \.screen\{position:fixed;inset:50% auto auto 50%;width:min\(100dvw,calc\(100dvh \* 20 \/ 13\)\);height:min\(100dvh,calc\(100dvw \* 13 \/ 20\)\)/);
   assert.match(source,/document\.body\.classList\.add\('prologue-active'\)/);
