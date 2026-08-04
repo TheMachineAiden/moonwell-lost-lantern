@@ -121,8 +121,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v2\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-returning-light-11/);
-  assert.match(html,/game\.js\?v=moonwell-returning-light-11/);
+  assert.match(html,/game-core\.js\?v=moonwell-returning-light-12/);
+  assert.match(html,/game\.js\?v=moonwell-returning-light-12/);
 });
 
 test('environmental rasters contain no prohibited purple-family silhouette or seam pixels',()=>{
@@ -274,10 +274,19 @@ test('the in-canvas prologue drifts, stays skippable, and becomes static for red
   assert.doesNotMatch(source,/setTimeout\([^)]*begin/);
 });
 
+test('Light the way requests fullscreen before opening the prologue and tolerates unavailable fullscreen',()=>{
+  const source=read('game.js').toString();
+  const show=source.match(/const show=\(\)=>\{([^]*?)\};start\.onclick=show/);
+  assert.ok(show);
+  assert.ok(show[1].indexOf('requestPrologueFullscreen()')<show[1].indexOf("modal.classList.add('prologue-active')"));
+  assert.match(source,/const requestPrologueFullscreen=\(\)=>\{if\(!document\.fullscreenEnabled\|\|document\.fullscreenElement\|\|!document\.documentElement\.requestFullscreen\)return;const request=document\.documentElement\.requestFullscreen\(\);if\(request\?\.catch\)request\.catch\(\(\)=>\{\}\)\}/);
+  assert.doesNotMatch(source,/await document\.documentElement\.requestFullscreen/);
+});
+
 test('the unchanged top-canopy renderer consumes the same exported layout as its root colliders',()=>{
   const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-returning-light-11/);
-  assert.match(html,/game\.js\?v=moonwell-returning-light-11/);
+  assert.match(html,/game-core\.js\?v=moonwell-returning-light-12/);
+  assert.match(html,/game\.js\?v=moonwell-returning-light-12/);
 });
