@@ -121,8 +121,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v2\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-returning-light-12/);
-  assert.match(html,/game\.js\?v=moonwell-returning-light-12/);
+  assert.match(html,/game-core\.js\?v=moonwell-returning-light-13/);
+  assert.match(html,/game\.js\?v=moonwell-returning-light-13/);
 });
 
 test('environmental rasters contain no prohibited purple-family silhouette or seam pixels',()=>{
@@ -283,10 +283,18 @@ test('Light the way requests fullscreen before opening the prologue and tolerate
   assert.doesNotMatch(source,/await document\.documentElement\.requestFullscreen/);
 });
 
+test('phone portrait uses a full-viewport Moonwell orientation interstitial before landscape entry',()=>{
+  const html=read('index.html').toString();
+  assert.match(html,/phone-gate__title">MOONWELL: THE LOST LANTERN/);
+  assert.match(html,/@media\(pointer:coarse\) and \(orientation:portrait\)\{body\{overflow:hidden\}\.screen\{overflow:visible\}\.modal\{position:fixed;inset:0;z-index:20/);
+  assert.match(html,/\.phone-gate\.card\{width:min\(100%,25rem\).*background:#071d28eF/s);
+  assert.match(html,/Rotate to landscape, then light the way/);
+});
+
 test('the unchanged top-canopy renderer consumes the same exported layout as its root colliders',()=>{
   const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-returning-light-12/);
-  assert.match(html,/game\.js\?v=moonwell-returning-light-12/);
+  assert.match(html,/game-core\.js\?v=moonwell-returning-light-13/);
+  assert.match(html,/game\.js\?v=moonwell-returning-light-13/);
 });
