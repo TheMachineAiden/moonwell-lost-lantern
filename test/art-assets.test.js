@@ -121,8 +121,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v2\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-returning-light-13/);
-  assert.match(html,/game\.js\?v=moonwell-returning-light-13/);
+  assert.match(html,/game-core\.js\?v=moonwell-returning-light-14/);
+  assert.match(html,/game\.js\?v=moonwell-returning-light-14/);
 });
 
 test('environmental rasters contain no prohibited purple-family silhouette or seam pixels',()=>{
@@ -279,7 +279,7 @@ test('Light the way requests fullscreen before opening the prologue and tolerate
   const show=source.match(/const show=\(\)=>\{([^]*?)\};start\.onclick=show/);
   assert.ok(show);
   assert.ok(show[1].indexOf('requestPrologueFullscreen()')<show[1].indexOf("modal.classList.add('prologue-active')"));
-  assert.match(source,/const requestPrologueFullscreen=\(\)=>\{if\(!document\.fullscreenEnabled\|\|document\.fullscreenElement\|\|!document\.documentElement\.requestFullscreen\)return;const request=document\.documentElement\.requestFullscreen\(\);if\(request\?\.catch\)request\.catch\(\(\)=>\{\}\)\}/);
+  assert.match(source,/const requestPrologueFullscreen=\(\)=>\{if\(document\.fullscreenEnabled!==true\|\|document\.fullscreenElement\|\|typeof document\.documentElement\.requestFullscreen!=='function'\)return;const request=document\.documentElement\.requestFullscreen\(\);if\(request\?\.catch\)request\.catch\(\(\)=>\{\}\)\}/);
   assert.doesNotMatch(source,/await document\.documentElement\.requestFullscreen/);
 });
 
@@ -291,10 +291,19 @@ test('phone portrait uses a full-viewport Moonwell orientation interstitial befo
   assert.match(html,/Rotate to landscape, then light the way/);
 });
 
+test('844 by 390 phone landscape keeps entry compact and prologue at the undistorted viewport maximum',()=>{
+  const source=read('game.js').toString(),html=read('index.html').toString();
+  assert.match(html,/body:not\(\.playing\):not\(\.prologue-active\) h1.*\.hud.*\.touch\{display:none\}/);
+  assert.match(html,/\.entry-controls\{display:none\}/);
+  assert.match(html,/body\.prologue-active \.screen\{position:fixed;inset:50% auto auto 50%;width:min\(100dvw,calc\(100dvh \* 20 \/ 13\)\);height:min\(100dvh,calc\(100dvw \* 13 \/ 20\)\)/);
+  assert.match(source,/document\.body\.classList\.add\('prologue-active'\)/);
+  assert.match(source,/document\.fullscreenEnabled!==true/);
+});
+
 test('the unchanged top-canopy renderer consumes the same exported layout as its root colliders',()=>{
   const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-returning-light-13/);
-  assert.match(html,/game\.js\?v=moonwell-returning-light-13/);
+  assert.match(html,/game-core\.js\?v=moonwell-returning-light-14/);
+  assert.match(html,/game\.js\?v=moonwell-returning-light-14/);
 });
