@@ -19,6 +19,7 @@ const environmentalFrames={
   'assets/moonwell-art/production/moonwell-clearing-loam-patches-v3.png':160,
   'assets/moonwell-art/production/moonwell-clearing-moonlight-v4.png':192,
   'assets/moonwell-art/production/moonwell-crescent-exit-overhang-v4.png':80,
+  'assets/moonwell-art/production/moonwell-exit-clearing-states-v1.png':32,
   'assets/moonwell-art/production/moonwell-clearing-root-platform-v3.png':192,
   'assets/moonwell-art/production/moonwell-foliage-variants-v2.png':16,
   'assets/moonwell-art/production/moonwell-ground-texture-variants-v2.png':16,
@@ -32,7 +33,8 @@ const environmentalFrames={
   'assets/moonwell-art/production/moonwell-starroot-chime-loop-v2.png':24,
   'assets/moonwell-art/production/moonwell-sentinel-tile-v5.png':32,
   'assets/moonwell-art/production/moonwell-altar-v3.png':64,
-  'assets/moonwell-art/production/moonwell-water-tile-v3.png':16
+  'assets/moonwell-art/production/moonwell-water-tile-v3.png':16,
+  'assets/moonwell-art/production/moonwell-moonroot-shores-v1.png':288
 };
 const characterFrames={
   'assets/moonwell-art/production/moonwell-keeper-walk-v7.png':26,
@@ -50,6 +52,8 @@ test('luminous production assets preserve exact render footprints',()=>{
     'assets/moonwell-art/production/moonwell-clearing-loam-patches-v3.png':[640,96],
     'assets/moonwell-art/production/moonwell-clearing-moonlight-v4.png':[576,112],
     'assets/moonwell-art/production/moonwell-crescent-exit-overhang-v4.png':[320,112],
+    'assets/moonwell-art/production/moonwell-exit-clearing-states-v1.png':[128,36],
+    'assets/moonwell-art/production/moonwell-moonroot-shores-v1.png':[288,16],
     'assets/moonwell-art/production/moonwell-clearing-root-platform-v3.png':[192,64],
     'assets/moonwell-art/production/moonwell-eir-rootwatcher-idle-v2.png':[256,96],
     'assets/moonwell-art/production/moonwell-eir-rootwatcher-portrait-v2.png':[512,512],
@@ -106,31 +110,36 @@ test('every runtime-loaded raster is explicitly classified for palette audit',()
   for(const asset of Object.keys(characterFrames))assert.ok(runtimeRasters.has(asset),`${asset} lost its character palette audit`);
 });
 
-test('corrected clearing renderer keeps a dominant light pool and makes exits read as tile-scale clearings',()=>{
-  const source=read('game.js').toString(),html=read('index.html').toString();
+test('exit clearing uses a raster state strip behind the rooted silhouette',()=>{
+  const source=read('game.js').toString(),html=read('index.html').toString(),processor=read('scripts/process-exit-moonroot-sprites.sh').toString();
   const exitTree=source.slice(source.indexOf('function exitTree'),source.indexOf('function drawExitClearing'));
+  const exitRenderer=source.slice(source.indexOf('function drawExitClearing'),source.indexOf('function watcher'));
   const draw=source.slice(source.indexOf('function draw(){'),source.indexOf('function refreshWorld'));
   assert.match(source,/perimeter\?40:24/);
   assert.match(source,/w:112,h:66,alpha:\.9/);
   assert.match(source,/drawExitClearing\(object\)/);
-  assert.match(source,/const cue=EXIT_CLEARING,clearing=cue\[object\.state\].*y=object\.y\+cue\.top/);
+  assert.match(source,/exitClearing:loadArt\('assets\/moonwell-art\/production\/moonwell-exit-clearing-states-v1\.png'\)/);
+  assert.match(source,/const frame=\{closed:0,opening:1,revealed:2,open:3\}\[object\.state\];if\(loaded\(art\.exitClearing\)\)ctx\.drawImage\(art\.exitClearing,frame\*32,0,32,36,object\.x-8,object\.y\+EXIT_CLEARING\.top,32,36\)/);
   assert.ok(exitTree.indexOf('drawExitClearing(object)')<exitTree.indexOf('ctx.drawImage(art.exitTree'),'the clearing must sit behind the exit roots');
   assert.doesNotMatch(draw,/drawExitClearing/,'the clearing must not be repainted over the rooted silhouette');
-  assert.match(source,/ctx\.globalAlpha=1;ctx\.globalCompositeOperation='source-over'/);
-  assert.match(source,/#86b9ae.*#163b40.*#e3be74/);
+  assert.doesNotMatch(exitRenderer,/rect\(/);
   assert.doesNotMatch(source,/crescentLandmark|clearing-crescent-landmark/);
   assert.doesNotMatch(html,/clearing-crescent-landmark/);
   assert.match(source,/object\.x-8,object\.y-8,48,24/);
+  assert.match(processor,/moonwell-bottom-right-clearing-source-v3-alpha\.png/);
+  assert.match(processor,/moonwell-exit-clearing-states-v1\.png/);
 });
 
-test('Moonroot water receives a tile-scale forest shore without covering its bridge',()=>{
-  const source=read('game.js').toString();
+test('Moonroot water receives a raster shore strip without covering its bridge',()=>{
+  const source=read('game.js').toString(),processor=read('scripts/process-exit-moonroot-sprites.sh').toString();
   const draw=source.slice(source.indexOf('function draw(){'),source.indexOf('function refreshWorld'));
-  assert.match(source,/function drawMoonrootShore\(\)\{if\(area!==1\)return/);
-  assert.match(source,/water\.firstCol;col<=water\.lastCol.*northDepth=2\+\(col%3\).*southDepth=2\+\(\(col\+1\)%3\)/);
-  assert.match(source,/#102e31.*#3f655c.*#223f3d/);
+  assert.match(source,/moonrootShore:loadArt\('assets\/moonwell-art\/production\/moonwell-moonroot-shores-v1\.png'\)/);
+  assert.match(source,/function drawMoonrootShore\(\)\{if\(area!==1\|\|!loaded\(art\.moonrootShore\)\)return/);
+  assert.match(source,/ctx\.drawImage\(art\.moonrootShore,0,0,288,8,x,top,width,8\);ctx\.drawImage\(art\.moonrootShore,0,8,288,8,x,bottom-8,width,8\)/);
   assert.ok(draw.indexOf("object.kind==='water'")<draw.indexOf('drawMoonrootShore()'));
   assert.ok(draw.indexOf('drawMoonrootShore()')<draw.indexOf("object.kind==='bridge'"));
+  assert.match(processor,/moonwell-clearing-root-platform-v3\.png/);
+  assert.match(processor,/moonwell-moonroot-shores-v1\.png/);
 });
 
 test('Starfall chimes use grounded tile-scale clearings rather than another lantern cue',()=>{
