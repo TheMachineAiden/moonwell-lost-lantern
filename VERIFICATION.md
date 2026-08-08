@@ -1,5 +1,25 @@
 # Moonwell visual release audit
 
+## Opaque loam substrate — 2026-08-09
+
+- The semi-transparent loam overlay exposed a canvas-painted full-world base;
+  `moonwell-loam-base-tiles-v1.png` now supplies that visible terrain as four
+  opaque retained 16 × 16 raster cells. Its deterministic processor derives
+  the cells from the reviewed no-violet loam family, and regression coverage
+  verifies dimensions, full alpha coverage, runtime loading, no procedural
+  floor rectangle, palette classification, and byte-identical regeneration.
+- The Moonroot water tile was separately alpha-audited as fully opaque, so its
+  backing rectangle is not visible runtime art and no unrelated water change
+  was made. Water collision, shore order, bridge footprint, exits, and all
+  route/collider records remain unchanged.
+- `npm run check`, `npm test` (63/63), `npm run build`, and `git diff --check`
+  pass. Local Chrome QA on `http://127.0.0.1:4174` visually reviewed all four
+  developer scenes at 1440 × 900, the 390 × 844 × 3 portrait rotation gate,
+  and Moonroot at 844 × 390 × 3 touch landscape. Keyboard start/prologue skip,
+  movement, pause/resume, touch movement, and touch pause/resume pass; the
+  canvas and required controls fit with no horizontal overflow, the new asset
+  returns HTTP 200, and consoles are empty.
+
 This release is checked against the actual canvas at its canonical 320 × 208
 native resolution via the developer-only routes `?dev=scene&area=0` through
 `?dev=scene&area=3`.

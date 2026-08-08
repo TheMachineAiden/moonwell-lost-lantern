@@ -122,6 +122,11 @@ recolor moonwell-clearing-firefly-loop-v5.png moonwell-clearing-firefly-loop-v6.
 recolor moonwell-sentinel-tile-v4.png moonwell-sentinel-tile-v5.png 44% .42 .72
 recolor moonwell-water-tile-v2.png moonwell-water-tile-v3.png 47% .38 .80
 
+# The final floor substrate is a retained opaque derivative of the freshly
+# rebuilt loam raster. Keep it after the palette pass so its source and output
+# remain byte-reproducible in this one managed environment-art workflow.
+MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-loam-base-art.sh"
+
 cool_ambient_glints moonwell-spruce-overhang-v3.png \
   'rectangle 39,85 50,97'
 cool_ambient_glints moonwell-clearing-canopy-v3.png \

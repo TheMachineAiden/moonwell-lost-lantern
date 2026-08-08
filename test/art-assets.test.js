@@ -16,6 +16,7 @@ const brightWarm=(r,g,b,a)=>a>15&&r>158&&g>82&&b<82&&r>g*1.08&&g>b*1.2;
 const environmentalFrames={
   'assets/moonwell-art/production/moonwell-spruce-overhang-v3.png':80,
   'assets/moonwell-art/production/moonwell-inner-forest-boundary-v1.png':256,
+  'assets/moonwell-art/production/moonwell-loam-base-tiles-v1.png':16,
   'assets/moonwell-art/production/moonwell-clearing-loam-patches-v3.png':160,
   'assets/moonwell-art/production/moonwell-clearing-moonlight-v4.png':192,
   'assets/moonwell-art/production/moonwell-crescent-exit-overhang-v4.png':80,
@@ -49,6 +50,7 @@ test('luminous production assets preserve exact render footprints',()=>{
     'assets/moonwell-art/production/moonwell-keeper-walk-v7.png':[104,40],
     'assets/moonwell-art/production/moonwell-spruce-overhang-v3.png':[480,112],
     'assets/moonwell-art/production/moonwell-inner-forest-boundary-v1.png':[512,112],
+    'assets/moonwell-art/production/moonwell-loam-base-tiles-v1.png':[64,16],
     'assets/moonwell-art/production/moonwell-clearing-loam-patches-v3.png':[640,96],
     'assets/moonwell-art/production/moonwell-clearing-moonlight-v4.png':[576,112],
     'assets/moonwell-art/production/moonwell-crescent-exit-overhang-v4.png':[320,112],
@@ -84,6 +86,7 @@ test('runtime references only production derivatives, never retained generation 
     'moonwell-keeper-walk-v7.png',
     'moonwell-spruce-overhang-v3.png',
     'moonwell-inner-forest-boundary-v1.png',
+    'moonwell-loam-base-tiles-v1.png',
     'moonwell-clearing-loam-patches-v3.png',
     'moonwell-clearing-moonlight-v4.png',
     'moonwell-crescent-exit-overhang-v4.png',
@@ -142,6 +145,21 @@ test('Moonroot water receives a raster shore strip without covering its bridge',
   assert.match(processor,/moonwell-moonroot-shores-v1\.png/);
   assert.match(processor,/continuous, low-contrast moss-to-wet-soil bank/);
   assert.doesNotMatch(processor,/tile % 3/);
+});
+
+test('the opaque raster loam base replaces the exposed procedural forest-floor fill',()=>{
+  const source=read('game.js').toString(),processor=read('scripts/process-loam-base-art.sh').toString();
+  const floor=source.slice(source.indexOf('function drawLoamFloor'),source.indexOf('function drawMoonlightPools'));
+  const asset='assets/moonwell-art/production/moonwell-loam-base-tiles-v1.png';
+  const pixels=rgba(asset),[width,height]=dimensions(asset);
+  assert.deepEqual([width,height],[64,16]);
+  assert.match(source,/loamBase:loadArt\('assets\/moonwell-art\/production\/moonwell-loam-base-tiles-v1\.png'\)/);
+  assert.match(floor,/ctx\.drawImage\(art\.loamBase,frame\*T,0,T,T,x,y,T,T\)/);
+  assert.doesNotMatch(floor,/rect\(/);
+  for(let offset=3;offset<pixels.length;offset+=4)assert.equal(pixels[offset],255,'loam base leaves a transparent terrain gap');
+  assert.match(processor,/moonwell-clearing-loam-patches-v3\.png/);
+  assert.match(processor,/moonwell-loam-base-tiles-v1\.png/);
+  assert.match(processor,/-filter point -resize '16x16!'/);
 });
 
 test('Moonroot shore is a continuous, varied wet-soil bank rather than a repeated transparent rail',()=>{

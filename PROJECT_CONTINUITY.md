@@ -1,5 +1,23 @@
 # Moonwell visual art system — continuity record
 
+## Sprite-first opaque loam base — 2026-08-09
+
+- Replaced the only confirmed visible procedural terrain base: the forest-wide
+  rectangle beneath the semi-transparent loam overlays. Runtime now tiles the
+  retained opaque `moonwell-loam-base-tiles-v1.png` derivative, then keeps the
+  existing larger loam artwork as its detail layer. Processing is pinned to
+  `moonwell-clearing-loam-patches-v3.png` through
+  `scripts/process-loam-base-art.sh`, called by the managed no-violet workflow.
+- The water base rectangle was inspected but intentionally left unchanged:
+  `moonwell-water-tile-v3.png` is fully opaque, making that rectangle visually
+  inert. Moonroot collision, its bridge footprint/dominance, and all world
+  geometry remain exactly as accepted.
+- `npm run check`, 63/63 tests, deterministic regeneration, build, desktop
+  all-scene visual QA, portrait gate QA, and touch-landscape normal-input QA
+  pass. The next coherent visual step is to inspect another runtime fallback
+  only if it is actually exposed by a loaded production raster; do not expand
+  scope by rewriting inert fallback paths.
+
 ## Canonical 20 × 13 implementation — 2026-08-02
 
 - The current visual contract is 320 × 208 (20 × 13 complete 16-pixel
