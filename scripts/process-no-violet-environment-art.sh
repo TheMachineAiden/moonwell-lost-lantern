@@ -79,6 +79,36 @@ flat_recolor() {
     -strip -define png:exclude-chunk=date,time PNG32:"$output"
 }
 
+# The selected spruce and canopy sources contain tiny warm pinlights that are
+# harmless in isolation but repeat into dozens of false collectible cues when
+# the runtime tiles them around a scene. Keep their authored clusters and
+# transparency, but cool only those fixed ambient points to muted moss-teal.
+# Gameplay fireflies, Luna's lantern, starroots, exits, and the altar never pass
+# through this coordinate mask and retain their established amber hierarchy.
+cool_ambient_glints() {
+  output="$production/$1"
+  regions="$2"
+  dimensions=$(magick identify -format '%wx%h' "$output")
+  warm_mask="$work_dir/$1-warm-mask.png"
+  region_mask="$work_dir/$1-region-mask.png"
+  mask="$work_dir/$1-ambient-mask.png"
+  shifted="$work_dir/$1-ambient-shifted.png"
+  cooled="$work_dir/$1-cooled.png"
+
+  magick "$output" -alpha off \
+    -fx 'r>g*1.05 && r>b*1.12 && r>.14 ? 1 : 0' "$warm_mask"
+  magick -size "$dimensions" xc:black -fill white -draw "$regions" "$region_mask"
+  magick "$warm_mask" "$region_mask" -compose multiply -composite "$mask"
+  magick "$output" -colorspace HSL \
+    -channel R -evaluate set 44% +channel \
+    -channel G -evaluate multiply .52 +channel \
+    -channel B -evaluate multiply .58 +channel \
+    -colorspace sRGB "$shifted"
+  magick "$output" "$shifted" "$mask" -compose over -composite \
+    -strip -define png:exclude-chunk=date,time PNG32:"$cooled"
+  mv "$cooled" "$output"
+}
+
 # Deep, muted teal for foliage, loam, silhouettes, and small ground detail.
 recolor moonwell-spruce-overhang-v2.png moonwell-spruce-overhang-v3.png 44% .48 .72
 recolor moonwell-clearing-canopy-v2.png moonwell-clearing-canopy-v3.png 44% .48 .72
@@ -91,6 +121,11 @@ recolor moonwell-light-pool-variants-v1.png moonwell-light-pool-variants-v2.png 
 recolor moonwell-clearing-firefly-loop-v5.png moonwell-clearing-firefly-loop-v6.png 44% .42 .78
 recolor moonwell-sentinel-tile-v4.png moonwell-sentinel-tile-v5.png 44% .42 .72
 recolor moonwell-water-tile-v2.png moonwell-water-tile-v3.png 47% .38 .80
+
+cool_ambient_glints moonwell-spruce-overhang-v3.png \
+  'rectangle 39,85 50,97'
+cool_ambient_glints moonwell-clearing-canopy-v3.png \
+  'rectangle 86,68 98,81 rectangle 154,77 166,89 rectangle 340,68 352,79 rectangle 414,82 426,96 rectangle 454,79 466,91'
 
 # Natural dark bark for rooted structures and crescent-bearing trees.
 recolor moonwell-clearing-root-platform-v2.png moonwell-clearing-root-platform-v3.png 8% .58 .68
