@@ -1,5 +1,30 @@
 # Moonwell visual art system — continuity record
 
+## Moonroot loam-bank correction — 2026-08-09
+
+- A critical public actual-scale reassessment found that the accepted compressed
+  root-platform shore still read as two rigid black root rails across the
+  river. The water animation and vertical bridge remained strong, so the
+  correction is confined to the shore raster and its draw depth.
+- The deterministic shore processor now derives eight varied sections from the
+  retained no-violet loam family. Each 12-pixel bank has seven continuous
+  wet-soil pixels plus a source-shaped five-pixel moss/stone fringe; the south
+  row is the exact raster inverse. This removes the fence silhouette while
+  keeping the bridge visually dominant.
+- The shared managed no-violet workflow now rebuilds the exit and Moonroot
+  derivatives after their final source families. Runtime only selects and
+  layers the retained 288 × 24 PNG; it adds no procedural terrain art.
+- Moonroot-only scope, water-first/shore-second/bridge-last order, four-row
+  water collision, 32 × 64 bridge footprint, riddle progression, routes,
+  colliders, and all other maps remain unchanged. Regression coverage pins the
+  12-pixel draw depth, loam provenance, continuous join, irregular fringe,
+  varied tile-scale signatures, cache identity, and deterministic rebuild.
+- Local acceptance passes syntax, 67/67 tests, full-art byte regeneration,
+  build, source/dist identity, and diff hygiene. Desktop browser review covered
+  all four maps plus Moonroot before and after the three-riddle bridge reveal;
+  390 × 844 portrait and 844 × 390 × 3 touch landscape passed fit, touch
+  movement, pause/Continue, and clean-console checks.
+
 ## Varied side forest edges — 2026-08-09
 
 - A public four-map desktop review after the bottom-edge release found the

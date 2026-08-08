@@ -445,6 +445,29 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
   1440 × 900 desktop, 844 × 390 × 3 touch landscape, and 390 × 844 × 3
   portrait rotation gate with no console warnings or errors.
 
+## Moonroot loam-bank correction acceptance — 2026-08-09
+
+- Visual invariant: `moonwell-moonroot-shores-v1.png` is now a 288 × 24
+  retained raster derived from `moonwell-clearing-loam-patches-v3.png`, not a
+  compressed root-platform silhouette. Its two 12-pixel rows have a continuous
+  seven-pixel wet-soil join and at least three source-shaped fringe depths, so
+  the river edges read as irregular banks rather than straight root rails.
+- Runtime invariant: only `drawMoonrootShore` changed its visual depth from 8
+  to 12 pixels. Water still draws first, the two raster banks draw second, and
+  the unchanged 32 × 64 bridge draws last. `MOONROOT_BRIDGE_LAYOUT`, world
+  objects, collision, riddles, routes, exit timing, and all non-Moonroot maps
+  are unchanged.
+- Processing invariant: the shared no-violet environment workflow invokes the
+  exit/Moonroot processor after the final loam and root families, and the full
+  runtime family regenerates byte-identically. The cache-keyed shore URL and
+  page script keys prevent a mixed old/new bank draw after publication.
+- Local release profile: `npm run check`, 67/67 tests, deterministic managed
+  art regeneration, `npm run build`, source/dist byte identity, and diff checks
+  pass. Browser QA reviewed all four desktop maps, gated and solved Moonroot,
+  Eir's complete three-riddle flow, 390 × 844 portrait, and 844 × 390 × 3 touch
+  landscape. Touch movement and pause/Continue worked; viewport fit held and
+  the preserved console contained no warnings, errors, or issues.
+
 ## Sprite-first Starroot grounding acceptance — 2026-08-09
 
 - Provenance: retained source

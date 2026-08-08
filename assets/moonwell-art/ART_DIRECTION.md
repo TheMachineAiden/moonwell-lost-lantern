@@ -109,6 +109,7 @@ This is the authoritative mapping:
 | Starroot chime | non-solid one-cell interaction anchor, radius 15 px | 24 × 24 px; anchor −12,−16; rooted baseline and fixed silhouette |
 | Eir | one non-solid cell-centred interaction anchor, radius 22 px | 16 × 24 px runtime draw; anchor −8, −22; four unchanged 64 × 96 raster source cells |
 | Loam patch | no collider | 80 × 48 px overlapping floor layer |
+| Moonroot shore | no collider; water remains solid outside the revealed bridge cells | Two 288 × 12 px retained raster rows, layered over the north/south water edges and under the 32 × 64 bridge |
 | Moonlight pool | no collider | 112 × 66 px dominant screen-composited illumination; secondary pools may be smaller |
 | Top canopy curtain | 20 one-cell root records across row 2; each uses the rooted 20 × 12 px mask at −2,+4 and is collision-only because the art is drawn as a shared backdrop | Three unchanged 128 × 56 px overlapping clusters; their visible root contact ends at y=48 |
 

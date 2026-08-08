@@ -55,7 +55,7 @@ test('luminous production assets preserve exact render footprints',()=>{
     'assets/moonwell-art/production/moonwell-clearing-moonlight-v4.png':[576,112],
     'assets/moonwell-art/production/moonwell-crescent-exit-overhang-v4.png':[320,112],
     'assets/moonwell-art/production/moonwell-exit-clearing-states-v1.png':[128,36],
-    'assets/moonwell-art/production/moonwell-moonroot-shores-v1.png':[288,16],
+    'assets/moonwell-art/production/moonwell-moonroot-shores-v1.png':[288,24],
     'assets/moonwell-art/production/moonwell-clearing-root-platform-v3.png':[192,64],
     'assets/moonwell-art/production/moonwell-eir-rootwatcher-idle-v2.png':[256,96],
     'assets/moonwell-art/production/moonwell-eir-rootwatcher-portrait-v2.png':[512,512],
@@ -136,14 +136,16 @@ test('exit clearing uses a raster state strip behind the rooted silhouette',()=>
 test('Moonroot water receives a raster shore strip without covering its bridge',()=>{
   const source=read('game.js').toString(),processor=read('scripts/process-exit-moonroot-sprites.sh').toString();
   const draw=source.slice(source.indexOf('function draw(){'),source.indexOf('function refreshWorld'));
-  assert.match(source,/moonrootShore:loadArt\('assets\/moonwell-art\/production\/moonwell-moonroot-shores-v1\.png'\)/);
+  assert.match(source,/moonrootShore:loadArt\('assets\/moonwell-art\/production\/moonwell-moonroot-shores-v1\.png\?v=moonwell-loam-bank-2'\)/);
   assert.match(source,/function drawMoonrootShore\(\)\{if\(area!==1\|\|!loaded\(art\.moonrootShore\)\)return/);
-  assert.match(source,/ctx\.drawImage\(art\.moonrootShore,0,0,288,8,x,top,width,8\);ctx\.drawImage\(art\.moonrootShore,0,8,288,8,x,bottom-8,width,8\)/);
+  assert.match(source,/const water=MOONROOT_BRIDGE_LAYOUT\.water,depth=12/);
+  assert.match(source,/ctx\.drawImage\(art\.moonrootShore,0,0,288,depth,x,top,width,depth\);ctx\.drawImage\(art\.moonrootShore,0,depth,288,depth,x,bottom-depth,width,depth\)/);
   assert.ok(draw.indexOf("object.kind==='water'")<draw.indexOf('drawMoonrootShore()'));
   assert.ok(draw.indexOf('drawMoonrootShore()')<draw.indexOf("object.kind==='bridge'"));
-  assert.match(processor,/moonwell-clearing-root-platform-v3\.png/);
+  assert.match(processor,/shore_source=.*moonwell-clearing-loam-patches-v3\.png/);
+  assert.match(processor,/exit_surface_source=.*moonwell-clearing-root-platform-v3\.png/);
   assert.match(processor,/moonwell-moonroot-shores-v1\.png/);
-  assert.match(processor,/continuous, low-contrast moss-to-wet-soil bank/);
+  assert.match(processor,/continuous, low-contrast loam-to-wet-soil bank/);
   assert.doesNotMatch(processor,/tile % 3/);
 });
 
@@ -164,17 +166,23 @@ test('the opaque raster loam base replaces the exposed procedural forest-floor f
 
 test('Moonroot shore is a continuous, varied wet-soil bank rather than a repeated transparent rail',()=>{
   const pixels=rgba('assets/moonwell-art/production/moonwell-moonroot-shores-v1.png'),[width,height]=dimensions('assets/moonwell-art/production/moonwell-moonroot-shores-v1.png');
-  assert.equal(width,288);assert.equal(height,16);
+  assert.equal(width,288);assert.equal(height,24);
   for(let x=0;x<width;x++){
-    let opaque=0;for(let y=0;y<8;y++)if(pixels[(y*width+x)*4+3]>15)opaque++;
-    assert.ok(opaque>=4,`shore has a transparent vertical gap at ${x}`);
+    let opaque=0;for(let y=0;y<12;y++)if(pixels[(y*width+x)*4+3]>15)opaque++;
+    assert.ok(opaque>=7,`shore has a transparent vertical gap at ${x}`);
   }
   const signatures=new Set();
   for(let tile=0;tile<18;tile++){
-    const cell=Buffer.concat([...Array(8)].map((_,y)=>pixels.subarray((y*width+tile*16)*4,(y*width+(tile+1)*16)*4)));
+    const cell=Buffer.concat([...Array(12)].map((_,y)=>pixels.subarray((y*width+tile*16)*4,(y*width+(tile+1)*16)*4)));
     signatures.add(createHash('sha256').update(cell).digest('hex'));
   }
   assert.ok(signatures.size>8,'shore must not repeat a small obvious tile cycle');
+  const fringeDepths=new Set();
+  for(let x=0;x<width;x++){
+    let depth=0;for(let y=0;y<12;y++)if(pixels[(y*width+x)*4+3]>15)depth=y+1;
+    fringeDepths.add(depth);
+  }
+  assert.ok(fringeDepths.size>=3,'shore must retain a visibly irregular loam fringe');
 });
 
 test('the inner forest boundary is a retained dense raster curtain over every top-root blocker',()=>{
@@ -220,8 +228,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v3\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-side-forest-24/);
-  assert.match(html,/game\.js\?v=moonwell-side-forest-24/);
+  assert.match(html,/game-core\.js\?v=moonwell-loam-bank-25/);
+  assert.match(html,/game\.js\?v=moonwell-loam-bank-25/);
 });
 
 test('generated starroot grounding source is pinned and produces tapered transparent frames',()=>{
@@ -467,6 +475,6 @@ test('the dense top-canopy renderer consumes the same exported layout as its roo
   const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-side-forest-24/);
-  assert.match(html,/game\.js\?v=moonwell-side-forest-24/);
+  assert.match(html,/game-core\.js\?v=moonwell-loam-bank-25/);
+  assert.match(html,/game\.js\?v=moonwell-loam-bank-25/);
 });

@@ -6,7 +6,8 @@ set -eu
 # outputs; runtime loads only the compact PNG derivatives below.
 repo_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 forest_source="$repo_dir/assets/generated/moonwell-bottom-right-clearing-source-v3-alpha.png"
-shore_source="$repo_dir/assets/moonwell-art/production/moonwell-clearing-root-platform-v3.png"
+exit_surface_source="$repo_dir/assets/moonwell-art/production/moonwell-clearing-root-platform-v3.png"
+shore_source="$repo_dir/assets/moonwell-art/production/moonwell-clearing-loam-patches-v3.png"
 production="${MOONWELL_ART_OUTPUT:-$repo_dir/assets/moonwell-art/production}"
 work_dir=$(mktemp -d "${TMPDIR:-/var/tmp}/moonwell-exit-moonroot.XXXXXX")
 trap 'rm -rf "$work_dir"' EXIT
@@ -24,7 +25,7 @@ for spec in 'closed:6:4' 'opening:10:6' 'revealed:14:10' 'open:16:12'; do
   path=${rest#*:}
   path_x=$(((32-path)/2))
   edge_x=$(((32-width)/2))
-  magick "$shore_source" -crop '64x48+64+0' +repage -filter point \
+  magick "$exit_surface_source" -crop '64x48+64+0' +repage -filter point \
     -resize "${path}x14!" "$work_dir/exit-loam-$state.png"
   magick -size 32x36 xc:none \
     "$work_dir/exit-left.png" -geometry "+$((edge_x-3))+5" -composite \
@@ -36,24 +37,26 @@ magick "$work_dir/exit-closed.png" "$work_dir/exit-opening.png" \
   "$work_dir/exit-revealed.png" "$work_dir/exit-open.png" +append +repage \
   -strip -define png:exclude-chunk=date,time "$production/moonwell-exit-clearing-states-v1.png"
 
-# A continuous, low-contrast moss-to-wet-soil bank avoids turning the river
-# edge into a bright tiled rail. Eight overlapping crops retain the platform's
-# small root and moss variations without exposing transparent crop edges. The
-# dark opaque underlayer is deliberate wet soil, not a replacement water tile.
+# A continuous, low-contrast loam-to-wet-soil bank avoids turning the river
+# edge into a root fence or bright tiled rail. Eight overlapping crops retain
+# the generated loam family's small stones, moss, and irregular transparent
+# fringe. The seven-pixel opaque underlayer joins the forest floor while the
+# five-pixel source-shaped fringe breaks the waterline at the native scale.
 for sample in 0 1 2 3 4 5 6 7; do
-  offset=$((4+sample*4))
-  moss_y=$((sample % 3))
-  soil_y=$((28+(sample % 3)*4))
-  moss_light=$((72+(sample % 4)*4))
-  soil_light=$((62+(sample % 3)*3))
-  magick "$shore_source" -crop "144x20+$offset+$moss_y" +repage \
-    -filter point -resize '36x5!' -modulate "$moss_light,72,100" "$work_dir/shore-moss-$sample.png"
-  magick "$shore_source" -crop "144x16+$offset+$soil_y" +repage \
-    -filter point -resize '36x4!' -modulate "$soil_light,62,100" "$work_dir/shore-soil-$sample.png"
-  magick "$work_dir/shore-soil-$sample.png" -background '#17251f' -alpha remove -alpha off \
+  cell=$((sample % 4))
+  offset=$((cell*160+8+(sample/4)*8))
+  fringe_y=$((50+(sample % 3)*3))
+  fringe_light=$((88+(sample % 4)*3))
+  soil_light=$((74+(sample % 3)*3))
+  magick "$shore_source" -crop "144x40+$offset+$fringe_y" +repage \
+    -filter point -resize '36x8!' -modulate "$fringe_light,78,100" "$work_dir/shore-fringe-$sample.png"
+  magick "$shore_source" -crop "144x28+$offset+32" +repage \
+    -filter point -resize '36x7!' -modulate "$soil_light,68,100" \
+    -background '#17251f' -alpha remove -alpha off \
     "$work_dir/shore-soil-solid-$sample.png"
-  magick -size 36x8 xc:none "$work_dir/shore-moss-$sample.png" -geometry +0+0 -composite \
-    "$work_dir/shore-soil-solid-$sample.png" -geometry +0+4 -composite -modulate 78,72,100 \
+  magick -size 36x12 xc:none \
+    "$work_dir/shore-soil-solid-$sample.png" -geometry +0+0 -composite \
+    "$work_dir/shore-fringe-$sample.png" -geometry +0+4 -composite \
     "$work_dir/shore-$sample.png"
 done
 shore_strip() {
