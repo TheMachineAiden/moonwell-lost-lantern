@@ -195,6 +195,19 @@ idle frames, maps sparse purple portrait accents to muted teal, and emits the
 reviewed Luna runtime atlas without changing either character's collision or
 interaction contract.
 
+## Dense inner-forest boundary — 2026-08-09
+
+`generated/moonwell-inner-forest-boundary-source-v1.png` is a retained
+1024 × 224 raster composition built from the owner-selected no-violet canopy
+derivative `moonwell-clearing-canopy-v3.png`. Its unevenly offset, mirrored
+canopy layers create overlapping crowns, root faces, moss, and undergrowth
+without a regular gap or ground channel. The deterministic
+`scripts/process-inner-forest-boundary-art.sh` point-reduces that source into
+the two-frame 512 × 112 production sprite
+`moonwell-inner-forest-boundary-v1.png`. Runtime preserves the existing three
+curtain placements and row-2 collider cells, so this is visual occlusion only:
+playable bounds, routes, and collisions do not move.
+
 ## Luna handoff reduction and Eir outline correction — 2026-08-03
 
 The approved Luna generation is retained intact under
