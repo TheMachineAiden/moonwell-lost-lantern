@@ -1,5 +1,30 @@
 # Moonwell visual art system — continuity record
 
+## Varied side forest edges — 2026-08-09
+
+- A public four-map desktop review after the bottom-edge release found the
+  remaining perimeter weakness: both side boundaries were equal 40 × 56
+  spruce stacks, reading as regular vertical rails and making their top and
+  bottom corner junctions visibly mechanical.
+- Both eleven-tree side bands now reuse only the retained no-violet spruce
+  raster through twenty-two distinct frame/size/offset/reflection records.
+  Side frames also rotate by area, keeping the four maps related without
+  repeating the same visible edge. No new source or production asset was
+  needed.
+- All one-tile anchors, rooted 20 × 12 contact rectangles, routes, exit cues,
+  interactions, and progression remain unchanged. The first and last side
+  placements overlap the dense top curtain and varied bottom forest so each
+  corner reads as continuous enclosure.
+- Regression coverage pins both eleven-record families, twenty-two distinct
+  placements, frame and mirror diversity, size variation, every side
+  collider in all four maps, retained-raster rendering, and the absence of a
+  procedural tree substitute.
+- Local release validation passes: syntax, 67/67 tests, deterministic raster
+  regeneration, build, source/dist identity, and diff checks. Browser QA at
+  1440 × 900 reviewed all four maps plus open exits at the right and lower-left
+  side junctions; 390 × 844 portrait and 844 × 390 touch landscape passed
+  movement, side contact, pause/resume, viewport fit, and clean consoles.
+
 ## Varied bottom forest edge — 2026-08-09
 
 - A fresh four-map public review found that the lower perimeter had become the
