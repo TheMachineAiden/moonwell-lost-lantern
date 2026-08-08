@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const context={};
 vm.runInNewContext(fs.readFileSync(new URL('../game-core.js',import.meta.url),'utf8'),context);
-const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,starfallAltarState,watcherChoiceResult}=context.MoonwellCore;
+const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,starfallAltarState,watcherChoiceResult}=context.MoonwellCore;
 
 test('the canonical world is a complete 20 by 13 tile canvas',()=>{
   assert.equal(TILE_SIZE,16);
@@ -44,6 +44,19 @@ test('logical cells are decoupled from the two-times luminous render surface',()
   });
   assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.canopyCurtain)),{
     logical:{cellsWide:20,cellsHigh:1,rootRow:2,solid:true,colliderWidth:20,colliderHeight:12,colliderOffsetX:-2,colliderOffsetY:4},visual:{width:128,height:56,clusters:3,rootContactY:48}
+  });
+});
+
+test('the bottom forest varies retained spruce silhouettes without moving rooted blockers',()=>{
+  assert.equal(BOTTOM_FOREST_LAYOUT.length,20);
+  assert.equal(new Set(BOTTOM_FOREST_LAYOUT.map(item=>JSON.stringify(item))).size,20);
+  assert.deepEqual([...new Set(BOTTOM_FOREST_LAYOUT.map(item=>item.frame))].sort(),[0,1,2]);
+  assert.ok(BOTTOM_FOREST_LAYOUT.some(item=>item.mirror));
+  assert.ok(BOTTOM_FOREST_LAYOUT.some(item=>!item.mirror));
+  assert.ok(Math.max(...BOTTOM_FOREST_LAYOUT.map(item=>item.width))-Math.min(...BOTTOM_FOREST_LAYOUT.map(item=>item.width))>=8);
+  assert.ok(Math.max(...BOTTOM_FOREST_LAYOUT.map(item=>item.height))-Math.min(...BOTTOM_FOREST_LAYOUT.map(item=>item.height))>=8);
+  for(let areaIndex=0;areaIndex<4;areaIndex++)createWorldObjects(areaIndex,false).filter(object=>object.id.startsWith('edge-bottom-')).forEach((object,col)=>{
+    assert.deepEqual(JSON.parse(JSON.stringify(collisionRectFor(object))),{x:col*16-2,y:196,w:20,h:12});
   });
 });
 
