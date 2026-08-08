@@ -448,3 +448,15 @@ then look for the next small player-visible improvement.
   a 32 × 24 altar grounded at y=112 with a small solid base and 22-pixel reach,
   and a flat upward drift instead of a perspective crawl. Those recommendations
   define the implemented geometry and presentation.
+
+## Opening-clearing route cue — 2026-08-08
+
+- Replaced the exit tree's lantern-like crescent landmark with a muted loam
+  opening that visibly parts between the same flanking tree art. The mouth grows
+  from a 2 px seam through 6 px and 10 px intermediate states to a 12 px open
+  clearing inside the existing 16 px logical exit tile.
+- The visual cue uses dark teal shadow, muted loam, and bark edges rather than
+  a point glow. The exit's rooted collider and all area routes are unchanged:
+  it stays solid through `revealed` and becomes passable only at `open`.
+- Deterministic coverage asserts the staged visual footprint and verifies that
+  the rooted and open exit use identical collider rectangles.
