@@ -110,7 +110,10 @@ test('corrected clearing renderer keeps a dominant light pool and makes exits re
   assert.match(source,/perimeter\?40:24/);
   assert.match(source,/w:112,h:66,alpha:\.9/);
   assert.match(source,/drawExitClearing\(object\)/);
-  assert.match(source,/#183a3a.*#244847.*#6e6547/);
+  assert.match(source,/const cue=EXIT_CLEARING,clearing=cue\[object\.state\].*y=object\.y\+cue\.top/);
+  assert.match(source,/drawAtmosphere\(\);worldObjects\.filter\(object=>object\.kind==='exit-tree'\)\.forEach\(drawExitClearing\)/);
+  assert.match(source,/ctx\.globalAlpha=1;ctx\.globalCompositeOperation='source-over'/);
+  assert.match(source,/#86b9ae.*#163b40.*#e3be74/);
   assert.doesNotMatch(source,/crescentLandmark|clearing-crescent-landmark/);
   assert.doesNotMatch(html,/clearing-crescent-landmark/);
   assert.match(source,/object\.x-8,object\.y-8,48,24/);
@@ -130,8 +133,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v2\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-starroot-clearing-16/);
-  assert.match(html,/game\.js\?v=moonwell-starroot-clearing-16/);
+  assert.match(html,/game-core\.js\?v=moonwell-route-mouth-17/);
+  assert.match(html,/game\.js\?v=moonwell-route-mouth-17/);
 });
 
 test('environmental rasters contain no prohibited purple-family silhouette or seam pixels',()=>{
@@ -314,6 +317,6 @@ test('the unchanged top-canopy renderer consumes the same exported layout as its
   const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-starroot-clearing-16/);
-  assert.match(html,/game\.js\?v=moonwell-starroot-clearing-16/);
+  assert.match(html,/game-core\.js\?v=moonwell-route-mouth-17/);
+  assert.match(html,/game\.js\?v=moonwell-route-mouth-17/);
 });

@@ -195,11 +195,13 @@ test('the exit tree state sequence cannot remove its collider before the fully p
   assert.equal(exitStateAt(2),EXIT_STATES.OPEN);
 });
 
-test('the route cue opens as a tile-scale clearing without widening the exit collider',()=>{
-  assert.deepEqual(JSON.parse(JSON.stringify(EXIT_CLEARING)),{closed:{width:2},opening:{width:6},revealed:{width:10},open:{width:12},top:-24,height:40,thresholdY:32});
+test('the route cue opens as a phone-legible one-tile clearing without widening the exit collider',()=>{
+  assert.deepEqual(JSON.parse(JSON.stringify(EXIT_CLEARING)),{closed:{width:6,pathWidth:4},opening:{width:10,pathWidth:6},revealed:{width:14,pathWidth:10},open:{width:16,pathWidth:12},top:-20,height:36,thresholdY:22});
   assert.ok(EXIT_CLEARING.closed.width<EXIT_CLEARING.opening.width);
   assert.ok(EXIT_CLEARING.opening.width<EXIT_CLEARING.revealed.width);
   assert.ok(EXIT_CLEARING.revealed.width<EXIT_CLEARING.open.width);
+  assert.equal(EXIT_CLEARING.open.width,TILE_SIZE);
+  assert.ok(EXIT_CLEARING.open.pathWidth<EXIT_CLEARING.open.width);
   createAreas().slice(0,3).forEach((area,index)=>{
     const rooted=createWorldObjects(index,false,EXIT_STATES.REVEALED).find(object=>object.id===`exit-tree-${index}`);
     const open=createWorldObjects(index,false,EXIT_STATES.OPEN).find(object=>object.id===`exit-tree-${index}`);
