@@ -14,7 +14,6 @@ const prohibited=(r,g,b,a)=>a>15&&r>g*1.08&&b>g*1.12&&b>r*.58&&Math.max(r,b)-g>9
 const characterProhibited=(r,g,b,a)=>a>15&&r>g*1.06&&b>g*1.10&&b>r*.30&&Math.max(r,b)-g>9;
 const environmentalFrames={
   'assets/moonwell-art/production/moonwell-spruce-overhang-v3.png':80,
-  'assets/moonwell-art/production/moonwell-clearing-crescent-landmark-v5.png':96,
   'assets/moonwell-art/production/moonwell-clearing-canopy-v3.png':256,
   'assets/moonwell-art/production/moonwell-clearing-loam-patches-v3.png':160,
   'assets/moonwell-art/production/moonwell-clearing-moonlight-v4.png':192,
@@ -46,7 +45,6 @@ test('luminous production assets preserve exact render footprints',()=>{
   const expected={
     'assets/moonwell-art/production/moonwell-keeper-walk-v7.png':[104,40],
     'assets/moonwell-art/production/moonwell-spruce-overhang-v3.png':[480,112],
-    'assets/moonwell-art/production/moonwell-clearing-crescent-landmark-v5.png':[96,128],
     'assets/moonwell-art/production/moonwell-clearing-canopy-v3.png':[512,112],
     'assets/moonwell-art/production/moonwell-clearing-loam-patches-v3.png':[640,96],
     'assets/moonwell-art/production/moonwell-clearing-moonlight-v4.png':[576,112],
@@ -80,7 +78,6 @@ test('runtime references only production derivatives, never retained generation 
   [
     'moonwell-keeper-walk-v7.png',
     'moonwell-spruce-overhang-v3.png',
-    'moonwell-clearing-crescent-landmark-v5.png',
     'moonwell-clearing-canopy-v3.png',
     'moonwell-clearing-loam-patches-v3.png',
     'moonwell-clearing-moonlight-v4.png',
@@ -108,11 +105,13 @@ test('every runtime-loaded raster is explicitly classified for palette audit',()
   for(const asset of Object.keys(characterFrames))assert.ok(runtimeRasters.has(asset),`${asset} lost its character palette audit`);
 });
 
-test('corrected clearing renderer keeps a dominant light pool and separates perimeter from interior scale',()=>{
+test('corrected clearing renderer keeps a dominant light pool and makes exits read as tile-scale clearings',()=>{
   const source=read('game.js').toString();
   assert.match(source,/perimeter\?40:24/);
   assert.match(source,/w:112,h:66,alpha:\.9/);
-  assert.match(source,/state==='closed'.*crescentLandmark/);
+  assert.match(source,/drawExitClearing\(object\)/);
+  assert.match(source,/#183a3a.*#244847.*#6e6547/);
+  assert.doesNotMatch(source,/crescentLandmark|clearing-crescent-landmark/);
   assert.match(source,/object\.x-8,object\.y-8,48,24/);
 });
 
@@ -121,8 +120,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v2\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-returning-light-14/);
-  assert.match(html,/game\.js\?v=moonwell-returning-light-14/);
+  assert.match(html,/game-core\.js\?v=moonwell-opening-clearing-15/);
+  assert.match(html,/game\.js\?v=moonwell-opening-clearing-15/);
 });
 
 test('environmental rasters contain no prohibited purple-family silhouette or seam pixels',()=>{
@@ -305,6 +304,6 @@ test('the unchanged top-canopy renderer consumes the same exported layout as its
   const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-returning-light-14/);
-  assert.match(html,/game\.js\?v=moonwell-returning-light-14/);
+  assert.match(html,/game-core\.js\?v=moonwell-opening-clearing-15/);
+  assert.match(html,/game\.js\?v=moonwell-opening-clearing-15/);
 });

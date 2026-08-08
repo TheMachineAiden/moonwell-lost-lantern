@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const context={};
 vm.runInNewContext(fs.readFileSync(new URL('../game-core.js',import.meta.url),'utf8'),context);
-const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,starfallAltarState,watcherChoiceResult}=context.MoonwellCore;
+const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,starfallAltarState,watcherChoiceResult}=context.MoonwellCore;
 
 test('the canonical world is a complete 20 by 13 tile canvas',()=>{
   assert.equal(TILE_SIZE,16);
@@ -185,6 +185,20 @@ test('the exit tree state sequence cannot remove its collider before the fully p
   assert.equal(exitStateAt(.75),EXIT_STATES.REVEALED);
   assert.equal(exitStateAt(1.99),EXIT_STATES.REVEALED);
   assert.equal(exitStateAt(2),EXIT_STATES.OPEN);
+});
+
+test('the route cue opens as a tile-scale clearing without widening the exit collider',()=>{
+  assert.deepEqual(JSON.parse(JSON.stringify(EXIT_CLEARING)),{closed:{width:2},opening:{width:6},revealed:{width:10},open:{width:12},top:-24,height:40,thresholdY:32});
+  assert.ok(EXIT_CLEARING.closed.width<EXIT_CLEARING.opening.width);
+  assert.ok(EXIT_CLEARING.opening.width<EXIT_CLEARING.revealed.width);
+  assert.ok(EXIT_CLEARING.revealed.width<EXIT_CLEARING.open.width);
+  createAreas().slice(0,3).forEach((area,index)=>{
+    const rooted=createWorldObjects(index,false,EXIT_STATES.REVEALED).find(object=>object.id===`exit-tree-${index}`);
+    const open=createWorldObjects(index,false,EXIT_STATES.OPEN).find(object=>object.id===`exit-tree-${index}`);
+    assert.deepEqual(collisionRectFor(rooted),collisionRectFor(open));
+    assert.equal(rooted.solid,true);
+    assert.equal(open.solid,false);
+  });
 });
 
 test('world records keep rooted blockers to their perceived contact footprint',()=>{
