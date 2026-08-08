@@ -107,11 +107,14 @@ test('every runtime-loaded raster is explicitly classified for palette audit',()
 
 test('corrected clearing renderer keeps a dominant light pool and makes exits read as tile-scale clearings',()=>{
   const source=read('game.js').toString(),html=read('index.html').toString();
+  const exitTree=source.slice(source.indexOf('function exitTree'),source.indexOf('function drawExitClearing'));
+  const draw=source.slice(source.indexOf('function draw(){'),source.indexOf('function refreshWorld'));
   assert.match(source,/perimeter\?40:24/);
   assert.match(source,/w:112,h:66,alpha:\.9/);
   assert.match(source,/drawExitClearing\(object\)/);
   assert.match(source,/const cue=EXIT_CLEARING,clearing=cue\[object\.state\].*y=object\.y\+cue\.top/);
-  assert.match(source,/drawAtmosphere\(\);worldObjects\.filter\(object=>object\.kind==='exit-tree'\)\.forEach\(drawExitClearing\)/);
+  assert.ok(exitTree.indexOf('drawExitClearing(object)')<exitTree.indexOf('ctx.drawImage(art.exitTree'),'the clearing must sit behind the exit roots');
+  assert.doesNotMatch(draw,/drawExitClearing/,'the clearing must not be repainted over the rooted silhouette');
   assert.match(source,/ctx\.globalAlpha=1;ctx\.globalCompositeOperation='source-over'/);
   assert.match(source,/#86b9ae.*#163b40.*#e3be74/);
   assert.doesNotMatch(source,/crescentLandmark|clearing-crescent-landmark/);
@@ -133,8 +136,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v2\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-route-mouth-17/);
-  assert.match(html,/game\.js\?v=moonwell-route-mouth-17/);
+  assert.match(html,/game-core\.js\?v=moonwell-root-threshold-18/);
+  assert.match(html,/game\.js\?v=moonwell-root-threshold-18/);
 });
 
 test('environmental rasters contain no prohibited purple-family silhouette or seam pixels',()=>{
@@ -317,6 +320,6 @@ test('the unchanged top-canopy renderer consumes the same exported layout as its
   const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-route-mouth-17/);
-  assert.match(html,/game\.js\?v=moonwell-route-mouth-17/);
+  assert.match(html,/game-core\.js\?v=moonwell-root-threshold-18/);
+  assert.match(html,/game\.js\?v=moonwell-root-threshold-18/);
 });

@@ -26,7 +26,7 @@ geometry, not permission to render beyond the runtime footprint.
 | --- | --- | --- |
 | Firefly, memory token | 1 x 1 tile (16 x 16) | Centre on the tile; animation must not change collision centre. |
 | Flower, rune stone | 1 x 1 tile (16 x 16) | May rise above its baseline, never spill sideways. |
-| Lantern | 1 x 1 tile (16 x 16) | Small character-scale destination point; its interaction remains centred on the existing home coordinate. |
+| Rooted forest exit | 1 x 1 tile (16 x 16) | The warm clearing is painted behind the flanking roots and remains centred on the existing home coordinate; never render it as a point light or lantern. |
 | Starroot chime | 1 x 1 logical tile (16 x 16) | Non-solid grounded interaction; 24 × 24 visual with an amber seed glow and one tile-centred interaction point. |
 | Tree | 1 x 1 logical tile (16 x 16) | A 20 × 12 rooted contact mask sits at offset −2,+4; perimeter canopy may overhang to 40 × 56 px and interior canopy to 24 × 40 px. |
 | Sentinel | 2 x 2 tiles (32 x 32) | Deliberate solid landmark with an exact 2 × 2 mask. |
@@ -104,7 +104,7 @@ This is the authoritative mapping:
 | --- | --- | --- |
 | Luna | 10 × 10 px solid movement box | 26 × 40 px; anchor −13, −39 from the precise foot point; four direct-reduction v7 cells |
 | Ordinary spruce | rooted 20 × 12 px mask at −2,+4 from its 1-cell anchor | Perimeter 40 × 56 px; interior 24 × 40 px; canopy overhang is passable, trunk/root contact is not |
-| Crescent exit | 1 × 1 cell, solid through `revealed`; non-solid at `open` | 48 × 64 px; 16 px left/right and 48 px top overhang |
+| Rooted forest exit | 1 × 1 cell, solid through `revealed`; non-solid at `open` | 48 × 64 px; 16 px left/right and 48 px top overhang. Its one-cell warm clearing is drawn behind the rooted silhouette so the tree masks it into a natural threshold. |
 | Root platform | 40 × 14 px contact mask at −4,+2 from its 2 × 1 record | 48 × 24 px; 4 px side and 8 px top overhang |
 | Starroot chime | non-solid one-cell interaction anchor, radius 15 px | 24 × 24 px; anchor −12,−16; rooted baseline and fixed silhouette |
 | Eir | one non-solid cell-centred interaction anchor, radius 22 px | 16 × 24 px runtime draw; anchor −8, −22; four unchanged 64 × 96 raster source cells |
