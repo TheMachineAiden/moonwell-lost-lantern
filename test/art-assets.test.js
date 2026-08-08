@@ -12,6 +12,7 @@ const dimensions=path=>{const png=read(path);assert.equal(png.subarray(1,4).toSt
 const rgba=path=>execFileSync('magick',[fileURLToPath(new URL(path,root)),'-alpha','on','-depth','8','rgba:-'],{maxBuffer:16*1024*1024});
 const prohibited=(r,g,b,a)=>a>15&&r>g*1.08&&b>g*1.12&&b>r*.58&&Math.max(r,b)-g>9;
 const characterProhibited=(r,g,b,a)=>a>15&&r>g*1.06&&b>g*1.10&&b>r*.30&&Math.max(r,b)-g>9;
+const brightWarm=(r,g,b,a)=>a>15&&r>158&&g>82&&b<82&&r>g*1.08&&g>b*1.2;
 const environmentalFrames={
   'assets/moonwell-art/production/moonwell-spruce-overhang-v3.png':80,
   'assets/moonwell-art/production/moonwell-clearing-canopy-v3.png':256,
@@ -146,8 +147,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v2\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-moonroot-shore-19/);
-  assert.match(html,/game\.js\?v=moonwell-moonroot-shore-19/);
+  assert.match(html,/game-core\.js\?v=moonwell-ambient-cues-20/);
+  assert.match(html,/game\.js\?v=moonwell-ambient-cues-20/);
 });
 
 test('environmental rasters contain no prohibited purple-family silhouette or seam pixels',()=>{
@@ -278,6 +279,31 @@ test('ambient glowmoss cannot be mistaken for a collectible firefly',()=>{
   assert.match(source,/#397a72.*#64a89a.*#8bd0c0/);
 });
 
+test('ambient tree and canopy pinlights stay cool while gameplay fireflies retain amber',()=>{
+  const source=read('game.js').toString(),html=read('index.html').toString();
+  const ambientRegions=[
+    ['assets/moonwell-art/production/moonwell-spruce-overhang-v3.png',[[39,85,50,97]]],
+    ['assets/moonwell-art/production/moonwell-clearing-canopy-v3.png',[[86,68,98,81],[154,77,166,89],[340,68,352,79],[414,82,426,96],[454,79,466,91]]]
+  ];
+  for(const [asset,regions] of ambientRegions){
+    const [width]=dimensions(asset),pixels=rgba(asset);
+    let falseAmber=0;
+    for(const [left,top,right,bottom] of regions)for(let y=top;y<=bottom;y++)for(let x=left;x<=right;x++){
+      const offset=(y*width+x)*4;
+      if(brightWarm(pixels[offset],pixels[offset+1],pixels[offset+2],pixels[offset+3]))falseAmber++;
+    }
+    assert.equal(falseAmber,0,`${asset} restores an ambient amber objective cue`);
+  }
+  const fireflies=rgba('assets/moonwell-art/production/moonwell-clearing-firefly-loop-v6.png');
+  let collectibleAmber=0;
+  for(let offset=0;offset<fireflies.length;offset+=4)if(brightWarm(fireflies[offset],fireflies[offset+1],fireflies[offset+2],fireflies[offset+3]))collectibleAmber++;
+  assert.ok(collectibleAmber>=8,'collectible fireflies lose their warm hierarchy');
+  assert.match(source,/moonwell-spruce-overhang-v3\.png\?v=moonwell-ambient-cues-20/);
+  assert.match(source,/moonwell-clearing-canopy-v3\.png\?v=moonwell-ambient-cues-20/);
+  assert.match(html,/moonwell-spruce-overhang-v3\.png\?v=moonwell-ambient-cues-20/);
+  assert.match(html,/moonwell-clearing-canopy-v3\.png\?v=moonwell-ambient-cues-20/);
+});
+
 test('Starfall altar has an undistorted draw, solid base, and explicit return finale',()=>{
   const source=read('game.js').toString(),core=read('game-core.js').toString();
   assert.match(source,/ctx\.drawImage\(art\.altar,point\.x-16,point\.y-24,32,24\)/);
@@ -330,6 +356,6 @@ test('the unchanged top-canopy renderer consumes the same exported layout as its
   const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-moonroot-shore-19/);
-  assert.match(html,/game\.js\?v=moonwell-moonroot-shore-19/);
+  assert.match(html,/game-core\.js\?v=moonwell-ambient-cues-20/);
+  assert.match(html,/game\.js\?v=moonwell-ambient-cues-20/);
 });
