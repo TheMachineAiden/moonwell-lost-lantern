@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const context={};
 vm.runInNewContext(fs.readFileSync(new URL('../game-core.js',import.meta.url),'utf8'),context);
-const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,starfallAltarState,watcherChoiceResult}=context.MoonwellCore;
+const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,starfallAltarState,watcherChoiceResult}=context.MoonwellCore;
 
 test('the canonical world is a complete 20 by 13 tile canvas',()=>{
   assert.equal(TILE_SIZE,16);
@@ -58,6 +58,26 @@ test('the bottom forest varies retained spruce silhouettes without moving rooted
   for(let areaIndex=0;areaIndex<4;areaIndex++)createWorldObjects(areaIndex,false).filter(object=>object.id.startsWith('edge-bottom-')).forEach((object,col)=>{
     assert.deepEqual(JSON.parse(JSON.stringify(collisionRectFor(object))),{x:col*16-2,y:196,w:20,h:12});
   });
+});
+
+test('side forests vary retained spruce silhouettes without moving rooted blockers',()=>{
+  for(const side of ['left','right']){
+    const layout=SIDE_FOREST_LAYOUT[side];
+    assert.equal(layout.length,11);
+    assert.equal(new Set(layout.map(item=>JSON.stringify(item))).size,11);
+    assert.deepEqual([...new Set(layout.map(item=>item.frame))].sort(),[0,1,2]);
+    assert.ok(layout.some(item=>item.mirror));
+    assert.ok(layout.some(item=>!item.mirror));
+    assert.ok(Math.max(...layout.map(item=>item.width))-Math.min(...layout.map(item=>item.width))>=8);
+    assert.ok(Math.max(...layout.map(item=>item.height))-Math.min(...layout.map(item=>item.height))>=8);
+  }
+  assert.equal(new Set([...SIDE_FOREST_LAYOUT.left,...SIDE_FOREST_LAYOUT.right].map(item=>JSON.stringify(item))).size,22);
+  for(let areaIndex=0;areaIndex<4;areaIndex++){
+    const objects=createWorldObjects(areaIndex,false);
+    for(const [side,col] of [['left',0],['right',19]])objects.filter(object=>object.id.startsWith(`edge-${side}-`)).forEach((object,index)=>{
+      assert.deepEqual(JSON.parse(JSON.stringify(collisionRectFor(object))),{x:col*16-2,y:(index+1)*16+4,w:20,h:12});
+    });
+  }
 });
 
 test('every visible top-canopy root cell maps to a seam-free blocker in all four areas',()=>{

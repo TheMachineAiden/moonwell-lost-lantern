@@ -64,6 +64,22 @@ const BOTTOM_FOREST_LAYOUT=Object.freeze([
   [2,37,54,2,false],[1,41,58,-3,true],[0,44,52,0,false],[2,38,57,1,true],[1,43,55,-2,false],
   [0,37,60,2,true],[2,41,54,-1,false],[1,36,58,1,true],[0,42,53,-2,false],[2,44,59,0,true]
 ].map(([frame,width,height,xOffset,mirror])=>Object.freeze({frame,width,height,xOffset,mirror})));
+// Side-edge spruces reuse the same retained raster while varying silhouette
+// and inward overhang. Their one-cell anchors and rooted contact rectangles
+// stay fixed, including the overlaps into the top curtain and bottom forest.
+const sideForestLayout=records=>Object.freeze(records.map(([frame,width,height,xOffset,mirror])=>Object.freeze({frame,width,height,xOffset,mirror})));
+const SIDE_FOREST_LAYOUT=Object.freeze({
+  left:sideForestLayout([
+    [0,44,60,-3,false],[2,38,54,0,true],[1,42,58,-2,false],[0,36,52,1,true],
+    [2,43,61,-3,true],[1,39,55,0,false],[0,45,57,-4,false],[2,37,50,1,true],
+    [1,41,59,-2,true],[0,39,53,0,false],[2,44,62,-3,false]
+  ]),
+  right:sideForestLayout([
+    [1,40,56,1,true],[0,44,61,3,false],[2,37,52,-1,true],[1,42,58,2,false],
+    [0,38,54,0,true],[2,45,60,4,true],[1,36,51,-1,false],[0,43,57,3,true],
+    [2,39,55,0,false],[1,41,62,2,true],[0,37,53,-1,false]
+  ])
+});
 // Decorative cells never participate in collision. Moon/shadow patches are
 // value blocks; the remaining kinds are one-tile understory props.
 const groundDecorCells=[
@@ -146,5 +162,5 @@ function createEchoReplay(trail,origin){
 }
 const canResolveEchoRune=(stage,echoHolding,player,runes)=>stage===2&&echoHolding&&nearPoint(player,runes[2]);
 function watcherChoiceResult(step,choice){const riddle=WATCHER_DIALOGUE.riddles[step];if(!riddle)return Object.freeze({correct:false,complete:false,nextStep:step,reply:'Eir has no more riddles to ask.'});const correct=choice===riddle.answer,nextStep=correct?step+1:step;return Object.freeze({correct,complete:correct&&nextStep===WATCHER_DIALOGUE.riddles.length,nextStep,reply:correct?riddle.correct:riddle.wrong})}
-globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,MEMORY_DIALOGUE_TYPOGRAPHY,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_STATE_DURATIONS,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,starfallAltarState,watcherChoiceResult});
+globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,MEMORY_DIALOGUE_TYPOGRAPHY,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_STATE_DURATIONS,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,starfallAltarState,watcherChoiceResult});
 })();

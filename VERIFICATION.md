@@ -1,5 +1,30 @@
 # Moonwell visual release audit
 
+## Varied side forest edges — 2026-08-09
+
+- Public desktop inspection across all four developer scenes found the left
+  and right equal-size spruce stacks still reading as regular vertical rails.
+  The revised side bands vary retained sprite frame, width, height, horizontal
+  offset, and reflection while keeping their rooted baselines and corner
+  overlaps coherent with the accepted top curtain and bottom edge.
+- The change reuses only `moonwell-spruce-overhang-v3.png`; no generated
+  source, production PNG, route, collider, exit, water, bridge, landmark, or
+  interaction record changed.
+- Deterministic checks cover all twenty-two unique side placement records,
+  exact rooted colliders in every map, retained-raster-only tree rendering,
+  route preservation, and cache identity. Required release validation is
+  syntax, all tests, build, desktop four-map and open-exit review, portrait
+  rotation gate, touch-landscape movement and pause/resume, viewport fit,
+  asset responses, source/dist identity, and clean consoles.
+- Local validation passed: `npm run check`, 67/67 tests including
+  byte-identical managed art regeneration, `npm run build`, source/dist hashes,
+  asset-tree identity, and `git diff --check`. At 1440 × 900, all four maps and
+  representative right-side/lower-left open exits remained clear; repeated
+  normal input stopped Luna at the rooted side contact face and pause/resume
+  completed. The 390 × 844 × 3 portrait gate and 844 × 390 × 3 touch landscape
+  fit without horizontal overflow; touch movement and pause/Continue passed,
+  and final consoles were empty.
+
 ## Varied bottom forest edge — 2026-08-09
 
 - Desktop actual-scale comparison across all four developer scenes found the
