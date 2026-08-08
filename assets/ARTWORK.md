@@ -280,3 +280,19 @@ Eir's retained `moonwell-eir-rootwatcher-idle-v2.png` bytes and four-frame
 timing remain unchanged. Runtime drawing alone scales each 64 × 96 cell to
 16 × 24 with nearest-neighbor rendering at anchor −8,−22. Her established
 one-cell non-solid encounter anchor and 22-pixel talk radius are unchanged.
+
+## Raster exit and Moonroot shore correction — 2026-08-08
+
+`scripts/process-exit-moonroot-sprites.sh` is the deterministic processor for
+the final two world-art cues that previously used canvas rectangles. It uses
+the retained project-bound generated forest source
+`generated/moonwell-bottom-right-clearing-source-v3-alpha.png` plus its
+processed moss/root platform family, and produces only the compact transparent
+runtime strips `moonwell-exit-clearing-states-v1.png` (four 32 × 36 frames)
+and `moonwell-moonroot-shores-v1.png` (two 288 × 8 river-bank rows).
+
+The exit strip holds the state-selected rooted opening and loam threshold
+behind the existing exit-tree silhouette. The shore strip layers over the
+existing water tiles before the unchanged vertical bridge. Game code only
+selects, positions, and layers these PNG cells; exit timing and collider state,
+Moonroot water collision, and the bridge footprint are unchanged.
