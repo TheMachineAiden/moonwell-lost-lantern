@@ -122,9 +122,11 @@ rooted boundary, so its declared row-2 root cells block while the overhead
 foliage remains visual overhang. The runtime contract and shared canopy layout
 are exported from `game-core.js` and covered by deterministic tests.
 
-Starfall Grove consumes `moonwell-starroot-chime-loop-v2.png`, rebuilt from
-the retained `moonwell-starroot-chime-source-v1.png` through
+Starfall Grove consumes `moonwell-starroot-chime-loop-v3.png`, rebuilt from
+the retained `moonwell-starroot-clearing-source-v2.png` through
 `scripts/process-starroot-chime-art.sh` and the shared no-violet processor.
+The irregular root-and-moss contact is authored into every raster frame; the
+runtime adds no rectangle, path, or other procedural clearing beneath it.
 
 `scripts/process-no-violet-environment-art.sh` is the authoritative final
 runtime-art pass. It rebuilds the source-derived family in an isolated

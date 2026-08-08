@@ -208,6 +208,30 @@ the two-frame 512 × 112 production sprite
 curtain placements and row-2 collider cells, so this is visual occlusion only:
 playable bounds, routes, and collisions do not move.
 
+## Sprite-first Starroot grounding — 2026-08-09
+
+`generated/moonwell-starroot-clearing-source-v2.png` is a retained 1536 ×
+1024 project-bound source edit made with the built-in image-generation
+workflow from `generated/moonwell-starroot-chime-source-v1.png`. Its pinned
+SHA-256 is
+`a5b36b3470eea3e0eaf854938c0e58f0c25b94c1eb2df8c75cdd8d5107db9aa7`.
+
+Prompt summary: “Preserve the four Starroot chimes and their left-to-right
+waking sequence; change only their ground contact into low, irregular tapered
+roots and moss on a flat `#ff00ff` key. Match Moonwell's navy/teal, bark, muted
+moss, cool wet-soil, and restrained inner amber palette; no rectangle, cross,
+platform, path, doorway, lantern, halo, text, grid, or extra object.”
+
+`scripts/process-starroot-chime-art.sh` verifies the exact source hash, removes
+the keyed field with a hard pixel-art alpha predicate, point-reduces each
+quarter to a common 24 × 24 cell with transparent gutters, and packs
+`moonwell-starroot-chime-loop-v2.png`. The shared no-violet processor writes
+the runtime `moonwell-starroot-chime-loop-v3.png`. The authored root-and-moss
+contact is now inside every raster frame; runtime canvas shapes no longer draw
+a Starroot clearing. The small static glowmoss floor marks now select, scale,
+and dim the retained `moonwell-foliage-variants-v2.png` strip rather than
+drawing rectangle clusters.
+
 ## Luna handoff reduction and Eir outline correction — 2026-08-03
 
 The approved Luna generation is retained intact under

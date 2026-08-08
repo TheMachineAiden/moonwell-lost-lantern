@@ -505,3 +505,30 @@ then look for the next small player-visible improvement.
 - Local acceptance passed at 1440 × 900 and 844 × 390 touch landscape: banks
   are continuous and subdued while the bridge remains dominant. Normal portrait
   390 × 844 still displays the rotation gate; the console is clear.
+
+## Sprite-first Starroot grounding — 2026-08-09
+
+- A fresh desktop and phone-scale hierarchy review found that Starfall Grove's
+  three raster Starroot chimes still sat on small procedural cross-shaped
+  clearings. The flat arms were especially visible in touch landscape and did
+  not match the surrounding generated loam, roots, and foliage.
+- Replaced that canvas cue with a retained four-state generated source whose
+  low roots, moss, stones, and wet-soil pixels taper naturally into the floor.
+  The built-in image-generation edit preserved the established seed-pod state
+  order and restrained its amber to the inner wake light. The pinned source
+  hash is
+  `a5b36b3470eea3e0eaf854938c0e58f0c25b94c1eb2df8c75cdd8d5107db9aa7`;
+  the no-violet runtime strip hash is
+  `8688a8826e3c764329267b7c29bf379526bfb5725a42cab0b6333e2f31e7d574`.
+- Removed `STARROOT_CLEARING` and every Starroot `rect` draw. Static glowmoss
+  now reuses the retained foliage strip at a smaller, dimmer raster treatment,
+  eliminating the other procedural floor prop in the touched area.
+- The three one-cell, non-solid, 15-pixel interaction footprints are unchanged.
+  Starroot order, wake timing, hidden-light release, altar return, routes,
+  twenty top-root blockers, and every collider remain unchanged.
+- Local acceptance passed syntax checks, 62/62 deterministic tests,
+  byte-identical full-art regeneration, build, source/dist identity, desktop
+  entry/prologue/keyboard/pause-resume, touch movement/pause-Continue, and the
+  390 × 844 portrait gate. Starfall passed actual-scale review at 640 × 416 and
+  844 × 390 × 3: chimes read as small rooted interactions without competing
+  with the central altar. Viewport fit is unchanged and the console is empty.
