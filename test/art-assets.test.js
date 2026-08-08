@@ -15,7 +15,7 @@ const characterProhibited=(r,g,b,a)=>a>15&&r>g*1.06&&b>g*1.10&&b>r*.30&&Math.max
 const brightWarm=(r,g,b,a)=>a>15&&r>158&&g>82&&b<82&&r>g*1.08&&g>b*1.2;
 const environmentalFrames={
   'assets/moonwell-art/production/moonwell-spruce-overhang-v3.png':80,
-  'assets/moonwell-art/production/moonwell-clearing-canopy-v3.png':256,
+  'assets/moonwell-art/production/moonwell-inner-forest-boundary-v1.png':256,
   'assets/moonwell-art/production/moonwell-clearing-loam-patches-v3.png':160,
   'assets/moonwell-art/production/moonwell-clearing-moonlight-v4.png':192,
   'assets/moonwell-art/production/moonwell-crescent-exit-overhang-v4.png':80,
@@ -48,7 +48,7 @@ test('luminous production assets preserve exact render footprints',()=>{
   const expected={
     'assets/moonwell-art/production/moonwell-keeper-walk-v7.png':[104,40],
     'assets/moonwell-art/production/moonwell-spruce-overhang-v3.png':[480,112],
-    'assets/moonwell-art/production/moonwell-clearing-canopy-v3.png':[512,112],
+    'assets/moonwell-art/production/moonwell-inner-forest-boundary-v1.png':[512,112],
     'assets/moonwell-art/production/moonwell-clearing-loam-patches-v3.png':[640,96],
     'assets/moonwell-art/production/moonwell-clearing-moonlight-v4.png':[576,112],
     'assets/moonwell-art/production/moonwell-crescent-exit-overhang-v4.png':[320,112],
@@ -83,7 +83,7 @@ test('runtime references only production derivatives, never retained generation 
   [
     'moonwell-keeper-walk-v7.png',
     'moonwell-spruce-overhang-v3.png',
-    'moonwell-clearing-canopy-v3.png',
+    'moonwell-inner-forest-boundary-v1.png',
     'moonwell-clearing-loam-patches-v3.png',
     'moonwell-clearing-moonlight-v4.png',
     'moonwell-crescent-exit-overhang-v4.png',
@@ -157,6 +157,31 @@ test('Moonroot shore is a continuous, varied wet-soil bank rather than a repeate
     signatures.add(createHash('sha256').update(cell).digest('hex'));
   }
   assert.ok(signatures.size>8,'shore must not repeat a small obvious tile cycle');
+});
+
+test('the inner forest boundary is a retained dense raster curtain over every top-root blocker',()=>{
+  const source=read('game.js').toString(),processor=read('scripts/process-inner-forest-boundary-art.sh').toString();
+  const asset='assets/moonwell-art/production/moonwell-inner-forest-boundary-v1.png';
+  const pixels=rgba(asset),[width,height]=dimensions(asset);
+  assert.deepEqual([width,height],[512,112]);
+  assert.match(source,/canopy:loadArt\('assets\/moonwell-art\/production\/moonwell-inner-forest-boundary-v1\.png\?v=moonwell-inner-forest-boundary-1'\)/);
+  assert.match(processor,/moonwell-inner-forest-boundary-source-v1\.png/);
+  assert.match(processor,/moonwell-clearing-canopy-v3\.png/);
+  assert.match(processor,/filter point/);
+  for(const frameOffset of [0,256])for(let x=frameOffset;x<frameOffset+256;x++){
+    let coverage=0;
+    for(let y=72;y<=103;y++)if(pixels[(y*width+x)*4+3]>15)coverage++;
+    assert.ok(coverage>0,`frame ${frameOffset/256} has a transparent corridor at ${x-frameOffset}`);
+  }
+});
+
+test('inner forest boundary regeneration is byte-identical',()=>{
+  const asset='assets/moonwell-art/production/moonwell-inner-forest-boundary-v1.png';
+  const source='assets/generated/moonwell-inner-forest-boundary-source-v1.png';
+  const digest=path=>createHash('sha256').update(read(path)).digest('hex');
+  const before={asset:digest(asset),source:digest(source)};
+  execFileSync('sh',[fileURLToPath(new URL('scripts/process-inner-forest-boundary-art.sh',root))],{stdio:'pipe',timeout:120000});
+  assert.deepEqual({asset:digest(asset),source:digest(source)},before);
 });
 
 test('Starfall chimes use grounded tile-scale clearings rather than another lantern cue',()=>{
@@ -309,7 +334,7 @@ test('ambient tree and canopy pinlights stay cool while gameplay fireflies retai
   const source=read('game.js').toString(),html=read('index.html').toString();
   const ambientRegions=[
     ['assets/moonwell-art/production/moonwell-spruce-overhang-v3.png',[[39,85,50,97]]],
-    ['assets/moonwell-art/production/moonwell-clearing-canopy-v3.png',[[86,68,98,81],[154,77,166,89],[340,68,352,79],[414,82,426,96],[454,79,466,91]]]
+    ['assets/moonwell-art/production/moonwell-inner-forest-boundary-v1.png',[[86,68,98,81],[154,77,166,89],[340,68,352,79],[414,82,426,96],[454,79,466,91]]]
   ];
   for(const [asset,regions] of ambientRegions){
     const [width]=dimensions(asset),pixels=rgba(asset);
@@ -325,9 +350,9 @@ test('ambient tree and canopy pinlights stay cool while gameplay fireflies retai
   for(let offset=0;offset<fireflies.length;offset+=4)if(brightWarm(fireflies[offset],fireflies[offset+1],fireflies[offset+2],fireflies[offset+3]))collectibleAmber++;
   assert.ok(collectibleAmber>=8,'collectible fireflies lose their warm hierarchy');
   assert.match(source,/moonwell-spruce-overhang-v3\.png\?v=moonwell-ambient-cues-21/);
-  assert.match(source,/moonwell-clearing-canopy-v3\.png\?v=moonwell-ambient-cues-21/);
+  assert.match(source,/moonwell-inner-forest-boundary-v1\.png\?v=moonwell-inner-forest-boundary-1/);
   assert.match(html,/moonwell-spruce-overhang-v3\.png\?v=moonwell-ambient-cues-21/);
-  assert.match(html,/moonwell-clearing-canopy-v3\.png\?v=moonwell-ambient-cues-21/);
+  assert.match(html,/moonwell-inner-forest-boundary-v1\.png\?v=moonwell-inner-forest-boundary-1/);
 });
 
 test('Starfall altar has an undistorted draw, solid base, and explicit return finale',()=>{
@@ -378,7 +403,7 @@ test('844 by 390 phone landscape keeps entry compact and prologue at the undisto
   assert.match(source,/document\.fullscreenEnabled!==true/);
 });
 
-test('the unchanged top-canopy renderer consumes the same exported layout as its root colliders',()=>{
+test('the dense top-canopy renderer consumes the same exported layout as its root colliders',()=>{
   const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
