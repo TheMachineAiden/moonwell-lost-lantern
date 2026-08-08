@@ -1,5 +1,20 @@
 # Moonwell visual release audit
 
+## Varied bottom forest edge — 2026-08-09
+
+- Desktop actual-scale comparison across all four developer scenes found the
+  former bottom picket row and confirmed that the revised edge reads as a
+  denser, irregular foreground forest. The existing top raster curtain remains
+  continuous and visually dominant at the inner boundary.
+- The change reuses only `moonwell-spruce-overhang-v3.png`; runtime varies
+  retained frames through placement, scale, and reflection. No generated
+  source, production PNG, world record, route, collider, or interaction changed.
+- Deterministic checks cover the twenty unique placement records, exact rooted
+  colliders in all four maps, retained-raster-only tree rendering, and cache
+  identity. Required release validation is syntax, all tests, build, desktop
+  four-map review, portrait rotation gate, touch-landscape movement and
+  pause/resume, viewport fit, asset responses, and console cleanliness.
+
 ## Opaque loam substrate — 2026-08-09
 
 - The semi-transparent loam overlay exposed a canvas-painted full-world base;

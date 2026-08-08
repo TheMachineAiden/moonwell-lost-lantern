@@ -1,5 +1,21 @@
 # Moonwell visual art system — continuity record
 
+## Varied bottom forest edge — 2026-08-09
+
+- A fresh four-map public review found that the lower perimeter had become the
+  world's strongest repeated pattern: twenty equal-size spruces formed a
+  regular foreground picket row beneath the newly dense top boundary.
+- The same retained no-violet spruce raster now supplies twenty deterministic
+  bottom-edge placements with varied frame, width, height, horizontal offset,
+  and reflection. All roots keep the same y=208 baseline; their twenty logical
+  anchors and 20 × 12 colliders at y=196 are unchanged in every map.
+- The touched tree renderer no longer contains a canvas-rectangle substitute.
+  It draws the retained production sprite when available and otherwise leaves
+  world art absent, preserving the sprite-first runtime contract.
+- Regression coverage pins twenty distinct placement records, frame limits,
+  mirrored/unmirrored use, visible size variation, unchanged collider records,
+  retained raster rendering, and the absence of procedural tree art.
+
 ## Sprite-first opaque loam base — 2026-08-09
 
 - Replaced the only confirmed visible procedural terrain base: the forest-wide

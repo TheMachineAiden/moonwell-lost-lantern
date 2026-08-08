@@ -220,8 +220,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v3\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-starroot-grounding-22/);
-  assert.match(html,/game\.js\?v=moonwell-starroot-grounding-22/);
+  assert.match(html,/game-core\.js\?v=moonwell-bottom-forest-23/);
+  assert.match(html,/game\.js\?v=moonwell-bottom-forest-23/);
 });
 
 test('generated starroot grounding source is pinned and produces tapered transparent frames',()=>{
@@ -396,6 +396,15 @@ test('ambient tree and canopy pinlights stay cool while gameplay fireflies retai
   assert.match(html,/moonwell-inner-forest-boundary-v1\.png\?v=moonwell-inner-forest-boundary-1/);
 });
 
+test('bottom forest variation uses only retained spruce frames and no procedural tree substitute',()=>{
+  const source=read('game.js').toString();
+  const treeRenderer=source.slice(source.indexOf('function tree('),source.indexOf('function glow('));
+  assert.match(treeRenderer,/BOTTOM_FOREST_LAYOUT\[Math\.floor\(x\/T\)\]/);
+  assert.match(treeRenderer,/ctx\.scale\(-1,1\)/);
+  assert.match(treeRenderer,/ctx\.drawImage\(art\.spruce/);
+  assert.doesNotMatch(treeRenderer,/rect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient/);
+});
+
 test('Starfall altar has an undistorted draw, solid base, and explicit return finale',()=>{
   const source=read('game.js').toString(),core=read('game-core.js').toString();
   assert.match(source,/ctx\.drawImage\(art\.altar,point\.x-16,point\.y-24,32,24\)/);
@@ -448,6 +457,6 @@ test('the dense top-canopy renderer consumes the same exported layout as its roo
   const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-starroot-grounding-22/);
-  assert.match(html,/game\.js\?v=moonwell-starroot-grounding-22/);
+  assert.match(html,/game-core\.js\?v=moonwell-bottom-forest-23/);
+  assert.match(html,/game\.js\?v=moonwell-bottom-forest-23/);
 });
