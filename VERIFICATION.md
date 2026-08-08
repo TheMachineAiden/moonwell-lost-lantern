@@ -358,3 +358,16 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
   116 × 116 steering control, and 44 × 44 pause control; touch movement and the
   pause/Continue cycle passed. All observed requests returned 200 or 304 and
   the preserved console was empty.
+
+## Moonroot shoreline acceptance — 2026-08-08
+
+- Visual invariant: only Moonroot Crossing receives the shallow ragged shore;
+  it derives both water edges from `MOONROOT_BRIDGE_LAYOUT` and the 16 px tile
+  size. Water is painted first, the shore second, and the bridge last, keeping
+  the crossing above the wet-soil overlap in both gated and solved states.
+- Gameplay invariant: no world record or collision function changed. Existing
+  tests still prove the water blocks before the riddles, the 32 × 64 bridge is
+  passable after them, and the complete north-to-south route remains available.
+- Regression coverage asserts Moonroot-only rendering, tile-derived edge
+  depths, muted forest colors, and the water/shore/bridge order. The release
+  profile now contains 57 deterministic tests.

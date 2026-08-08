@@ -122,6 +122,16 @@ test('corrected clearing renderer keeps a dominant light pool and makes exits re
   assert.match(source,/object\.x-8,object\.y-8,48,24/);
 });
 
+test('Moonroot water receives a tile-scale forest shore without covering its bridge',()=>{
+  const source=read('game.js').toString();
+  const draw=source.slice(source.indexOf('function draw(){'),source.indexOf('function refreshWorld'));
+  assert.match(source,/function drawMoonrootShore\(\)\{if\(area!==1\)return/);
+  assert.match(source,/water\.firstCol;col<=water\.lastCol.*northDepth=2\+\(col%3\).*southDepth=2\+\(\(col\+1\)%3\)/);
+  assert.match(source,/#102e31.*#3f655c.*#223f3d/);
+  assert.ok(draw.indexOf("object.kind==='water'")<draw.indexOf('drawMoonrootShore()'));
+  assert.ok(draw.indexOf('drawMoonrootShore()')<draw.indexOf("object.kind==='bridge'"));
+});
+
 test('Starfall chimes use grounded tile-scale clearings rather than another lantern cue',()=>{
   const source=read('game.js').toString(),core=read('game-core.js').toString();
   assert.match(core,/STARROOT_CLEARING=Object\.freeze\(\{width:16,height:7,top:-1,innerWidth:10,glintOffsetY:2\}\)/);
@@ -136,8 +146,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v2\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-root-threshold-18/);
-  assert.match(html,/game\.js\?v=moonwell-root-threshold-18/);
+  assert.match(html,/game-core\.js\?v=moonwell-moonroot-shore-19/);
+  assert.match(html,/game\.js\?v=moonwell-moonroot-shore-19/);
 });
 
 test('environmental rasters contain no prohibited purple-family silhouette or seam pixels',()=>{
@@ -320,6 +330,6 @@ test('the unchanged top-canopy renderer consumes the same exported layout as its
   const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-root-threshold-18/);
-  assert.match(html,/game\.js\?v=moonwell-root-threshold-18/);
+  assert.match(html,/game-core\.js\?v=moonwell-moonroot-shore-19/);
+  assert.match(html,/game\.js\?v=moonwell-moonroot-shore-19/);
 });
