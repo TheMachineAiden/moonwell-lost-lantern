@@ -232,6 +232,18 @@ a Starroot clearing. The small static glowmoss floor marks now select, scale,
 and dim the retained `moonwell-foliage-variants-v2.png` strip rather than
 drawing rectangle clusters.
 
+## Opaque loam substrate — 2026-08-09
+
+`moonwell-loam-base-tiles-v1.png` is an opaque four-cell 16 × 16 raster base
+derived reproducibly from the reviewed no-violet
+`moonwell-clearing-loam-patches-v3.png` family. The transparent larger loam
+patches remain their existing visual detail layer; the new base fills only
+their exposed gaps with sampled deep loam, preserving native pixel scale and
+removing the former canvas-painted terrain rectangle. The water tile was
+inspected separately and is already fully opaque, so its backing rectangle is
+not visible runtime art. `scripts/process-loam-base-art.sh`, invoked by the
+managed no-violet art workflow, rebuilds the base byte-identically.
+
 ## Luna handoff reduction and Eir outline correction — 2026-08-03
 
 The approved Luna generation is retained intact under
