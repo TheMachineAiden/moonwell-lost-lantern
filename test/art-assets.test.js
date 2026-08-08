@@ -156,8 +156,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v2\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-ambient-cues-20/);
-  assert.match(html,/game\.js\?v=moonwell-ambient-cues-20/);
+  assert.match(html,/game-core\.js\?v=moonwell-ambient-cues-21/);
+  assert.match(html,/game\.js\?v=moonwell-ambient-cues-21/);
 });
 
 test('environmental rasters contain no prohibited purple-family silhouette or seam pixels',()=>{
@@ -307,10 +307,10 @@ test('ambient tree and canopy pinlights stay cool while gameplay fireflies retai
   let collectibleAmber=0;
   for(let offset=0;offset<fireflies.length;offset+=4)if(brightWarm(fireflies[offset],fireflies[offset+1],fireflies[offset+2],fireflies[offset+3]))collectibleAmber++;
   assert.ok(collectibleAmber>=8,'collectible fireflies lose their warm hierarchy');
-  assert.match(source,/moonwell-spruce-overhang-v3\.png\?v=moonwell-ambient-cues-20/);
-  assert.match(source,/moonwell-clearing-canopy-v3\.png\?v=moonwell-ambient-cues-20/);
-  assert.match(html,/moonwell-spruce-overhang-v3\.png\?v=moonwell-ambient-cues-20/);
-  assert.match(html,/moonwell-clearing-canopy-v3\.png\?v=moonwell-ambient-cues-20/);
+  assert.match(source,/moonwell-spruce-overhang-v3\.png\?v=moonwell-ambient-cues-21/);
+  assert.match(source,/moonwell-clearing-canopy-v3\.png\?v=moonwell-ambient-cues-21/);
+  assert.match(html,/moonwell-spruce-overhang-v3\.png\?v=moonwell-ambient-cues-21/);
+  assert.match(html,/moonwell-clearing-canopy-v3\.png\?v=moonwell-ambient-cues-21/);
 });
 
 test('Starfall altar has an undistorted draw, solid base, and explicit return finale',()=>{
@@ -365,6 +365,6 @@ test('the unchanged top-canopy renderer consumes the same exported layout as its
   const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-ambient-cues-20/);
-  assert.match(html,/game\.js\?v=moonwell-ambient-cues-20/);
+  assert.match(html,/game-core\.js\?v=moonwell-ambient-cues-21/);
+  assert.match(html,/game\.js\?v=moonwell-ambient-cues-21/);
 });
