@@ -116,13 +116,22 @@ test('corrected clearing renderer keeps a dominant light pool and makes exits re
   assert.match(source,/object\.x-8,object\.y-8,48,24/);
 });
 
+test('Starfall chimes use grounded tile-scale clearings rather than another lantern cue',()=>{
+  const source=read('game.js').toString(),core=read('game-core.js').toString();
+  assert.match(core,/STARROOT_CLEARING=Object\.freeze\(\{width:16,height:7,top:-1,innerWidth:10,glintOffsetY:2\}\)/);
+  assert.match(source,/const lit=starroot\.lit,frame=lit\?3/);
+  assert.match(source,/cue=STARROOT_CLEARING/);
+  assert.match(source,/#25463f.*#31564b.*#52796a/);
+  assert.doesNotMatch(source,/starroot.*lantern/i);
+});
+
 test('Starfall uses grounded starroot art and contains no sky-bell runtime path or copy',()=>{
   const source=read('game.js').toString(),core=read('game-core.js').toString(),html=read('index.html').toString();
   assert.match(source,/moonwell-starroot-chime-loop-v2\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-opening-clearing-15/);
-  assert.match(html,/game\.js\?v=moonwell-opening-clearing-15/);
+  assert.match(html,/game-core\.js\?v=moonwell-starroot-clearing-16/);
+  assert.match(html,/game\.js\?v=moonwell-starroot-clearing-16/);
 });
 
 test('environmental rasters contain no prohibited purple-family silhouette or seam pixels',()=>{
@@ -305,6 +314,6 @@ test('the unchanged top-canopy renderer consumes the same exported layout as its
   const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-opening-clearing-15/);
-  assert.match(html,/game\.js\?v=moonwell-opening-clearing-15/);
+  assert.match(html,/game-core\.js\?v=moonwell-starroot-clearing-16/);
+  assert.match(html,/game\.js\?v=moonwell-starroot-clearing-16/);
 });
