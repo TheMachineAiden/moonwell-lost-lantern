@@ -460,3 +460,21 @@ then look for the next small player-visible improvement.
   it stays solid through `revealed` and becomes passable only at `open`.
 - Deterministic coverage asserts the staged visual footprint and verifies that
   the rooted and open exit use identical collider rectangles.
+
+## Root-masked forest threshold — 2026-08-08
+
+- A fresh actual-scale review found that the clearing's late foreground pass
+  left its cyan cap and amber path fully exposed, so the staged cue still read
+  as a rectangular door or lantern laid over the tree.
+- The same one-tile clearing is now painted immediately behind the existing
+  exit raster. Its foliage and roots naturally mask the cue into a small dark
+  opening with a warm loam threshold. No raster, anchor, state timing, collider,
+  route, or progression record changed.
+- User-facing state copy now calls the cue a warm forest opening/clearing, and
+  the art contract explicitly prohibits a point-light or lantern reading.
+- Local validation passes `npm run check`, all 56 tests, byte-identical art
+  regeneration, `npm run build`, and `git diff --check`. Desktop actual-scale
+  review covered all four exit states in Lantern Glade and open exits in all
+  three routed areas; Starfall still has no exit. Phone portrait and 844 × 390
+  touch landscape fit without overflow, touch movement and pause/resume work,
+  and the preserved console is empty.

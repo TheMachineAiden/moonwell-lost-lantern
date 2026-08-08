@@ -338,3 +338,23 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
   reviewed. Controls remain at least 44 pixels tall, layouts do not overflow,
   and the browser console is empty with all observed requests returning 200 or
   304.
+
+## Root-masked forest threshold acceptance — 2026-08-08
+
+- Visual-layer invariant: the tile-scale clearing is drawn before the existing
+  four-state rooted exit raster and is never repainted after the atmosphere
+  pass. Regression coverage pins that order so the tree silhouette continues
+  to mask the warm threshold rather than exposing a rectangular lantern/door.
+- Gameplay invariant: Lantern Glade, Moonroot Crossing, and Whispering Hollow
+  remain blocked in `closed` and `revealed` and become passable only in `open`;
+  Starfall Grove still returns no exit. Existing route and collider assertions
+  remain unchanged.
+- Release profile: `npm run check`, 56/56 tests including byte-identical
+  environmental regeneration, `npm run build`, and `git diff --check` pass.
+- Browser profile: desktop normal entry, prologue skip, movement, pause/resume,
+  all four staged exit visuals, and all four complete scenes passed. Portrait
+  390 × 844 × 3 retained the full rotation gate and zero horizontal overflow.
+  Touch landscape 844 × 390 × 3 retained its 600 × 390 undistorted canvas,
+  116 × 116 steering control, and 44 × 44 pause control; touch movement and the
+  pause/Continue cycle passed. All observed requests returned 200 or 304 and
+  the preserved console was empty.
