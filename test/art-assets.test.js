@@ -106,12 +106,13 @@ test('every runtime-loaded raster is explicitly classified for palette audit',()
 });
 
 test('corrected clearing renderer keeps a dominant light pool and makes exits read as tile-scale clearings',()=>{
-  const source=read('game.js').toString();
+  const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(source,/perimeter\?40:24/);
   assert.match(source,/w:112,h:66,alpha:\.9/);
   assert.match(source,/drawExitClearing\(object\)/);
   assert.match(source,/#183a3a.*#244847.*#6e6547/);
   assert.doesNotMatch(source,/crescentLandmark|clearing-crescent-landmark/);
+  assert.doesNotMatch(html,/clearing-crescent-landmark/);
   assert.match(source,/object\.x-8,object\.y-8,48,24/);
 });
 
