@@ -336,9 +336,10 @@ one-cell non-solid encounter anchor and 22-pixel talk radius are unchanged.
 the final two world-art cues that previously used canvas rectangles. It uses
 the retained project-bound generated forest source
 `generated/moonwell-bottom-right-clearing-source-v3-alpha.png` plus its
-processed moss/root platform family, and produces only the compact transparent
-runtime strips `moonwell-exit-clearing-states-v1.png` (four 32 × 36 frames)
-and `moonwell-moonroot-shores-v1.png` (two 288 × 8 river-bank rows).
+processed root-platform and loam families, and produces only the compact
+transparent runtime strips `moonwell-exit-clearing-states-v1.png` (four 32 ×
+36 frames) and `moonwell-moonroot-shores-v1.png` (two 288 × 12 river-bank
+rows).
 
 The exit strip holds the state-selected rooted opening and loam threshold
 behind the existing exit-tree silhouette. The shore strip layers over the
@@ -348,11 +349,13 @@ Moonroot water collision, and the bridge footprint are unchanged.
 
 ### Moonroot bank refinement — 2026-08-08
 
-The deterministic processor now builds the shore from eight overlapping
-platform-source crops rather than cycling three transparent-edged 16 px
-samples. Each north-bank section combines subdued moss with dark wet soil; the
-south bank is the retained pixel-art inverse for the far shore. The partial
-moss edge leaves a shallow irregular waterline while every column retains a
-continuous wet-soil base. This removes the dashed bright rail at phone scale
-without changing the 288 × 16 footprint, layer order, water collision, or the
-bridge's four-cell crossing.
+The deterministic processor now builds the shore from eight overlapping crops
+of the retained no-violet loam family. Each north-bank section combines dark
+wet soil with source-shaped moss, stones, and a transparent fringe; the south
+bank is the retained pixel-art inverse for the far shore. Seven continuous
+pixels join the forest floor while the remaining five pixels produce a varied
+waterline. This supersedes the compressed root-platform bank, which still read
+as a straight root fence at actual desktop scale. The 288 × 24 raster remains
+purely visual: layer order, water collision, and the bridge's four-cell
+crossing are unchanged. The shared no-violet workflow rebuilds this derivative
+after its final loam and root inputs, keeping regeneration byte-identical.

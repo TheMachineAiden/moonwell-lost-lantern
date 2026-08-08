@@ -176,4 +176,9 @@ done
 magick $luna_frames +append -strip -define png:exclude-chunk=date,time \
   PNG32:"$production/moonwell-keeper-walk-v7.png"
 
+# Rebuild the routed exit threshold and Moonroot banks only after their final
+# no-violet forest inputs exist. This keeps both derivatives inside the same
+# deterministic managed world-art pass as their retained source families.
+MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-exit-moonroot-sprites.sh"
+
 printf '%s\n' "Rebuilt no-violet Moonwell runtime family in $production"
