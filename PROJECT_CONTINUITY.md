@@ -492,3 +492,16 @@ then look for the next small player-visible improvement.
   riddle gate, routes, pickups, memory, exit timing, and progression are also
   unchanged. Regression coverage pins the Moonroot-only scope, tile-derived
   edge geometry, muted palette, and water/shore/bridge layer order.
+
+## Moonroot wet-bank refinement — 2026-08-08
+
+- Replaced the dashed, bright three-sample shoreline cycle with a deterministic
+  eight-section raster bank sourced from retained root-platform art. It has a
+  muted moss lip, a dark wet-soil base, shallow irregular water-side pixels,
+  and no transparent vertical gaps.
+- Runtime geometry is untouched: the 288 × 16 PNG remains after water and
+  before the vertical bridge; water blocking, bridge passability, riddle
+  progression, routes, and every collider retain their values.
+- Local acceptance passed at 1440 × 900 and 844 × 390 touch landscape: banks
+  are continuous and subdued while the bridge remains dominant. Normal portrait
+  390 × 844 still displays the rotation gate; the console is clear.

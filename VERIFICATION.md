@@ -371,3 +371,16 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
 - Regression coverage asserts Moonroot-only rendering, tile-derived edge
   depths, muted forest colors, and the water/shore/bridge order. The release
   profile now contains 57 deterministic tests.
+
+## Moonroot wet-bank refinement — 2026-08-08
+
+- The shore processor now makes eight source-derived moss/wet-soil sections
+  with a continuous opaque lower bank and a shallow irregular moss edge,
+  replacing the former transparent-edged three-tile cycle.
+- Regression coverage confirms the production strip has no transparent
+  vertical gap and more than eight distinct tile-scale signatures across its
+  north row; water remains before shore and the bridge remains after shore.
+- `npm test` passed 59/59, `npm run check`, `npm run build`, deterministic
+  regeneration, and source/dist identity all passed. Browser review passed at
+  1440 × 900 desktop, 844 × 390 × 3 touch landscape, and 390 × 844 × 3
+  portrait rotation gate with no console warnings or errors.
