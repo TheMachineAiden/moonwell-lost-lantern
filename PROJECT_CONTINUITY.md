@@ -478,3 +478,17 @@ then look for the next small player-visible improvement.
   three routed areas; Starfall still has no exit. Phone portrait and 844 × 390
   touch landscape fit without overflow, touch movement and pause/resume work,
   and the preserved console is empty.
+
+## Moonroot forest shoreline — 2026-08-08
+
+- A fresh four-scene public review found that Moonroot Crossing's water still
+  met the forest floor at two raw horizontal tile cuts. The crossing read as a
+  pasted rectangle while the other three areas had coherent loam transitions.
+- Moonroot now paints a shallow, irregular moss and wet-soil overlap across the
+  north and south water edges. It uses the existing 16 px tile math and forest
+  palette, introduces no raster, and is painted after water but before the
+  bridge so the narrow north-to-south crossing stays visually intact.
+- Water, bridge, tree, exit, platform, and player colliders are unchanged. The
+  riddle gate, routes, pickups, memory, exit timing, and progression are also
+  unchanged. Regression coverage pins the Moonroot-only scope, tile-derived
+  edge geometry, muted palette, and water/shore/bridge layer order.
