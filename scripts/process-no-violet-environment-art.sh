@@ -141,7 +141,7 @@ recolor moonwell-clearing-moonlight-v3.png moonwell-clearing-moonlight-v4.png 52
 recolor moonwell-memory-loop-v2.png moonwell-memory-loop-v3.png 52% .32 .88
 recolor moonwell-moonflower-v2.png moonwell-moonflower-v3.png 52% .40 .84
 recolor moonwell-rune-stone-v2.png moonwell-rune-stone-v3.png 52% .42 .82
-recolor moonwell-starroot-chime-loop-v1.png moonwell-starroot-chime-loop-v2.png 44% .42 .76
+recolor moonwell-starroot-chime-loop-v2.png moonwell-starroot-chime-loop-v3.png 44% .42 .76
 
 # Eir's retained keyed sheet leaves saturated magenta/fuchsia fringe after the
 # 64 x 96 frame reduction. Replace it with the established near-black outline;

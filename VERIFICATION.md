@@ -384,3 +384,33 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
   regeneration, and source/dist identity all passed. Browser review passed at
   1440 × 900 desktop, 844 × 390 × 3 touch landscape, and 390 × 844 × 3
   portrait rotation gate with no console warnings or errors.
+
+## Sprite-first Starroot grounding acceptance — 2026-08-09
+
+- Provenance: retained source
+  `assets/generated/moonwell-starroot-clearing-source-v2.png` is 1536 × 1024
+  with SHA-256
+  `a5b36b3470eea3e0eaf854938c0e58f0c25b94c1eb2df8c75cdd8d5107db9aa7`.
+  The processor pins that identity, uses a hard chroma-alpha predicate, crops
+  four fixed quarters, point-reduces into 24 × 24 cells with transparent
+  gutters, and produces byte-identical no-violet runtime hash
+  `8688a8826e3c764329267b7c29bf379526bfb5725a42cab0b6333e2f31e7d574`.
+- Sprite-first invariant: the Starroot renderer contains one raster draw and a
+  transient state halo, with no rectangle/path clearing and no exported
+  `STARROOT_CLEARING`. Glowmoss selects and dims retained foliage raster cells;
+  it no longer draws rectangle clusters. Runtime paths never load the retained
+  generation source.
+- Gameplay invariant: every Starroot remains non-solid with the same centered
+  one-cell visual contract and 15-pixel touch radius. Three-touch progression,
+  final-light release, altar dominance, routes, colliders, top-root boundary,
+  and the other three maps are unchanged.
+- Automated acceptance: `npm run check`, 62/62 tests, byte-identical no-violet
+  family regeneration, `npm run build`, source/dist identity, and diff hygiene
+  passed locally.
+- Browser acceptance: 1440 × 900 desktop passed entry, prologue skip, keyboard
+  movement, P/Continue and Escape resume; 844 × 390 × 3 touch landscape passed
+  movement and pause/Continue with a 600 × 390 canvas, 116 × 116 steering, and
+  44 × 44 pause control; 390 × 844 × 3 retained the full portrait gate and
+  zero horizontal overflow. Starfall's inactive and waking raster states were
+  reviewed at both gameplay scales. No important clipping, hierarchy conflict,
+  procedural cross, or console message remained.
