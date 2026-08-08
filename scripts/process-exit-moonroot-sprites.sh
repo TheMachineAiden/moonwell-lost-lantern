@@ -36,18 +36,30 @@ magick "$work_dir/exit-closed.png" "$work_dir/exit-opening.png" \
   "$work_dir/exit-revealed.png" "$work_dir/exit-open.png" +append +repage \
   -strip -define png:exclude-chunk=date,time "$production/moonwell-exit-clearing-states-v1.png"
 
-# Compact moss/root samples from the retained generated platform family make
-# two 18-tile wet banks. They deliberately exclude all water and bridge pixels
-# so the existing river tiles and vertical crossing keep their clear roles.
-for sample in 0 1 2; do
-  magick "$shore_source" -crop "64x32+$((sample*52))+4" +repage \
-    -filter point -resize '16x8!' "$work_dir/shore-$sample.png"
+# A continuous, low-contrast moss-to-wet-soil bank avoids turning the river
+# edge into a bright tiled rail. Eight overlapping crops retain the platform's
+# small root and moss variations without exposing transparent crop edges. The
+# dark opaque underlayer is deliberate wet soil, not a replacement water tile.
+for sample in 0 1 2 3 4 5 6 7; do
+  offset=$((4+sample*4))
+  moss_y=$((sample % 3))
+  soil_y=$((28+(sample % 3)*4))
+  moss_light=$((72+(sample % 4)*4))
+  soil_light=$((62+(sample % 3)*3))
+  magick "$shore_source" -crop "144x20+$offset+$moss_y" +repage \
+    -filter point -resize '36x5!' -modulate "$moss_light,72,100" "$work_dir/shore-moss-$sample.png"
+  magick "$shore_source" -crop "144x16+$offset+$soil_y" +repage \
+    -filter point -resize '36x4!' -modulate "$soil_light,62,100" "$work_dir/shore-soil-$sample.png"
+  magick "$work_dir/shore-soil-$sample.png" -background '#17251f' -alpha remove -alpha off \
+    "$work_dir/shore-soil-solid-$sample.png"
+  magick -size 36x8 xc:none "$work_dir/shore-moss-$sample.png" -geometry +0+0 -composite \
+    "$work_dir/shore-soil-solid-$sample.png" -geometry +0+4 -composite -modulate 78,72,100 \
+    "$work_dir/shore-$sample.png"
 done
 shore_strip() {
   output="$1"
   : > "$work_dir/shore-inputs.txt"
-  for tile in $(seq 0 17); do
-    sample=$((tile % 3))
+  for sample in 0 1 2 3 4 5 6 7; do
     printf '%s\n' "$work_dir/shore-$sample.png" >> "$work_dir/shore-inputs.txt"
   done
   # shellcheck disable=SC2046

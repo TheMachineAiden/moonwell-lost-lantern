@@ -140,6 +140,23 @@ test('Moonroot water receives a raster shore strip without covering its bridge',
   assert.ok(draw.indexOf('drawMoonrootShore()')<draw.indexOf("object.kind==='bridge'"));
   assert.match(processor,/moonwell-clearing-root-platform-v3\.png/);
   assert.match(processor,/moonwell-moonroot-shores-v1\.png/);
+  assert.match(processor,/continuous, low-contrast moss-to-wet-soil bank/);
+  assert.doesNotMatch(processor,/tile % 3/);
+});
+
+test('Moonroot shore is a continuous, varied wet-soil bank rather than a repeated transparent rail',()=>{
+  const pixels=rgba('assets/moonwell-art/production/moonwell-moonroot-shores-v1.png'),[width,height]=dimensions('assets/moonwell-art/production/moonwell-moonroot-shores-v1.png');
+  assert.equal(width,288);assert.equal(height,16);
+  for(let x=0;x<width;x++){
+    let opaque=0;for(let y=0;y<8;y++)if(pixels[(y*width+x)*4+3]>15)opaque++;
+    assert.ok(opaque>=4,`shore has a transparent vertical gap at ${x}`);
+  }
+  const signatures=new Set();
+  for(let tile=0;tile<18;tile++){
+    const cell=Buffer.concat([...Array(8)].map((_,y)=>pixels.subarray((y*width+tile*16)*4,(y*width+(tile+1)*16)*4)));
+    signatures.add(createHash('sha256').update(cell).digest('hex'));
+  }
+  assert.ok(signatures.size>8,'shore must not repeat a small obvious tile cycle');
 });
 
 test('Starfall chimes use grounded tile-scale clearings rather than another lantern cue',()=>{

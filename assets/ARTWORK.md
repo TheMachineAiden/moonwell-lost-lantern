@@ -296,3 +296,14 @@ behind the existing exit-tree silhouette. The shore strip layers over the
 existing water tiles before the unchanged vertical bridge. Game code only
 selects, positions, and layers these PNG cells; exit timing and collider state,
 Moonroot water collision, and the bridge footprint are unchanged.
+
+### Moonroot bank refinement — 2026-08-08
+
+The deterministic processor now builds the shore from eight overlapping
+platform-source crops rather than cycling three transparent-edged 16 px
+samples. Each north-bank section combines subdued moss with dark wet soil; the
+south bank is the retained pixel-art inverse for the far shore. The partial
+moss edge leaves a shallow irregular waterline while every column retains a
+continuous wet-soil base. This removes the dashed bright rail at phone scale
+without changing the 288 × 16 footprint, layer order, water collision, or the
+bridge's four-cell crossing.
