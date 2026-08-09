@@ -156,6 +156,17 @@ const GROUND_DECOR_LAYOUT=groundDecorLayout([
     ['needles',10,3,2,-1,1,true,.58],['root',12,9,0,1,0,false,.56],['mushroom',6,4,0,-2,1,true,.90],['glowmoss',16,10,2,1,-1,false,.48]
   ]
 ]);
+// Two retained-raster pools give each map a distinct moonlit route hierarchy.
+// The dominant pool supports that map's next interaction rather than repeating
+// one lower-centre spotlight; the smaller pool only carries the eye onward.
+// These records are visual-only and never enter the world-object list.
+const moonlightPoolLayout=areas=>Object.freeze(areas.map(records=>Object.freeze(records.map(([frame,x,y,w,h,alpha])=>Object.freeze({frame,x,y,w,h,alpha})))));
+const MOONLIGHT_POOL_LAYOUT=moonlightPoolLayout([
+  [[1,56,112,112,66,.76],[2,208,44,80,48,.24]],
+  [[0,176,28,112,66,.72],[1,116,128,80,48,.32]],
+  [[2,200,116,112,66,.74],[1,112,36,80,48,.28]],
+  [[0,132,68,112,66,.78],[2,32,96,80,48,.26]]
+]);
 const EXIT_STATES=Object.freeze({CLOSED:'closed',OPENING:'opening',REVEALED:'revealed',OPEN:'open'});
 const EXIT_STATE_DURATIONS=Object.freeze({opening:.75,revealed:1.25});
 // The exit remains one logical tile. Its stepped mouth grows to one clear
@@ -230,5 +241,5 @@ function createEchoReplay(trail,origin){
 }
 const canResolveEchoRune=(stage,echoHolding,player,runes)=>stage===2&&echoHolding&&nearPoint(player,runes[2]);
 function watcherChoiceResult(step,choice){const riddle=WATCHER_DIALOGUE.riddles[step];if(!riddle)return Object.freeze({correct:false,complete:false,nextStep:step,reply:'Eir has no more riddles to ask.'});const correct=choice===riddle.answer,nextStep=correct?step+1:step;return Object.freeze({correct,complete:correct&&nextStep===WATCHER_DIALOGUE.riddles.length,nextStep,reply:correct?riddle.correct:riddle.wrong})}
-globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,LOAM_PATCH_LAYOUT,GROUND_DECOR_LAYOUT,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,MEMORY_DIALOGUE_TYPOGRAPHY,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_STATE_DURATIONS,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,starfallAltarState,watcherChoiceResult});
+globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,LOAM_PATCH_LAYOUT,GROUND_DECOR_LAYOUT,MOONLIGHT_POOL_LAYOUT,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,MEMORY_DIALOGUE_TYPOGRAPHY,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_STATE_DURATIONS,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,starfallAltarState,watcherChoiceResult});
 })();

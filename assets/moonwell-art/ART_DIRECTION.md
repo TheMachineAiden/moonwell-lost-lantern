@@ -110,7 +110,7 @@ This is the authoritative mapping:
 | Eir | one non-solid cell-centred interaction anchor, radius 22 px | 16 × 24 px runtime draw; anchor −8, −22; four unchanged 64 × 96 raster source cells |
 | Loam patch | no collider | 80 × 48 px overlapping floor layer; four explicit thirty-record map layouts select retained frames, aligned offsets, reflection, and restrained opacity |
 | Moonroot shore | no collider; water remains solid outside the revealed bridge cells | Two 288 × 12 px retained raster rows, layered over the north/south water edges and under the 32 × 64 bridge |
-| Moonlight pool | no collider | 112 × 66 px dominant screen-composited illumination; secondary pools may be smaller |
+| Moonlight pool | no collider | Four explicit two-pool map layouts: one 112 × 66 px dominant screen-composited interaction anchor and one smaller route-support pool, aligned to a four-pixel placement rhythm |
 | Top canopy curtain | 20 one-cell root records across row 2; each uses the rooted 20 × 12 px mask at −2,+4 and is collision-only because the art is drawn as a shared backdrop | Three unchanged 128 × 56 px overlapping clusters; their visible root contact ends at y=48 |
 
 The only larger logical collider exception remains the 2 × 2 Hollow sentinel.
@@ -143,6 +143,11 @@ Lighting order is continuous loam → screen-composited moonlight → waterways
 and detail → canopy depth → baseline-sorted sprites → navy vignette. Lantern
 Glade deliberately keeps an open central route, a broad upper root shelf, and
 one dominant upper-right crescent instead of repeating large landmark trees.
+Its moonlight follows the lower-left gathering route and only whispers toward
+the upper-right exit. Moonroot weights Eir and the bridge landing; Whispering
+Hollow lights the first-to-second-rune diagonal instead of the sentinel;
+Starfall Grove holds its dominant cool pool behind the altar, with the left
+chime as the quiet secondary anchor.
 Amber is reserved for lantern/firefly/starroot focal points. Memory and rune
 magic use cool cyan, pale neutral, and teal so they remain localized without
 creating terrain or collider-edge language.
