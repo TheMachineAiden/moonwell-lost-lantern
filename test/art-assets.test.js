@@ -34,7 +34,7 @@ const environmentalFrames={
   'assets/moonwell-art/production/moonwell-starroot-chime-variants-v4.png':24,
   'assets/moonwell-art/production/moonwell-sentinel-stones-v2.png':32,
   'assets/moonwell-art/production/moonwell-altar-v3.png':64,
-  'assets/moonwell-art/production/moonwell-water-tile-v3.png':16,
+  'assets/moonwell-art/production/moonwell-water-tile-v4.png':16,
   'assets/moonwell-art/production/moonwell-moonroot-shores-v1.png':288
 };
 const characterFrames={
@@ -75,7 +75,7 @@ test('luminous production assets preserve exact render footprints',()=>{
     'assets/moonwell-art/production/moonwell-rune-stone-variants-v1.png':[48,16],
     'assets/moonwell-art/production/moonwell-starroot-chime-variants-v4.png':[288,24],
     'assets/moonwell-art/production/moonwell-sentinel-stones-v2.png':[32,32],
-    'assets/moonwell-art/production/moonwell-water-tile-v3.png':[64,16]
+    'assets/moonwell-art/production/moonwell-water-tile-v4.png':[64,16]
   };
   for(const [path,size] of Object.entries(expected))assert.deepEqual(dimensions(path),size,path);
 });
@@ -112,7 +112,8 @@ test('runtime references only production derivatives, never retained generation 
     'moonwell-bridge-vertical-v5.png',
     'moonwell-rune-stone-variants-v1.png',
     'moonwell-starroot-chime-variants-v4.png',
-    'moonwell-sentinel-stones-v2.png'
+    'moonwell-sentinel-stones-v2.png',
+    'moonwell-water-tile-v4.png'
   ].forEach(asset=>assert.match(source,new RegExp(asset.replaceAll('.','\\.'))));
   assert.doesNotMatch(source,/selected-forest-production-source|luminous-forest-production-source|bottom-right-clearing-source|world-sprite-source|eir-rootwatcher-(?:sprite|portrait)-source|320x208-art-direction-source/);
 });
@@ -269,13 +270,13 @@ test('Moonroot water receives a raster shore strip without covering its bridge',
   assert.doesNotMatch(processor,/tile % 3/);
 });
 
-test('Moonroot water uses four opaque source-derived raster variants without a canvas substitute',()=>{
-  const source=read('game.js').toString(),html=read('index.html').toString(),processor=read('scripts/process-moonwell-art.sh').toString(),paletteProcessor=read('scripts/process-no-violet-environment-art.sh').toString();
+test('Moonroot water uses four quieter retained raster variants without a canvas substitute',()=>{
+  const source=read('game.js').toString(),html=read('index.html').toString(),processor=read('scripts/process-moonwell-art.sh').toString(),paletteProcessor=read('scripts/process-no-violet-environment-art.sh').toString(),quietProcessor=read('scripts/process-moonroot-water-art.sh').toString();
   const renderer=source.slice(source.indexOf('function drawWater'),source.indexOf('function worldObject'));
-  const asset='assets/moonwell-art/production/moonwell-water-tile-v3.png',pixels=rgba(asset),[width,height]=dimensions(asset);
+  const base='assets/moonwell-art/production/moonwell-water-tile-v3.png',asset='assets/moonwell-art/production/moonwell-water-tile-v4.png',basePixels=rgba(base),pixels=rgba(asset),[width,height]=dimensions(asset);
   assert.deepEqual([width,height],[64,16]);
-  assert.match(source,/water:loadArt\('assets\/moonwell-art\/production\/moonwell-water-tile-v3\.png\?v=moonwell-water-variants-1'\)/);
-  assert.match(html,/preload" as="image" href="assets\/moonwell-art\/production\/moonwell-water-tile-v3\.png\?v=moonwell-water-variants-1"/);
+  assert.match(source,/water:loadArt\('assets\/moonwell-art\/production\/moonwell-water-tile-v4\.png\?v=moonwell-quiet-water-1'\)/);
+  assert.match(html,/preload" as="image" href="assets\/moonwell-art\/production\/moonwell-water-tile-v4\.png\?v=moonwell-quiet-water-1"/);
   assert.match(renderer,/WATER_TILE_LAYOUT\[row\]\[col\]/);
   assert.match(renderer,/ctx\.drawImage\(art\.water,frame\*T,0,T,T,object\.x,object\.y,T,T\)/);
   assert.doesNotMatch(renderer,/\brect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient|\.svg/);
@@ -283,16 +284,23 @@ test('Moonroot water uses four opaque source-derived raster variants without a c
   assert.match(processor,/\.water-border-mask\.png/);
   assert.match(processor,/\.water-frame-\{0,1,2,3\}\.png \+append/);
   assert.match(paletteProcessor,/normalize_water_perimeters/);
+  assert.match(paletteProcessor,/process-moonroot-water-art\.sh/);
+  assert.match(quietProcessor,/moonwell-world-props-atlas-v2-source\.png/);
+  assert.match(quietProcessor,/1f28c764f0a3b4e0c50b287e29312471081f35007265219e87e16aeb80a317b4/);
+  assert.match(quietProcessor,/moonwell-water-tile-v3\.png/);
+  assert.match(quietProcessor,/moonwell-water-tile-v4\.png/);
   const signatures=new Set();
+  let baseValue=0,quietValue=0;
   for(let frame=0;frame<4;frame++){
     const cell=Buffer.concat([...Array(height)].map((_,y)=>pixels.subarray((y*width+frame*16)*4,(y*width+(frame+1)*16)*4)));
     const signature=createHash('sha256').update(cell).digest('hex');
     signatures.add(signature);
-    if(frame===0)assert.equal(signature,'8efb36e8474d3bbd9bad0be2c5f16573b47968744c3c69af99ea3d9367c032d8','accepted water frame zero changed pixels');
     for(let y=0;y<height;y++)for(let x=0;x<16;x++){
       const offset=(y*width+frame*16+x)*4;
       assert.equal(pixels[offset+3],255,`water frame ${frame} leaves a transparent terrain gap`);
       assert.equal(brightWarm(pixels[offset],pixels[offset+1],pixels[offset+2],pixels[offset+3]),false,`water frame ${frame} introduces a warm objective cue`);
+      baseValue+=basePixels[offset]+basePixels[offset+1]+basePixels[offset+2];
+      quietValue+=pixels[offset]+pixels[offset+1]+pixels[offset+2];
       if(frame>0&&(x===0||x===15||y===0||y===15)){
         const canonical=(y*width+x)*4;
         assert.deepEqual([...pixels.subarray(offset,offset+4)],[...pixels.subarray(canonical,canonical+4)],`water frame ${frame} changes the stable tile perimeter at ${x},${y}`);
@@ -300,6 +308,8 @@ test('Moonroot water uses four opaque source-derived raster variants without a c
     }
   }
   assert.equal(signatures.size,4,'water atlas repeats a packed frame');
+  assert.ok(quietValue<baseValue*.86,'Moonroot water remains too bright for the crossing hierarchy');
+  assert.notDeepEqual(pixels,basePixels,'quiet water derivative is byte-identical to the accepted atlas');
 });
 
 test('Whispering Hollow uses an unlit retained stone sentinel instead of a warm chest-like cue',()=>{
