@@ -1,5 +1,20 @@
 # Moonwell visual art system — continuity record
 
+## Varied Whispering Hollow echo stones — 2026-08-09
+
+- The three echoed rune anchors previously stamped one 16 × 16 rune raster.
+  `moonwell-rune-stone-variants-v1.png` now packs three small, cool, grounded
+  sibling silhouettes derived only from the accepted v3 production source.
+  `process-hollow-rune-variants-art.sh` pins that source hash and is included
+  in the managed no-violet regeneration path.
+- Runtime selects one retained 16 × 16 cell per existing rune index. Echo
+  anchors, interaction radius, glow/hold timing, route, collision-free
+  footprint, hidden-light condition, and progression stay unchanged.
+- Acceptance before publication: 87/87 tests, syntax, byte-identical managed
+  art regeneration, build/source-dist identity, and clean diff check. The
+  release-specific game script and preload use the shared varied-runes cache
+  identity to prevent the asset/runtime mismatch caught in prior public QA.
+
 ## Quiet Moonroot crossing hierarchy — 2026-08-09
 
 - A public four-map hierarchy audit found that Moonroot's otherwise accepted
