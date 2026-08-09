@@ -20,7 +20,7 @@ const environmentalFrames={
   'assets/moonwell-art/production/moonwell-clearing-loam-patches-v3.png':160,
   'assets/moonwell-art/production/moonwell-clearing-moonlight-v4.png':192,
   'assets/moonwell-art/production/moonwell-route-opening-overhang-v1.png':64,
-  'assets/moonwell-art/production/moonwell-exit-clearing-states-v2.png':32,
+  'assets/moonwell-art/production/moonwell-exit-clearing-states-v3.png':32,
   'assets/moonwell-art/production/moonwell-root-shelf-variants-v1.png':48,
   'assets/moonwell-art/production/moonwell-foliage-variants-v2.png':16,
   'assets/moonwell-art/production/moonwell-ground-texture-variants-v2.png':16,
@@ -54,7 +54,7 @@ test('luminous production assets preserve exact render footprints',()=>{
     'assets/moonwell-art/production/moonwell-clearing-loam-patches-v3.png':[640,96],
     'assets/moonwell-art/production/moonwell-clearing-moonlight-v4.png':[576,112],
     'assets/moonwell-art/production/moonwell-route-opening-overhang-v1.png':[256,72],
-    'assets/moonwell-art/production/moonwell-exit-clearing-states-v2.png':[128,40],
+    'assets/moonwell-art/production/moonwell-exit-clearing-states-v3.png':[128,40],
     'assets/moonwell-art/production/moonwell-moonroot-shores-v1.png':[288,24],
     'assets/moonwell-art/production/moonwell-root-shelf-variants-v1.png':[288,24],
     'assets/moonwell-art/production/moonwell-eir-rootwatcher-idle-v2.png':[256,96],
@@ -90,6 +90,7 @@ test('runtime references only production derivatives, never retained generation 
     'moonwell-clearing-loam-patches-v3.png',
     'moonwell-clearing-moonlight-v4.png',
     'moonwell-route-opening-overhang-v1.png',
+    'moonwell-exit-clearing-states-v3.png',
     'moonwell-root-shelf-variants-v1.png',
     'moonwell-eir-rootwatcher-idle-v2.png',
     'moonwell-eir-rootwatcher-portrait-v2.png',
@@ -122,7 +123,8 @@ test('exit clearing uses a raster state strip behind the rooted silhouette',()=>
   assert.match(source,/w:112,h:66,alpha:\.9/);
   assert.match(source,/drawExitClearing\(object\)/);
   assert.match(source,/exitTree:loadArt\('assets\/moonwell-art\/production\/moonwell-route-opening-overhang-v1\.png'\)/);
-  assert.match(source,/exitClearing:loadArt\('assets\/moonwell-art\/production\/moonwell-exit-clearing-states-v2\.png'\)/);
+  assert.match(source,/exitClearing:loadArt\('assets\/moonwell-art\/production\/moonwell-exit-clearing-states-v3\.png\?v=moonwell-loam-opening-1'\)/);
+  assert.match(html,/preload" as="image" href="assets\/moonwell-art\/production\/moonwell-exit-clearing-states-v3\.png\?v=moonwell-loam-opening-1"/);
   assert.match(source,/const frame=\{closed:0,opening:1,revealed:2,open:3\}\[object\.state\];if\(loaded\(art\.exitClearing\)\)ctx\.drawImage\(art\.exitClearing,frame\*32,0,32,40,object\.x-8,object\.y\+EXIT_CLEARING\.top,32,40\)/);
   assert.ok(exitTree.indexOf('drawExitClearing(object)')<exitTree.indexOf('ctx.drawImage(art.exitTree'),'the clearing must sit behind the exit roots');
   assert.doesNotMatch(draw,/drawExitClearing/,'the clearing must not be repainted over the rooted silhouette');
@@ -133,8 +135,9 @@ test('exit clearing uses a raster state strip behind the rooted silhouette',()=>
   assert.match(processor,/moonwell-spruce-overhang-v3\.png/);
   assert.match(processor,/moonwell-route-opening-overhang-v1\.png/);
   assert.match(processor,/moonwell-clearing-loam-patches-v3\.png/);
-  assert.match(processor,/moonwell-exit-clearing-states-v2\.png/);
+  assert.match(processor,/moonwell-exit-clearing-states-v3\.png/);
   assert.match(exitTree,/frame\*64,0,64,72,x-24,y-56,64,72/);
+  assert.doesNotMatch(source+html,/moonwell-exit-clearing-states-v2/);
   assert.doesNotMatch(source+html,/moonwell-crescent-exit-overhang/);
 });
 
@@ -154,8 +157,8 @@ test('route-opening overhang parts into a clear central one-tile destination',()
   assert.ok(centreCoverage[3]<=8,'open route retains a trunk or root across its one-tile gap');
 });
 
-test('exit threshold is a broad warm loam path rather than a point light',()=>{
-  const asset='assets/moonwell-art/production/moonwell-exit-clearing-states-v2.png';
+test('exit threshold is an irregular warm loam clearing rather than a slab or point light',()=>{
+  const asset='assets/moonwell-art/production/moonwell-exit-clearing-states-v3.png';
   const pixels=rgba(asset),[width,height]=dimensions(asset);
   assert.deepEqual([width,height],[128,40]);
   const coverage=[];
@@ -170,6 +173,14 @@ test('exit threshold is a broad warm loam path rather than a point light',()=>{
     coverage.push(opaque);
     assert.ok(warm>=8,`frame ${frame} loses its source-textured warm loam`);
     assert.equal(brightPoints,0,`frame ${frame} introduces a lantern-like point light`);
+    const lowerWidths=[];
+    for(let y=30;y<height;y++){
+      let widthAtRow=0;
+      for(let x=0;x<32;x++)if(pixels[(y*width+frame*32+x)*4+3]>15)widthAtRow++;
+      lowerWidths.push(widthAtRow);
+    }
+    assert.ok(new Set(lowerWidths).size>=3,`frame ${frame} restores the old rectangular threshold lip`);
+    assert.ok(lowerWidths.at(-1)<Math.max(...lowerWidths),`frame ${frame} loses its tapered clearing foot`);
   }
   assert.ok(coverage[0]<coverage[1]&&coverage[1]<coverage[2]&&coverage[2]<coverage[3]);
 });
@@ -184,7 +195,7 @@ test('Moonroot water receives a raster shore strip without covering its bridge',
   assert.ok(draw.indexOf("object.kind==='water'")<draw.indexOf('drawMoonrootShore()'));
   assert.ok(draw.indexOf('drawMoonrootShore()')<draw.indexOf("object.kind==='bridge'"));
   assert.match(processor,/shore_source=.*moonwell-clearing-loam-patches-v3\.png/);
-  assert.match(processor,/exit_surface_source=.*moonwell-clearing-root-platform-v3\.png/);
+  assert.doesNotMatch(processor,/exit_surface_source|route-threshold/);
   assert.match(processor,/moonwell-moonroot-shores-v1\.png/);
   assert.match(processor,/continuous, low-contrast loam-to-wet-soil bank/);
   assert.doesNotMatch(processor,/tile % 3/);
@@ -269,8 +280,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v3\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-root-shelves-27/);
-  assert.match(html,/game\.js\?v=moonwell-root-shelves-27/);
+  assert.match(html,/game-core\.js\?v=moonwell-loam-opening-28/);
+  assert.match(html,/game\.js\?v=moonwell-loam-opening-28/);
 });
 
 test('generated starroot grounding source is pinned and produces tapered transparent frames',()=>{
@@ -548,6 +559,6 @@ test('the dense top-canopy renderer consumes the same exported layout as its roo
   const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-root-shelves-27/);
-  assert.match(html,/game\.js\?v=moonwell-root-shelves-27/);
+  assert.match(html,/game-core\.js\?v=moonwell-loam-opening-28/);
+  assert.match(html,/game\.js\?v=moonwell-loam-opening-28/);
 });
