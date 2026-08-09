@@ -31,7 +31,7 @@ const environmentalFrames={
   'assets/moonwell-art/production/moonwell-memory-loop-v3.png':16,
   'assets/moonwell-art/production/moonwell-bridge-vertical-v4.png':32,
   'assets/moonwell-art/production/moonwell-rune-stone-v3.png':32,
-  'assets/moonwell-art/production/moonwell-starroot-chime-loop-v3.png':24,
+  'assets/moonwell-art/production/moonwell-starroot-chime-variants-v4.png':24,
   'assets/moonwell-art/production/moonwell-sentinel-stones-v2.png':32,
   'assets/moonwell-art/production/moonwell-altar-v3.png':64,
   'assets/moonwell-art/production/moonwell-water-tile-v3.png':16,
@@ -72,7 +72,7 @@ test('luminous production assets preserve exact render footprints',()=>{
     'assets/moonwell-art/production/moonwell-clearing-firefly-loop-v6.png':[64,16],
     'assets/moonwell-art/production/moonwell-light-pool-variants-v2.png':[48,16],
     'assets/moonwell-art/production/moonwell-bridge-vertical-v4.png':[32,64],
-    'assets/moonwell-art/production/moonwell-starroot-chime-loop-v3.png':[96,24],
+    'assets/moonwell-art/production/moonwell-starroot-chime-variants-v4.png':[288,24],
     'assets/moonwell-art/production/moonwell-sentinel-stones-v2.png':[32,32],
     'assets/moonwell-art/production/moonwell-water-tile-v3.png':[64,16]
   };
@@ -109,7 +109,7 @@ test('runtime references only production derivatives, never retained generation 
     'moonwell-clearing-firefly-loop-v6.png',
     'moonwell-light-pool-variants-v2.png',
     'moonwell-bridge-vertical-v4.png',
-    'moonwell-starroot-chime-loop-v3.png',
+    'moonwell-starroot-chime-variants-v4.png',
     'moonwell-sentinel-stones-v2.png'
   ].forEach(asset=>assert.match(source,new RegExp(asset.replaceAll('.','\\.'))));
   assert.doesNotMatch(source,/selected-forest-production-source|luminous-forest-production-source|bottom-right-clearing-source|world-sprite-source|eir-rootwatcher-(?:sprite|portrait)-source|320x208-art-direction-source/);
@@ -345,40 +345,60 @@ test('inner forest boundary regeneration is byte-identical',()=>{
 test('Starfall chimes bake their grounded clearings into retained raster frames',()=>{
   const source=read('game.js').toString(),core=read('game-core.js').toString(),processor=read('scripts/process-starroot-chime-art.sh').toString();
   const renderer=source.slice(source.indexOf('function starroot('),source.indexOf('function moonwellAltar'));
-  assert.match(source,/const lit=starroot\.lit,frame=lit\?3/);
-  assert.match(renderer,/ctx\.drawImage\(art\.starroot,frame\*24,0,24,24,starroot\.x-12,starroot\.y-16,24,24\)/);
+  assert.match(source,/const lit=starroot\.lit,frame=lit\?3:reduce\.matches\?0:Math\.floor\(step\/30\+index\)%2,sourceX=\(index\*4\+frame\)\*24/);
+  assert.match(renderer,/ctx\.drawImage\(art\.starroot,sourceX,0,24,24,starroot\.x-12,starroot\.y-16,24,24\)/);
   assert.doesNotMatch(renderer,/rect\(|STARROOT_CLEARING|#25463f|#31564b|#52796a/);
   assert.doesNotMatch(core,/STARROOT_CLEARING/);
   assert.match(processor,/moonwell-starroot-clearing-source-v2\.png/);
   assert.match(processor,/a5b36b3470eea3e0eaf854938c0e58f0c25b94c1eb2df8c75cdd8d5107db9aa7/);
-  assert.match(processor,/moonwell-starroot-chime-loop-v2\.png/);
+  assert.match(processor,/moonwell-starroot-chime-variants-v3\.png/);
+  assert.match(processor,/'0:22:22:0' '1:20:21:1' '2:22:20:0'/);
+  assert.match(processor,/-resize "\$\{width\}x\$\{height\}!"/);
+  assert.match(processor,/-flop/);
+  assert.match(source,/place\.starroots\.forEach\(\(item,index\)=>entities\.push\(\{y:item\.y\+8,draw:\(\)=>starroot\(item,index\)\}\)\)/);
   assert.doesNotMatch(source,/starroot.*lantern/i);
 });
 
 test('Starfall uses grounded starroot art and contains no sky-bell runtime path or copy',()=>{
   const source=read('game.js').toString(),core=read('game-core.js').toString(),html=read('index.html').toString();
-  assert.match(source,/moonwell-starroot-chime-loop-v3\.png/);
+  assert.match(source,/moonwell-starroot-chime-variants-v4\.png\?v=moonwell-varied-starroots-1/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-rooted-shelves-2/);
-  assert.match(html,/game\.js\?v=moonwell-rooted-shelves-2/);
+  assert.match(html,/game-core\.js\?v=moonwell-varied-starroots-1/);
+  assert.match(html,/game\.js\?v=moonwell-varied-starroots-1/);
 });
 
-test('generated starroot grounding source is pinned and produces tapered transparent frames',()=>{
+test('generated starroot grounding source is pinned and produces three distinct tapered strips',()=>{
   const source='assets/generated/moonwell-starroot-clearing-source-v2.png';
-  const asset='assets/moonwell-art/production/moonwell-starroot-chime-loop-v3.png';
+  const asset='assets/moonwell-art/production/moonwell-starroot-chime-variants-v4.png';
   assert.equal(createHash('sha256').update(read(source)).digest('hex'),'a5b36b3470eea3e0eaf854938c0e58f0c25b94c1eb2df8c75cdd8d5107db9aa7');
   const pixels=rgba(asset),[width,height]=dimensions(asset);
-  assert.deepEqual([width,height],[96,24]);
-  for(let frame=0;frame<4;frame++){
+  assert.deepEqual([width,height],[288,24]);
+  const stripSignatures=new Set();
+  for(let variant=0;variant<3;variant++){
+    const strip=Buffer.concat([...Array(height)].map((_,y)=>pixels.subarray((y*width+variant*96)*4,(y*width+(variant+1)*96)*4)));
+    stripSignatures.add(createHash('sha256').update(strip).digest('hex'));
+  }
+  assert.equal(stripSignatures.size,3,'placed starroots repeat one retained strip');
+  for(let frame=0;frame<12;frame++){
     const columnCoverage=[];
     for(let x=frame*24;x<(frame+1)*24;x++){
       let opaque=0;for(let y=0;y<height;y++)if(pixels[(y*width+x)*4+3]>15)opaque++;
       columnCoverage.push(opaque);
     }
     assert.equal(columnCoverage[0]+columnCoverage[23],0,`frame ${frame} reaches an atlas boundary`);
-    assert.ok(columnCoverage.slice(3,21).filter(value=>value>0).length>=14,`frame ${frame} loses its broad rooted contact`);
+    assert.ok(columnCoverage.slice(2,22).filter(value=>value>0).length>=13,`frame ${frame} loses its broad rooted contact`);
   }
+});
+
+test('retained Starroot variant processing is byte-identical',()=>{
+  const source='assets/generated/moonwell-starroot-clearing-source-v2.png';
+  const alpha='assets/generated/moonwell-starroot-clearing-source-v2-alpha.png';
+  const intermediate='assets/moonwell-art/production/moonwell-starroot-chime-variants-v3.png';
+  const digest=asset=>createHash('sha256').update(read(asset)).digest('hex');
+  const before={source:digest(source),alpha:digest(alpha),intermediate:digest(intermediate)};
+  execFileSync('sh',[fileURLToPath(new URL('scripts/process-starroot-chime-art.sh',root))],{stdio:'pipe',timeout:120000});
+  assert.deepEqual({source:digest(source),alpha:digest(alpha),intermediate:digest(intermediate)},before);
 });
 
 test('environmental rasters contain no prohibited purple-family silhouette or seam pixels',()=>{
@@ -708,6 +728,6 @@ test('the dense top-canopy renderer consumes the same exported layout as its roo
   assert.match(renderer,/ctx\.scale\(-1,1\)/);
   assert.doesNotMatch(renderer,/\brect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient|\.svg/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-rooted-shelves-2/);
-  assert.match(html,/game\.js\?v=moonwell-rooted-shelves-2/);
+  assert.match(html,/game-core\.js\?v=moonwell-varied-starroots-1/);
+  assert.match(html,/game\.js\?v=moonwell-varied-starroots-1/);
 });

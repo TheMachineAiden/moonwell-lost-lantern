@@ -779,3 +779,36 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
   132 × 132 steering, and 44 × 44 pause target fit; touch movement and
   pause/Continue pass, all 26 observed image/script requests return 200 or 304,
   and the preserved console is empty.
+
+## Varied Starfall chime family — 2026-08-09
+
+- Visual target: remove the synchronized stamp repetition among Starfall's
+  three grounded chimes while keeping them subordinate to the central altar
+  and recognizably one interaction family.
+- Raster invariant: `moonwell-starroot-chime-variants-v4.png` is a 288 × 24
+  retained runtime atlas containing three distinct four-state strips. Every
+  24 × 24 cell keeps transparent side gutters, broad irregular root contact,
+  the common grounded baseline, and zero prohibited purple-family pixels.
+- Provenance invariant: the exact pinned
+  `moonwell-starroot-clearing-source-v2.png` remains the only generated source.
+  Its deterministic processor writes the retained v3 intermediate from scale
+  and reflection records; the managed no-violet workflow writes the v4 runtime
+  derivative. Source SHA-256 remains
+  `a5b36b3470eea3e0eaf854938c0e58f0c25b94c1eb2df8c75cdd8d5107db9aa7`.
+- Runtime and geometry invariant: selection uses the unchanged array index and
+  a 24-pixel source-cell offset. The three points, 24 × 24 visual footprints,
+  non-solid one-tile records, 15-pixel interaction radius, waking order,
+  hidden-light reveal, altar state, and finale remain unchanged. The renderer
+  contains no procedural world-art substitute.
+- Automated acceptance: `npm run check`, 83/83 tests including byte-identical
+  managed no-violet regeneration, `npm run build`, source/dist identity, and
+  `git diff --check` pass locally.
+- Browser acceptance: all four 1440 × 900 developer scenes and the fully open
+  Glade route pass actual-scale review. The route remains a warm loam gap, the
+  top forest remains a continuous wall, the three Starroots read as related
+  but distinct, and the altar remains dominant. Keyboard movement plus the
+  full pause/Continue cycle pass. The 390 × 844 × 3 portrait gate fits with no
+  horizontal overflow. At 844 × 390 × 3, touch entry, prologue skip, movement,
+  pause/Continue, the 600 × 390 canvas, 132 × 132 steering, and 44 × 44 pause
+  target pass; all 27 document/script/image requests return 200 and the console
+  is empty.
