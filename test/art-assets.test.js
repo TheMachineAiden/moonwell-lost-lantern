@@ -280,8 +280,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v3\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-loam-opening-28/);
-  assert.match(html,/game\.js\?v=moonwell-loam-opening-28/);
+  assert.match(html,/game-core\.js\?v=moonwell-interior-forest-29/);
+  assert.match(html,/game\.js\?v=moonwell-interior-forest-29/);
 });
 
 test('generated starroot grounding source is pinned and produces tapered transparent frames',()=>{
@@ -475,6 +475,15 @@ test('side forest variation uses the retained spruce raster across both perimete
   assert.doesNotMatch(treeRenderer,/rect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient/);
 });
 
+test('interior forest variation uses only retained spruce frames at rooted anchors',()=>{
+  const source=read('game.js').toString();
+  const treeRenderer=source.slice(source.indexOf('function tree('),source.indexOf('function glow('));
+  assert.match(treeRenderer,/INTERIOR_FOREST_LAYOUT\[area\]\[treeIndex\]/);
+  assert.match(treeRenderer,/ctx\.scale\(-1,1\)/);
+  assert.match(treeRenderer,/ctx\.drawImage\(art\.spruce/);
+  assert.doesNotMatch(treeRenderer,/rect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient/);
+});
+
 test('root platforms render as varied retained loam shelves without a procedural substitute',()=>{
   const source=read('game.js').toString(),html=read('index.html').toString();
   const renderer=source.slice(source.indexOf('function rootPlatform'),source.indexOf('function exitTree'));
@@ -559,6 +568,6 @@ test('the dense top-canopy renderer consumes the same exported layout as its roo
   const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-loam-opening-28/);
-  assert.match(html,/game\.js\?v=moonwell-loam-opening-28/);
+  assert.match(html,/game-core\.js\?v=moonwell-interior-forest-29/);
+  assert.match(html,/game\.js\?v=moonwell-interior-forest-29/);
 });

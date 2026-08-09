@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const context={};
 vm.runInNewContext(fs.readFileSync(new URL('../game-core.js',import.meta.url),'utf8'),context);
-const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,starfallAltarState,watcherChoiceResult}=context.MoonwellCore;
+const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,starfallAltarState,watcherChoiceResult}=context.MoonwellCore;
 
 test('the canonical world is a complete 20 by 13 tile canvas',()=>{
   assert.equal(TILE_SIZE,16);
@@ -78,6 +78,27 @@ test('side forests vary retained spruce silhouettes without moving rooted blocke
       assert.deepEqual(JSON.parse(JSON.stringify(collisionRectFor(object))),{x:col*16-2,y:(index+1)*16+4,w:20,h:12});
     });
   }
+});
+
+test('interior blockers vary retained spruce silhouettes without moving their rooted cells',()=>{
+  assert.equal(INTERIOR_FOREST_LAYOUT.length,addedTreeCells.length);
+  const records=INTERIOR_FOREST_LAYOUT.flat();
+  assert.equal(records.length,39);
+  assert.equal(new Set(records.map(item=>JSON.stringify(item))).size,records.length);
+  INTERIOR_FOREST_LAYOUT.forEach((layout,areaIndex)=>{
+    assert.equal(layout.length,addedTreeCells[areaIndex].length);
+    assert.deepEqual([...new Set(layout.map(item=>item.frame))].sort(),[0,1,2]);
+    assert.ok(layout.some(item=>item.mirror));
+    assert.ok(layout.some(item=>!item.mirror));
+    assert.ok(Math.max(...layout.map(item=>item.width))-Math.min(...layout.map(item=>item.width))>=6);
+    assert.ok(Math.max(...layout.map(item=>item.height))-Math.min(...layout.map(item=>item.height))>=6);
+    const objects=createWorldObjects(areaIndex,areaIndex===1);
+    addedTreeCells[areaIndex].forEach(([col,row],index)=>{
+      const object=objects.find(item=>item.id===`tree-${index}`);
+      assert.deepEqual({x:object.x,y:object.y,w:object.w,h:object.h,solid:object.solid},{x:col*16,y:row*16,w:16,h:16,solid:true});
+      assert.deepEqual(JSON.parse(JSON.stringify(collisionRectFor(object))),{x:col*16-2,y:row*16+4,w:20,h:12});
+    });
+  });
 });
 
 test('every visible top-canopy root cell maps to a seam-free blocker in all four areas',()=>{
