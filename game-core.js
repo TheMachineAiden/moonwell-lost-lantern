@@ -82,12 +82,19 @@ const TOP_CANOPY_ROOT_CELLS=Object.freeze(Array.from({length:20},(_,col)=>Object
 // Bottom-edge trees keep the same rooted tile anchors and colliders, while
 // their retained raster silhouettes vary in scale, offset, and reflection so
 // the foreground reads as one irregular forest edge instead of a picket row.
-const BOTTOM_FOREST_LAYOUT=Object.freeze([
+const BOTTOM_FOREST_BASE=Object.freeze([
   [2,44,60,-3,false],[0,38,54,1,true],[1,42,58,-1,false],[2,36,52,2,true],[0,40,57,-2,false],
   [1,44,55,0,true],[0,36,59,2,true],[2,42,53,-2,false],[1,39,60,1,false],[0,43,56,-1,true],
   [2,37,54,2,false],[1,41,58,-3,true],[0,44,52,0,false],[2,38,57,1,true],[1,43,55,-2,false],
   [0,37,60,2,true],[2,41,54,-1,false],[1,36,58,1,true],[0,42,53,-2,false],[2,44,59,0,true]
 ].map(([frame,width,height,xOffset,mirror])=>Object.freeze({frame,width,height,xOffset,mirror})));
+// Each area shifts the accepted irregular retained-sprite sequence by a
+// distinct phase offset. This keeps the same safe silhouette bounds and
+// rooted baselines while preventing one identical foreground skyline from
+// following Luna through all four maps.
+const BOTTOM_FOREST_LAYOUTS=Object.freeze([0,7,13,3].map(phase=>Object.freeze(
+  BOTTOM_FOREST_BASE.map((_,col)=>BOTTOM_FOREST_BASE[(col+phase)%BOTTOM_FOREST_BASE.length])
+)));
 // Side-edge spruces reuse the same retained raster while varying silhouette
 // and inward overhang. Their one-cell anchors and rooted contact rectangles
 // stay fixed, including the overlaps into the top curtain and bottom forest.
@@ -255,5 +262,5 @@ function createEchoReplay(trail,origin){
 }
 const canResolveEchoRune=(stage,echoHolding,player,runes)=>stage===2&&echoHolding&&nearPoint(player,runes[2]);
 function watcherChoiceResult(step,choice){const riddle=WATCHER_DIALOGUE.riddles[step];if(!riddle)return Object.freeze({correct:false,complete:false,nextStep:step,reply:'Eir has no more riddles to ask.'});const correct=choice===riddle.answer,nextStep=correct?step+1:step;return Object.freeze({correct,complete:correct&&nextStep===WATCHER_DIALOGUE.riddles.length,nextStep,reply:correct?riddle.correct:riddle.wrong})}
-globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUTS,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,LOAM_PATCH_LAYOUT,GROUND_DECOR_LAYOUT,MOONLIGHT_POOL_LAYOUT,WATER_TILE_LAYOUT,TOTAL_FIREFLIES,FIREFLY_VARIANTS,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,MEMORY_DIALOGUE_TYPOGRAPHY,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_STATE_DURATIONS,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,starfallAltarState,watcherChoiceResult});
+globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUTS,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUTS,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,LOAM_PATCH_LAYOUT,GROUND_DECOR_LAYOUT,MOONLIGHT_POOL_LAYOUT,WATER_TILE_LAYOUT,TOTAL_FIREFLIES,FIREFLY_VARIANTS,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,MEMORY_DIALOGUE_TYPOGRAPHY,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_STATE_DURATIONS,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,starfallAltarState,watcherChoiceResult});
 })();

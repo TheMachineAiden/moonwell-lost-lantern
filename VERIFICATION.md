@@ -1,5 +1,18 @@
 # Moonwell visual release audit
 
+## Map-specific lower forest silhouettes — 2026-08-09
+
+- Live four-map comparison showed one remaining whole-scene placement
+  signature: the complete lower foreground spruce skyline repeated unchanged
+  between areas. Four map-specific layouts now select the same twenty accepted
+  retained sprite records at different phases; no new raster or procedural
+  world-art substitute is introduced.
+- Acceptance target: syntax and full tests, build/source-dist identity, clean
+  diff, all-map desktop visual review, portrait gate fit, touch-landscape
+  movement and pause/Continue, public cache/network identity, and empty
+  consoles. Every lower rooted collider and all unrelated world geometry must
+  remain unchanged.
+
 ## Quiet Moonroot crossing hierarchy — 2026-08-09
 
 - Public 1440 × 900 comparison identified the bridge as the strongest
