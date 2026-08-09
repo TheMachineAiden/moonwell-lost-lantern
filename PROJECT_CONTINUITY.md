@@ -1,5 +1,29 @@
 # Moonwell visual art system — continuity record
 
+## Parted-spruce route opening — 2026-08-09
+
+- Public actual-scale review found that the accepted route cue still resolved
+  primarily as one crescent-marked tree door. The underlying raster clearing
+  was almost completely masked, especially at the lower-left Moonroot and
+  Whispering Hollow exits.
+- The shared exit/Moonroot processor now derives a four-state 64 × 72 paired
+  spruce overhang from the retained no-violet spruce family. Its central root
+  coverage decreases monotonically until the open cell leaves the complete
+  one-tile destination gap clear.
+- A new four-state 32 × 40 retained clearing raster replaces the cramped v1
+  strip. It is a tapered, source-textured loam trail with a muted warm threshold,
+  not a point light; it stays behind the two spruce silhouettes and contains no
+  runtime canvas terrain or object primitive.
+- All three exit anchors remain one 16-pixel logical tile. The 24 × 12 rooted
+  collider, blocked closed/opening/revealed states, two-second reveal timing,
+  passable open state, routes, and progression are unchanged. Starfall still
+  has no exit.
+- Local acceptance passes syntax, 69/69 tests, byte-identical managed art
+  regeneration, build and source/dist identity, and diff hygiene. Desktop
+  review covered every staged state and all three exit placements; portrait
+  and touch-landscape checks passed fit, movement, pause/Continue, and clean
+  consoles.
+
 ## Moonroot loam-bank correction — 2026-08-09
 
 - A critical public actual-scale reassessment found that the accepted compressed

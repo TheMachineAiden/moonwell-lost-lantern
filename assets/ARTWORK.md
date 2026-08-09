@@ -334,18 +334,19 @@ one-cell non-solid encounter anchor and 22-pixel talk radius are unchanged.
 
 `scripts/process-exit-moonroot-sprites.sh` is the deterministic processor for
 the final two world-art cues that previously used canvas rectangles. It uses
-the retained project-bound generated forest source
-`generated/moonwell-bottom-right-clearing-source-v3-alpha.png` plus its
-processed root-platform and loam families, and produces only the compact
-transparent runtime strips `moonwell-exit-clearing-states-v1.png` (four 32 ×
-36 frames) and `moonwell-moonroot-shores-v1.png` (two 288 × 12 river-bank
-rows).
+the retained no-violet spruce, root-platform, and loam production families and
+produces the compact transparent runtime strips
+`moonwell-route-opening-overhang-v1.png` (four 64 × 72 frames),
+`moonwell-exit-clearing-states-v2.png` (four 32 × 40 frames), and
+`moonwell-moonroot-shores-v1.png` (two 288 × 12 river-bank rows).
 
-The exit strip holds the state-selected rooted opening and loam threshold
-behind the existing exit-tree silhouette. The shore strip layers over the
-existing water tiles before the unchanged vertical bridge. Game code only
-selects, positions, and layers these PNG cells; exit timing and collider state,
-Moonroot water collision, and the bridge footprint are unchanged.
+The overhang strip parts two source-derived spruce silhouettes from a closed
+thicket to a complete one-tile gap. The clearing strip holds a tapered,
+source-textured loam trail and muted warm threshold behind those roots, with no
+lantern-like point light. The shore strip layers over the existing water tiles
+before the unchanged vertical bridge. Game code only selects, positions, and
+layers these PNG cells; exit timing and collider state, Moonroot water
+collision, and the bridge footprint are unchanged.
 
 ### Moonroot bank refinement — 2026-08-08
 

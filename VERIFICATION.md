@@ -468,6 +468,27 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
   landscape. Touch movement and pause/Continue worked; viewport fit held and
   the preserved console contained no warnings, errors, or issues.
 
+## Parted-spruce route opening acceptance — 2026-08-09
+
+- Sprite provenance: `moonwell-route-opening-overhang-v1.png` is a deterministic
+  four-cell derivative of the retained no-violet spruce atlas;
+  `moonwell-exit-clearing-states-v2.png` is a deterministic four-cell derivative
+  of the retained loam and root-platform families. Runtime loads only these PNG
+  derivatives and performs no procedural route or tree drawing.
+- Visual invariant: central root coverage decreases in every state and leaves
+  at most eight opaque pixels in the open cell's 16 × 24 passage sample. The
+  loam trail grows monotonically, retains broad warm source texture, and has no
+  lantern-bright point pixels.
+- Gameplay invariant: all three exit anchors, their 24 × 12 colliders, staged
+  blocked states, two-second reveal timing, open-state passability, routes, and
+  progression are unchanged. Starfall Grove remains exit-free.
+- Local release profile: `npm run check`, 69/69 tests including full
+  byte-identical environment regeneration, `npm run build`, source/dist byte
+  identity, and `git diff HEAD --check` pass. Browser review covered every exit
+  state and placement at 1440 × 900, the 390 × 844 × 3 portrait gate, and
+  844 × 390 × 3 touch landscape with movement, pause/Continue, viewport fit,
+  and no console messages.
+
 ## Sprite-first Starroot grounding acceptance — 2026-08-09
 
 - Provenance: retained source

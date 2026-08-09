@@ -8,7 +8,7 @@ const RENDER_HEIGHT=WORLD_HEIGHT*RENDER_SCALE;
 const VISUAL_FOOTPRINTS=Object.freeze({
   keeper:Object.freeze({logical:Object.freeze({colliderWidth:10,colliderHeight:10,solid:true}),visual:Object.freeze({width:14,height:18,anchorOffsetX:-7,anchorOffsetY:-17})}),
   tree:Object.freeze({logical:Object.freeze({cellsWide:1,cellsHigh:1,solid:true,colliderWidth:20,colliderHeight:12,colliderOffsetX:-2,colliderOffsetY:4}),visual:Object.freeze({perimeterWidth:40,perimeterHeight:56,interiorWidth:24,interiorHeight:40,overhangTop:40,overhangBottom:0})}),
-  exitTree:Object.freeze({logical:Object.freeze({cellsWide:1,cellsHigh:1,solidUntil:'open'}),visual:Object.freeze({width:48,height:64,overhangLeft:16,overhangRight:16,overhangTop:48,overhangBottom:0})}),
+  exitTree:Object.freeze({logical:Object.freeze({cellsWide:1,cellsHigh:1,solidUntil:'open'}),visual:Object.freeze({width:64,height:72,overhangLeft:24,overhangRight:24,overhangTop:56,overhangBottom:0})}),
   rootPlatform:Object.freeze({logical:Object.freeze({cellsWide:2,cellsHigh:1,solid:true,colliderWidth:40,colliderHeight:14,colliderOffsetX:-4,colliderOffsetY:2}),visual:Object.freeze({width:48,height:24,overhangLeft:4,overhangRight:4,overhangTop:8,overhangBottom:0})}),
   starrootChime:Object.freeze({logical:Object.freeze({cellsWide:1,cellsHigh:1,solid:false,interactionRadius:15}),visual:Object.freeze({width:24,height:24,anchorOffsetX:-12,anchorOffsetY:-16})}),
   moonwellAltar:Object.freeze({logical:Object.freeze({cellsWide:2,cellsHigh:2,solid:true,colliderWidth:28,colliderHeight:8,colliderOffsetX:-14,colliderOffsetY:-8,interactionRadius:22}),visual:Object.freeze({width:32,height:24,anchorOffsetX:-16,anchorOffsetY:-24})}),
@@ -93,7 +93,7 @@ const EXIT_STATE_DURATIONS=Object.freeze({opening:.75,revealed:1.25});
 // The exit remains one logical tile. Its stepped mouth grows to one clear
 // 16-pixel tile, with a warm loam threshold that reads at phone scale while
 // its rooted collider stays in place until the fully open state.
-const EXIT_CLEARING=Object.freeze({closed:Object.freeze({width:6,pathWidth:4}),opening:Object.freeze({width:10,pathWidth:6}),revealed:Object.freeze({width:14,pathWidth:10}),open:Object.freeze({width:16,pathWidth:12}),top:-20,height:36,thresholdY:22});
+const EXIT_CLEARING=Object.freeze({closed:Object.freeze({width:6,pathWidth:4}),opening:Object.freeze({width:10,pathWidth:6}),revealed:Object.freeze({width:14,pathWidth:10}),open:Object.freeze({width:16,pathWidth:12}),top:-24,height:40,thresholdY:30});
 
 const tileObject=(id,kind,col,row,options={})=>({id,kind,x:col*TILE_SIZE,y:row*TILE_SIZE,w:TILE_SIZE,h:TILE_SIZE,solid:false,...options});
 const boundaryObjects=()=>{
