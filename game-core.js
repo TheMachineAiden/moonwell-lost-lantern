@@ -95,21 +95,27 @@ const BOTTOM_FOREST_BASE=Object.freeze([
 const BOTTOM_FOREST_LAYOUTS=Object.freeze([0,7,13,3].map(phase=>Object.freeze(
   BOTTOM_FOREST_BASE.map((_,col)=>BOTTOM_FOREST_BASE[(col+phase)%BOTTOM_FOREST_BASE.length])
 )));
-// Side-edge spruces reuse the same retained raster while varying silhouette
-// and inward overhang. Their one-cell anchors and rooted contact rectangles
-// stay fixed, including the overlaps into the top curtain and bottom forest.
-const sideForestLayout=records=>Object.freeze(records.map(([frame,width,height,xOffset,mirror])=>Object.freeze({frame,width,height,xOffset,mirror})));
+// Side-edge spruces use distinct map-specific phases of each accepted edge
+// profile. This changes the two corner joins as well as the in-between
+// silhouettes, so a shared perimeter does not read as one repeated frame.
+// Their one-cell anchors and rooted contact rectangles stay fixed, including
+// the overlaps into the top curtain and bottom forest.
+const sideForestRecords=records=>Object.freeze(records.map(([frame,width,height,xOffset,mirror])=>Object.freeze({frame,width,height,xOffset,mirror})));
+const sideForestLayouts=(records,phases)=>{
+  const base=sideForestRecords(records);
+  return Object.freeze(phases.map(phase=>Object.freeze(base.map((_,row)=>base[(row+phase)%base.length]))));
+};
 const SIDE_FOREST_LAYOUT=Object.freeze({
-  left:sideForestLayout([
+  left:sideForestLayouts([
     [0,44,60,-3,false],[2,38,54,0,true],[1,42,58,-2,false],[0,36,52,1,true],
     [2,43,61,-3,true],[1,39,55,0,false],[0,45,57,-4,false],[2,37,50,1,true],
     [1,41,59,-2,true],[0,39,53,0,false],[2,44,62,-3,false]
-  ]),
-  right:sideForestLayout([
+  ],[0,4,7,2]),
+  right:sideForestLayouts([
     [1,40,56,1,true],[0,44,61,3,false],[2,37,52,-1,true],[1,42,58,2,false],
     [0,38,54,0,true],[2,45,60,4,true],[1,36,51,-1,false],[0,43,57,3,true],
     [2,39,55,0,false],[1,41,62,2,true],[0,37,53,-1,false]
-  ])
+  ],[0,5,8,3])
 });
 // Retained loam sprites cover the base floor through explicit, irregular
 // map-specific records. Their fixed 80 x 48 footprint stays aligned to the

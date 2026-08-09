@@ -672,8 +672,8 @@ test('map-specific bottom forest variation uses only retained spruce frames and 
 test('side forest variation uses the retained spruce raster across both perimeter junctions',()=>{
   const source=read('game.js').toString();
   const treeRenderer=source.slice(source.indexOf('function tree('),source.indexOf('function glow('));
-  assert.match(treeRenderer,/SIDE_FOREST_LAYOUT\[side\]\[Math\.floor\(y\/T\)-1\]/);
-  assert.match(treeRenderer,/side\?\(layout\.frame\+area\)%3:layout\.frame/);
+  assert.match(treeRenderer,/SIDE_FOREST_LAYOUT\[side\]\[area\]\[Math\.floor\(y\/T\)-1\]/);
+  assert.match(treeRenderer,/frame=layout\?\.frame\?\?/);
   assert.match(treeRenderer,/ctx\.scale\(-1,1\)/);
   assert.match(treeRenderer,/ctx\.drawImage\(art\.spruce/);
   assert.doesNotMatch(treeRenderer,/rect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient/);
