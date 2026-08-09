@@ -817,3 +817,26 @@ then look for the next small player-visible improvement.
   390 × 844 portrait gate. Starfall passed actual-scale review at 640 × 416 and
   844 × 390 × 3: chimes read as small rooted interactions without competing
   with the central altar. Viewport fit is unchanged and the console is empty.
+
+## Full rooted-shelf refinement — 2026-08-09
+
+- A new public four-map actual-scale pass confirmed the dense top forest wall
+  and current landmark hierarchy, but found that the shallow v1 root shelves
+  still collapsed into dark horizontal slots. Their silhouette resembled an
+  opening even though each object remained solid.
+- The v2 six-frame strip uses the retained generated world-props rootfall
+  instead of a loam cap over a shallow bank mask. Each 48 × 24 frame now keeps
+  an irregular 20–23 px-tall physical tangle with moss, branch forks, and
+  spreading ground roots; muted value keeps the bridge, runes, fireflies, and
+  altar dominant.
+- Runtime still selects one retained raster frame per shelf. All seven 2 × 1
+  anchors, 48 × 24 draws, 40 × 14 colliders, routes, progression, and top
+  forest geometry are unchanged. The managed no-violet workflow rebuilds the
+  derivative byte-identically from retained source art.
+- Local acceptance passes syntax, 82/82 tests, byte-identical managed art
+  regeneration, build, source/dist identity, and diff hygiene. All four maps
+  were reviewed at 640 × 416; the rootfalls read as solid forest obstacles
+  without competing with the bridge, echo runes, fireflies, or altar. Desktop
+  keyboard movement and pause/Continue pass. The 390 × 844 × 3 portrait gate
+  and 844 × 390 × 3 touch-landscape movement, pause cycle, 132 × 132 steering,
+  44 × 44 pause target, viewport fit, asset responses, and console all pass.

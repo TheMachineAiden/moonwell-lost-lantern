@@ -748,3 +748,34 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
   landscape, the area used a centred 600 × 390 canvas; touch movement changed
   Luna's position, Pause/Continue completed a full cycle, every observed
   request returned 200 or 304, and the preserved console was empty.
+
+## Full rooted-shelf refinement — 2026-08-09
+
+- Visual target: replace the shallow dark-slot reading of all seven solid root
+  shelves with full irregular moss-and-root silhouettes while preserving the
+  route opening as the only passable forest gap.
+- Raster invariant: `moonwell-root-shelf-variants-v2.png` contains six distinct
+  48 × 24 frames. Every frame spans at least 19 rows, reaches the shared
+  grounded baseline, retains tangled lower root mass and an irregular alpha
+  profile, and contains no prohibited purple-family pixel.
+- Source and runtime invariant: the processor uses the complete retained
+  `moonwell-root-platform-v2.png` world-props rootfall with point scaling,
+  placement, reflection, subdued value, and the shared no-violet predicate.
+  Runtime only draws the v2 PNG; it never loads a retained source or paints a
+  procedural platform.
+- Geometry invariant: all seven existing 2 × 1 records retain their exact
+  anchors, 48 × 24 draw rectangles, 40 × 14 contact rectangles, collision
+  behavior, and route comfort envelopes. The dense top boundary, route opening
+  states, Moonroot water/bridge, Hollow echo route, and Starfall altar are
+  unchanged regression surfaces.
+- Automated acceptance: `npm run check`, 82/82 tests (including byte-identical
+  managed no-violet regeneration), `npm run build`, source/dist identity, and
+  `git diff --check` pass locally.
+- Browser acceptance: all four 640 × 416 scenes pass actual-scale desktop
+  review; the open route remains visually distinct and changes from blocked to
+  passable only in its existing final state. Keyboard movement and the full
+  pause/Continue cycle pass. At 390 × 844 × 3, the 342 × 267 portrait gate fits
+  with no horizontal overflow. At 844 × 390 × 3, the 600 × 390 canvas,
+  132 × 132 steering, and 44 × 44 pause target fit; touch movement and
+  pause/Continue pass, all 26 observed image/script requests return 200 or 304,
+  and the preserved console is empty.
