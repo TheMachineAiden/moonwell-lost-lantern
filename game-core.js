@@ -125,14 +125,37 @@ const LOAM_PATCH_LAYOUT=loamPatchLayout([
     [3,-48,160,true,.68],[1,20,176,false,.76],[2,92,164,true,.72],[0,164,180,false,.70],[3,236,156,true,.74],[1,296,172,false,.66]
   ]
 ]);
-// Decorative cells never participate in collision. Moon/shadow patches are
-// value blocks; the remaining kinds are one-tile understory props.
-const groundDecorCells=[
-  [['shadow',1,3],['shadow',4,6],['shadow',15,6],['shadow',17,8],['moon',5,5],['moon',9,5],['moon',13,6],['fern',1,9],['fern',17,4],['stone',4,10],['needles',10,2],['root',12,9],['mushroom',16,9],['glowmoss',7,10]],
-  [['shadow',1,4],['shadow',6,3],['shadow',16,2],['shadow',17,8],['moon',4,5],['moon',9,4],['moon',13,5],['fern',2,8],['fern',17,9],['stone',7,10],['needles',11,3],['root',12,8],['mushroom',4,4],['glowmoss',16,8]],
-  [['shadow',1,5],['shadow',5,2],['shadow',15,2],['shadow',17,7],['moon',5,6],['moon',9,5],['moon',13,7],['fern',2,8],['fern',17,9],['stone',7,10],['needles',11,3],['root',12,9],['mushroom',4,4],['glowmoss',15,8]],
-  [['shadow',1,5],['shadow',6,2],['shadow',15,2],['shadow',17,7],['moon',5,6],['moon',10,5],['moon',14,7],['fern',2,9],['fern',17,9],['stone',7,10],['needles',11,2],['root',12,9],['mushroom',5,4],['glowmoss',16,8]]
-];
+// Decorative cells never participate in collision. Every map keeps the same
+// small understory vocabulary, but explicit frame, reflection, opacity, and
+// two-pixel-scale offsets stop each kind from recurring on a shared tile
+// track. The retained 16 px raster cells remain the only visible art.
+const groundDecorLayout=areas=>Object.freeze(areas.map(records=>Object.freeze(records.map(([kind,col,row,frame,xOffset,yOffset,mirror,alpha])=>Object.freeze({kind,col,row,frame,xOffset,yOffset,mirror,alpha})))));
+const GROUND_DECOR_LAYOUT=groundDecorLayout([
+  [
+    ['shadow',2,4,0,-2,0,false,.40],['shadow',6,7,2,1,-1,true,.44],['shadow',14,5,1,-1,1,false,.38],['shadow',17,9,0,2,-1,true,.42],
+    ['moon',4,6,1,-2,1,true,.26],['moon',10,4,2,1,-1,false,.30],['moon',13,8,0,-1,1,true,.28],
+    ['fern',2,10,2,1,-1,true,.90],['fern',18,5,0,-2,1,false,.86],['stone',5,9,1,2,0,true,.88],
+    ['needles',9,3,2,-1,1,false,.56],['root',11,9,0,1,0,true,.60],['mushroom',16,8,1,-1,1,true,.90],['glowmoss',7,9,1,1,0,false,.46]
+  ],
+  [
+    ['shadow',1,3,1,1,0,false,.42],['shadow',7,4,0,-2,1,true,.38],['shadow',13,4,2,2,-1,false,.44],['shadow',18,10,1,-1,0,true,.40],
+    ['moon',4,4,2,1,1,false,.28],['moon',11,3,0,-1,0,true,.30],['moon',15,10,1,2,-1,false,.26],
+    ['fern',2,9,1,-1,1,false,.88],['fern',17,4,2,2,0,true,.92],['stone',7,9,2,-2,1,false,.90],
+    ['needles',10,4,0,1,0,true,.58],['root',13,9,2,-1,1,false,.56],['mushroom',4,3,0,2,1,false,.86],['glowmoss',17,10,2,-1,0,true,.48]
+  ],
+  [
+    ['shadow',1,6,2,1,-1,true,.38],['shadow',5,3,1,-2,1,false,.42],['shadow',16,4,0,2,0,true,.44],['shadow',18,8,2,-1,1,false,.40],
+    ['moon',6,5,0,-1,1,true,.30],['moon',9,7,1,2,-1,false,.26],['moon',14,6,2,-2,0,true,.28],
+    ['fern',3,8,0,2,1,true,.90],['fern',16,9,1,-1,-1,false,.84],['stone',8,10,0,1,0,true,.92],
+    ['needles',12,3,1,-2,1,false,.54],['root',11,8,1,2,0,true,.60],['mushroom',5,5,1,-1,1,false,.88],['glowmoss',15,9,0,1,0,true,.44]
+  ],
+  [
+    ['shadow',2,5,1,-1,1,false,.42],['shadow',8,5,0,2,-1,true,.38],['shadow',15,4,2,-2,0,false,.44],['shadow',17,8,1,1,1,true,.40],
+    ['moon',5,7,2,1,-1,false,.28],['moon',11,6,0,-2,1,true,.30],['moon',14,9,1,2,0,false,.26],
+    ['fern',3,9,2,-1,0,true,.86],['fern',18,7,1,1,1,false,.90],['stone',6,10,2,2,-1,false,.88],
+    ['needles',10,3,2,-1,1,true,.58],['root',12,9,0,1,0,false,.56],['mushroom',6,4,0,-2,1,true,.90],['glowmoss',16,10,2,1,-1,false,.48]
+  ]
+]);
 const EXIT_STATES=Object.freeze({CLOSED:'closed',OPENING:'opening',REVEALED:'revealed',OPEN:'open'});
 const EXIT_STATE_DURATIONS=Object.freeze({opening:.75,revealed:1.25});
 // The exit remains one logical tile. Its stepped mouth grows to one clear
@@ -179,7 +202,7 @@ function createAreas(){return [
   {name:'Starfall Grove',start:{x:280,y:72},altar:STARFALL_ALTAR,starroots:[{x:264,y:152},{x:168,y:72},{x:56,y:120}],lights:[{x:152,y:152,hidden:true},{x:232,y:56,hidden:true}]}
 ]}
 
-function createGroundDecor(areaIndex){return groundDecorCells[areaIndex].map(([kind,col,row],index)=>Object.freeze({id:`decor-${areaIndex}-${index}`,kind,x:col*TILE_SIZE,y:row*TILE_SIZE,w:TILE_SIZE,h:TILE_SIZE,solid:false}))}
+function createGroundDecor(areaIndex){return GROUND_DECOR_LAYOUT[areaIndex].map((record,index)=>Object.freeze({id:`decor-${areaIndex}-${index}`,kind:record.kind,x:record.col*TILE_SIZE,y:record.row*TILE_SIZE,w:TILE_SIZE,h:TILE_SIZE,frame:record.frame,xOffset:record.xOffset,yOffset:record.yOffset,mirror:record.mirror,alpha:record.alpha,solid:false}))}
 
 const countLights=areas=>areas.flatMap(area=>area.lights).filter(light=>light.got).length;
 const countMemories=areas=>areas.filter(area=>area.memory?.got).length;
@@ -207,5 +230,5 @@ function createEchoReplay(trail,origin){
 }
 const canResolveEchoRune=(stage,echoHolding,player,runes)=>stage===2&&echoHolding&&nearPoint(player,runes[2]);
 function watcherChoiceResult(step,choice){const riddle=WATCHER_DIALOGUE.riddles[step];if(!riddle)return Object.freeze({correct:false,complete:false,nextStep:step,reply:'Eir has no more riddles to ask.'});const correct=choice===riddle.answer,nextStep=correct?step+1:step;return Object.freeze({correct,complete:correct&&nextStep===WATCHER_DIALOGUE.riddles.length,nextStep,reply:correct?riddle.correct:riddle.wrong})}
-globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,LOAM_PATCH_LAYOUT,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,MEMORY_DIALOGUE_TYPOGRAPHY,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_STATE_DURATIONS,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,starfallAltarState,watcherChoiceResult});
+globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,LOAM_PATCH_LAYOUT,GROUND_DECOR_LAYOUT,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,MEMORY_DIALOGUE_TYPOGRAPHY,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_STATE_DURATIONS,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,starfallAltarState,watcherChoiceResult});
 })();

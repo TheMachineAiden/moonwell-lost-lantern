@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const context={};
 vm.runInNewContext(fs.readFileSync(new URL('../game-core.js',import.meta.url),'utf8'),context);
-const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,LOAM_PATCH_LAYOUT,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,starfallAltarState,watcherChoiceResult}=context.MoonwellCore;
+const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,LOAM_PATCH_LAYOUT,GROUND_DECOR_LAYOUT,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,starfallAltarState,watcherChoiceResult}=context.MoonwellCore;
 
 test('the canonical world is a complete 20 by 13 tile canvas',()=>{
   assert.equal(TILE_SIZE,16);
@@ -341,11 +341,25 @@ test('Lantern Glade composes its corrected landmark clearing without changing si
 });
 
 test('ground enrichment is deterministic, one-cell, and never adds collision',()=>{
+  assert.equal(GROUND_DECOR_LAYOUT.length,4);
+  const visualPositionsByKind=new Map();
   for(let areaIndex=0;areaIndex<4;areaIndex++){
     const first=createGroundDecor(areaIndex),second=createGroundDecor(areaIndex);
     assert.equal(JSON.stringify(first),JSON.stringify(second));
-    assert.ok(first.length>=14);
-    first.forEach(item=>assert.deepEqual({w:item.w,h:item.h,solid:item.solid},{w:16,h:16,solid:false}));
+    assert.equal(first.length,14);
+    assert.ok(first.some(item=>item.mirror));
+    assert.ok(first.some(item=>!item.mirror));
+    assert.deepEqual([...new Set(first.map(item=>item.frame))].sort(),[0,1,2]);
+    first.forEach(item=>{
+      assert.deepEqual({w:item.w,h:item.h,solid:item.solid},{w:16,h:16,solid:false});
+      assert.ok(item.xOffset>=-2&&item.xOffset<=2);
+      assert.ok(item.yOffset>=-1&&item.yOffset<=1);
+      assert.ok(item.alpha>=.26&&item.alpha<=.92);
+      assert.ok(item.frame>=0&&item.frame<=(item.kind==='mushroom'?1:2));
+      const positions=visualPositionsByKind.get(item.kind)||new Set(),position=`${item.x+item.xOffset},${item.y+item.yOffset}`;
+      assert.equal(positions.has(position),false,`${item.kind} repeats at ${position} across maps`);
+      positions.add(position);visualPositionsByKind.set(item.kind,positions);
+    });
   }
 });
 

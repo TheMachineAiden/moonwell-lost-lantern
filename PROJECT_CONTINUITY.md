@@ -1,5 +1,29 @@
 # Moonwell visual art system — continuity record
 
+## Map-specific understory detail layouts — 2026-08-09
+
+- A fresh public actual-scale hierarchy audit found the remaining shared
+  placement signature below the loam layer: later maps reused exact per-kind
+  cells for stones, roots, mushrooms, needles, ferns, and glowmoss. These
+  small retained sprites therefore appeared to move together between areas.
+- `GROUND_DECOR_LAYOUT` now contains fourteen explicit records for each map.
+  Every record selects an existing retained raster frame plus restrained
+  opacity, reflection, and a one- or two-pixel offset. No detail kind repeats
+  at the same visible coordinate across maps, and Moonroot keeps its details
+  on the dry north and south banks rather than stamping across the river.
+- Runtime continues to use only the accepted foliage, ground-texture, stone,
+  mushroom, and light-pool PNG families. The touched renderer's dormant canvas
+  rectangle substitutes were removed; a missing raster now leaves that small
+  world detail absent instead of drawing substitute art.
+- All fifty-six records remain visual-only 16-pixel cells. They add no
+  collision and do not change trees, routes, water, bridge, landmarks,
+  interactions, exits, timing, or progression. Regression coverage pins
+  map-specific per-kind coordinates, sprite states, reflections, offset and
+  opacity bounds, non-collision footprints, and raster-only rendering.
+- Local acceptance passes syntax, 75/75 tests including byte-identical managed
+  art regeneration, build/source-dist identity, diff hygiene, and actual-scale
+  review of all four maps.
+
 ## Map-specific loam patch layouts — 2026-08-09
 
 - A fresh actual-scale audit of all four accepted maps found that the retained
