@@ -280,8 +280,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v3\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-moonlight-layout-1/);
-  assert.match(html,/game\.js\?v=moonwell-moonlight-layout-1/);
+  assert.match(html,/game-core\.js\?v=moonwell-canopy-layout-2/);
+  assert.match(html,/game\.js\?v=moonwell-canopy-layout-2/);
 });
 
 test('generated starroot grounding source is pinned and produces tapered transparent frames',()=>{
@@ -598,8 +598,12 @@ test('844 by 390 phone landscape keeps entry compact and prologue at the undisto
 
 test('the dense top-canopy renderer consumes the same exported layout as its root colliders',()=>{
   const source=read('game.js').toString(),html=read('index.html').toString();
-  assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
+  const renderer=source.slice(source.indexOf('function drawCanopyBackdrop'),source.indexOf('function drawAtmosphere'));
+  assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUTS\[area\]\)/);
+  assert.match(renderer,/if\(curtain\.mirror\)/);
+  assert.match(renderer,/ctx\.scale\(-1,1\)/);
+  assert.doesNotMatch(renderer,/\brect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient|\.svg/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-moonlight-layout-1/);
-  assert.match(html,/game\.js\?v=moonwell-moonlight-layout-1/);
+  assert.match(html,/game-core\.js\?v=moonwell-canopy-layout-2/);
+  assert.match(html,/game\.js\?v=moonwell-canopy-layout-2/);
 });

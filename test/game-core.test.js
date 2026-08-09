@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const context={};
 vm.runInNewContext(fs.readFileSync(new URL('../game-core.js',import.meta.url),'utf8'),context);
-const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,LOAM_PATCH_LAYOUT,GROUND_DECOR_LAYOUT,MOONLIGHT_POOL_LAYOUT,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,starfallAltarState,watcherChoiceResult}=context.MoonwellCore;
+const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUTS,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,LOAM_PATCH_LAYOUT,GROUND_DECOR_LAYOUT,MOONLIGHT_POOL_LAYOUT,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,starfallAltarState,watcherChoiceResult}=context.MoonwellCore;
 
 test('the canonical world is a complete 20 by 13 tile canvas',()=>{
   assert.equal(TILE_SIZE,16);
@@ -149,11 +149,16 @@ test('moonlight pools create distinct map-specific interaction hierarchy without
 });
 
 test('every visible top-canopy root cell maps to a seam-free blocker in all four areas',()=>{
-  assert.deepEqual(JSON.parse(JSON.stringify(TOP_CANOPY_LAYOUT)),[
-    {x:-6,y:-3,w:128,h:56,frameOffset:0},
-    {x:96,y:-4,w:128,h:56,frameOffset:1},
-    {x:202,y:-2,w:128,h:56,frameOffset:0}
-  ]);
+  assert.equal(TOP_CANOPY_LAYOUTS.length,4);
+  assert.equal(new Set(TOP_CANOPY_LAYOUTS.map(layout=>JSON.stringify(layout))).size,4);
+  for(const layout of TOP_CANOPY_LAYOUTS){
+    assert.equal(layout.length,3);
+    const sorted=[...layout].sort((a,b)=>a.x-b.x);
+    assert.ok(sorted[0].x<=0);
+    assert.ok(sorted.at(-1).x+sorted.at(-1).w>=WORLD_WIDTH);
+    for(let index=1;index<sorted.length;index++)assert.ok(sorted[index].x<=sorted[index-1].x+sorted[index-1].w,'canopy clusters must overlap');
+    layout.forEach(curtain=>{assert.equal(curtain.w,128);assert.equal(curtain.h,56);assert.ok(curtain.frame===0||curtain.frame===1);assert.equal(typeof curtain.mirror,'boolean')});
+  }
   assert.deepEqual(JSON.parse(JSON.stringify(TOP_CANOPY_ROOT_CELLS)),Array.from({length:20},(_,col)=>[col,2]));
   for(let areaIndex=0;areaIndex<4;areaIndex++){
     const roots=createWorldObjects(areaIndex,areaIndex===1).filter(object=>object.kind==='canopy-root');
