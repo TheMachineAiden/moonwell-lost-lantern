@@ -22,7 +22,7 @@ test('logical cells are decoupled from the two-times luminous render surface',()
     logical:{cellsWide:1,cellsHigh:1,solid:true,colliderWidth:20,colliderHeight:12,colliderOffsetX:-2,colliderOffsetY:4},visual:{perimeterWidth:40,perimeterHeight:56,interiorWidth:24,interiorHeight:40,overhangTop:40,overhangBottom:0}
   });
   assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.exitTree)),{
-    logical:{cellsWide:1,cellsHigh:1,solidUntil:'open'},visual:{width:48,height:64,overhangLeft:16,overhangRight:16,overhangTop:48,overhangBottom:0}
+    logical:{cellsWide:1,cellsHigh:1,solidUntil:'open'},visual:{width:64,height:72,overhangLeft:24,overhangRight:24,overhangTop:56,overhangBottom:0}
   });
   assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.rootPlatform)),{
     logical:{cellsWide:2,cellsHigh:1,solid:true,colliderWidth:40,colliderHeight:14,colliderOffsetX:-4,colliderOffsetY:2},visual:{width:48,height:24,overhangLeft:4,overhangRight:4,overhangTop:8,overhangBottom:0}
@@ -228,7 +228,8 @@ test('the exit tree state sequence cannot remove its collider before the fully p
 });
 
 test('the route cue opens as a phone-legible one-tile clearing without widening the exit collider',()=>{
-  assert.deepEqual(JSON.parse(JSON.stringify(EXIT_CLEARING)),{closed:{width:6,pathWidth:4},opening:{width:10,pathWidth:6},revealed:{width:14,pathWidth:10},open:{width:16,pathWidth:12},top:-20,height:36,thresholdY:22});
+  assert.deepEqual(JSON.parse(JSON.stringify(VISUAL_FOOTPRINTS.exitTree)),{logical:{cellsWide:1,cellsHigh:1,solidUntil:'open'},visual:{width:64,height:72,overhangLeft:24,overhangRight:24,overhangTop:56,overhangBottom:0}});
+  assert.deepEqual(JSON.parse(JSON.stringify(EXIT_CLEARING)),{closed:{width:6,pathWidth:4},opening:{width:10,pathWidth:6},revealed:{width:14,pathWidth:10},open:{width:16,pathWidth:12},top:-24,height:40,thresholdY:30});
   assert.ok(EXIT_CLEARING.closed.width<EXIT_CLEARING.opening.width);
   assert.ok(EXIT_CLEARING.opening.width<EXIT_CLEARING.revealed.width);
   assert.ok(EXIT_CLEARING.revealed.width<EXIT_CLEARING.open.width);

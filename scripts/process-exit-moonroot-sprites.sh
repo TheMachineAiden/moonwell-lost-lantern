@@ -1,11 +1,11 @@
 #!/bin/sh
 set -eu
 
-# Builds the two small world-art families that replace the former canvas
-# rectangles.  Both inputs are retained project-bound image-generation
-# outputs; runtime loads only the compact PNG derivatives below.
+# Builds the compact route-opening and Moonroot-bank world-art families from
+# retained project-bound raster sources. Runtime loads only the deterministic
+# PNG derivatives below.
 repo_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
-forest_source="$repo_dir/assets/generated/moonwell-bottom-right-clearing-source-v3-alpha.png"
+spruce_source="$repo_dir/assets/moonwell-art/production/moonwell-spruce-overhang-v3.png"
 exit_surface_source="$repo_dir/assets/moonwell-art/production/moonwell-clearing-root-platform-v3.png"
 shore_source="$repo_dir/assets/moonwell-art/production/moonwell-clearing-loam-patches-v3.png"
 production="${MOONWELL_ART_OUTPUT:-$repo_dir/assets/moonwell-art/production}"
@@ -13,29 +13,64 @@ work_dir=$(mktemp -d "${TMPDIR:-/var/tmp}/moonwell-exit-moonroot.XXXXXX")
 trap 'rm -rf "$work_dir"' EXIT
 mkdir -p "$production"
 
-# A pair of rooted, generated forest fragments makes the opening read as a
-# place between trees. The mossy loam is also cropped from the retained sprite
-# family, so the runtime strip contains no code-drawn world art.
-magick "$forest_source" -crop '176x288+98+554' +repage -filter point -resize '12x30!' "$work_dir/exit-left.png"
-magick "$forest_source" -crop '176x288+480+554' +repage -flop -filter point -resize '12x30!' "$work_dir/exit-right.png"
-for spec in 'closed:6:4' 'opening:10:6' 'revealed:14:10' 'open:16:12'; do
+# Two retained spruce frames form the route overhang. The four cells part from
+# a rooted thicket into a full one-tile gap, so the destination reads as space
+# between trees rather than a symbol or lantern mounted on one trunk.
+magick "$spruce_source" -crop '80x112+0+0' +repage -filter point \
+  -resize '36x56!' "$work_dir/route-left.png"
+magick "$spruce_source" -crop '80x112+80+0' +repage -flop -filter point \
+  -resize '36x56!' "$work_dir/route-right.png"
+for spec in 'closed:-2:30' 'opening:-4:32' 'revealed:-6:34' 'open:-8:36'; do
+  state=${spec%%:*}
+  rest=${spec#*:}
+  left_x=${rest%%:*}
+  right_x=${rest#*:}
+  magick -size 64x72 xc:none \
+    "$work_dir/route-left.png" -geometry "+${left_x}+16" -composite \
+    "$work_dir/route-right.png" -geometry "+${right_x}+16" -composite \
+    "$work_dir/route-overhang-$state.png"
+done
+magick "$work_dir/route-overhang-closed.png" "$work_dir/route-overhang-opening.png" \
+  "$work_dir/route-overhang-revealed.png" "$work_dir/route-overhang-open.png" +append +repage \
+  -strip -define png:exclude-chunk=date,time PNG32:"$production/moonwell-route-opening-overhang-v1.png"
+
+# The threshold is a tapered, source-textured loam path rather than a light
+# point. It broadens with the same four states and stays behind the parted
+# spruces. A shallow retained root-platform crop grounds its near edge.
+magick "$shore_source" -crop '96x80+200+8' +repage -filter point \
+  -resize '32x40!' -background '#24463f' -alpha remove -alpha off \
+  -modulate '122,72,96' -fill '#9b7041' -colorize 32% "$work_dir/route-path-base.png"
+for spec in 'closed:6:4:74' 'opening:10:6:86' 'revealed:14:10:98' 'open:16:12:110'; do
   state=${spec%%:*}
   rest=${spec#*:}
   width=${rest%%:*}
-  path=${rest#*:}
+  rest=${rest#*:}
+  path=${rest%%:*}
+  light=${rest#*:}
+  left=$(((32-path)/2))
+  right=$((left+path-1))
+  top_left=$((16-width/4))
+  top_right=$((15+width/4))
+  shoulder_left=$((left+1))
+  shoulder_right=$((right-1))
   path_x=$(((32-path)/2))
-  edge_x=$(((32-width)/2))
+  magick -size 32x40 xc:black -fill white \
+    -draw "polygon $top_left,16 $top_right,16 $shoulder_right,26 $right,39 $left,39 $shoulder_left,26" \
+    "$work_dir/route-mask-$state.png"
+  magick "$work_dir/route-path-base.png" -modulate "$light,100,100" \
+    "$work_dir/route-path-$state.png"
+  magick "$work_dir/route-path-$state.png" "$work_dir/route-mask-$state.png" \
+    -alpha off -compose copyopacity -composite "$work_dir/route-body-$state.png"
   magick "$exit_surface_source" -crop '64x48+64+0' +repage -filter point \
-    -resize "${path}x14!" "$work_dir/exit-loam-$state.png"
-  magick -size 32x36 xc:none \
-    "$work_dir/exit-left.png" -geometry "+$((edge_x-3))+5" -composite \
-    "$work_dir/exit-right.png" -geometry "+$((edge_x+width-9))+5" -composite \
-    "$work_dir/exit-loam-$state.png" -geometry "+$path_x+22" -composite \
+    -resize "${path}x10!" -modulate "$light,82,100" \
+    -fill '#9b7041' -colorize 18% "$work_dir/route-threshold-$state.png"
+  magick "$work_dir/route-body-$state.png" \
+    "$work_dir/route-threshold-$state.png" -geometry "+$path_x+30" -composite \
     "$work_dir/exit-$state.png"
 done
 magick "$work_dir/exit-closed.png" "$work_dir/exit-opening.png" \
   "$work_dir/exit-revealed.png" "$work_dir/exit-open.png" +append +repage \
-  -strip -define png:exclude-chunk=date,time "$production/moonwell-exit-clearing-states-v1.png"
+  -strip -define png:exclude-chunk=date,time PNG32:"$production/moonwell-exit-clearing-states-v2.png"
 
 # A continuous, low-contrast loam-to-wet-soil bank avoids turning the river
 # edge into a root fence or bright tiled rail. Eight overlapping crops retain
@@ -77,7 +112,7 @@ magick "$work_dir/shore-north.png" "$work_dir/shore-south.png" -append +repage \
 # sheets. Recolor only the established purple-family predicate to quiet teal;
 # warm path loam and all retained source detail stay intact.
 purple_predicate='r>g*1.08 && b>g*1.12 && b>r*.58 && (max(r,b)-g)>.035'
-for asset in moonwell-exit-clearing-states-v1.png moonwell-moonroot-shores-v1.png; do
+for asset in moonwell-route-opening-overhang-v1.png moonwell-exit-clearing-states-v2.png moonwell-moonroot-shores-v1.png; do
   mask="$work_dir/$asset-mask.png"
   shifted="$work_dir/$asset-shifted.png"
   magick "$production/$asset" -alpha off -fx "$purple_predicate ? 1 : 0" "$mask"
