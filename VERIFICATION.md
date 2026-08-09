@@ -1,5 +1,16 @@
 # Moonwell visual release audit
 
+## Quiet route destination threshold — 2026-08-09
+
+- `moonwell-exit-clearing-states-v4.png` is the current four-state retained
+  raster route cue. The shared deterministic processor derives it from the
+  accepted no-violet loam atlas, restrains the warm material pixels, and breaks
+  the near edge so an open route reads as a clearing rather than a platform or
+  lantern.
+- Acceptance target: `npm run check`, full tests, byte-identical managed art
+  regeneration, build/source-dist identity, and desktop, portrait, and
+  touch-landscape browser review of the open route and ordinary play.
+
 ## Varied collectible firefly family — 2026-08-09
 
 - `moonwell-firefly-variants-v2.png` contains eight distinct retained, no-violet four-frame strips at the existing 16 × 16 cell size. Its source is `assets/generated/moonwell-animated-props-atlas-v2-source.png`, pinned to SHA-256 `c933e841e31fa5980764353eb6add1796b4a4623cc413bafe2f492f13b09c815`.
