@@ -1,5 +1,29 @@
 # Moonwell visual release audit
 
+## Varied interior spruce blockers — 2026-08-09
+
+- The verified public baseline used one 24 × 40 footprint for all 39 ordinary
+  interior tree blockers. Four-map desktop review and 844 × 390 × 3 touch
+  review showed repeated pairs reading as placed obstacles rather than varied
+  forest growth.
+- The revised renderer selects 39 distinct placement records from the retained
+  no-violet spruce atlas. Every area uses all three frames, mirrored and
+  unmirrored states, at least six pixels of width and height variation, and a
+  common root baseline. Runtime contains no rectangle, path, gradient, SVG, or
+  other procedural substitute in the tree renderer.
+- Gameplay identity is fixed: the original tile records remain 16 × 16 and
+  every ordinary tree retains its exact 20 × 12 collider. Existing all-map
+  route tests continue to prove the eight-pixel comfort envelope around every
+  required pickup, encounter, crossing, exit, and finale destination.
+- Local release acceptance passed syntax, 72/72 deterministic tests including
+  byte-identical managed art regeneration, build/source-dist identity, and
+  diff hygiene. Desktop review covered all four maps and all three open routes;
+  keyboard movement and pause/Continue passed. Portrait 390 × 844 × 3 retained
+  its complete rotation gate with zero horizontal overflow. Touch landscape
+  844 × 390 × 3 retained a 600 × 390 canvas, 116 × 116 steering control, and
+  44 × 44 pause control; touch movement and pause/Continue passed. All reviewed
+  assets and cache-keyed scripts returned 200/304 and consoles were empty.
+
 ## Irregular loam route clearing — 2026-08-09
 
 - Public actual-scale review found that the accepted parted-spruce exit still

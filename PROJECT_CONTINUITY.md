@@ -1,5 +1,31 @@
 # Moonwell visual art system — continuity record
 
+## Varied interior spruce blockers — 2026-08-09
+
+- Public four-map review at desktop and touch-landscape scale found the next
+  coherent world-art weakness in the ordinary interior blockers: all 39 used
+  one 24 × 40 draw size, so adjacent anchors read as repeated placed trees even
+  though the perimeter forest and top curtain were already irregular.
+- `INTERIOR_FOREST_LAYOUT` now assigns every existing anchor a distinct
+  retained-spruce frame, scale, horizontal offset, and reflection. Width stays
+  within 22–29 logical pixels and height within 38–45, preserving the native
+  pixel scale and common rooted baseline while overlapping adjacent pairs into
+  more natural small clusters.
+- Runtime still draws only `moonwell-spruce-overhang-v3.png`; no generated
+  source, new production raster, canvas world-art primitive, or fallback was
+  introduced. The managed art workflow continues to regenerate the shared
+  retained sprite family byte-identically.
+- All 39 one-cell anchors, 20 × 12 rooted colliders, eight-pixel comfort routes,
+  exits, water, bridge, landmarks, interactions, and progression are unchanged.
+  Regression coverage pins per-area record counts and diversity, exact anchor
+  and collider identity, retained-raster rendering, and absence of procedural
+  tree substitutes.
+- Local acceptance passes syntax, 72/72 tests, byte-identical managed art
+  regeneration, build/source-dist identity, and diff hygiene. Desktop review
+  covered all four maps and all three open routes; 390 × 844 × 3 portrait and
+  844 × 390 × 3 touch landscape passed fit, movement, pause/Continue, request
+  health, and clean-console checks.
+
 ## Irregular loam route clearing — 2026-08-09
 
 - A fresh public four-map review found the highest-leverage remaining
