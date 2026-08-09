@@ -112,7 +112,7 @@ This is the authoritative mapping:
 | Loam patch | no collider | 80 × 48 px overlapping floor layer; four explicit thirty-record map layouts select retained frames, aligned offsets, reflection, and restrained opacity |
 | Moonroot shore | no collider; water remains solid outside the revealed bridge cells | Two 288 × 12 px retained raster rows, layered over the north/south water edges and under the 32 × 64 bridge |
 | Moonlight pool | no collider | Four explicit two-pool map layouts: one 112 × 66 px dominant screen-composited interaction anchor and one smaller route-support pool, aligned to a four-pixel placement rhythm |
-| Top canopy curtain | 20 one-cell root records across row 2; each uses the rooted 20 × 12 px mask at −2,+4 and is collision-only because the art is drawn as a shared backdrop | Three unchanged 128 × 56 px overlapping clusters; their visible root contact ends at y=48 |
+| Top canopy curtain | 20 one-cell root records across row 2; each uses the rooted 20 × 12 px mask at −2,+4 and is collision-only because the art is drawn as a shared backdrop | Three unchanged 128 × 56 px overlapping clusters begin at viewport y=0; their visible root contact ends at y=48. Top-edge and first side-row perimeter records remain collision-only so no baseline-anchored individual crown or trunk is sliced by the viewport. |
 
 The only larger logical collider exception remains the 2 × 2 Hollow sentinel.
 Its complete retained stone-and-root formation fills the same raster cell and
