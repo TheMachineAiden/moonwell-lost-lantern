@@ -280,8 +280,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v3\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-interior-forest-29/);
-  assert.match(html,/game\.js\?v=moonwell-interior-forest-29/);
+  assert.match(html,/game-core\.js\?v=moonwell-loam-layout-30/);
+  assert.match(html,/game\.js\?v=moonwell-loam-layout-30/);
 });
 
 test('generated starroot grounding source is pinned and produces tapered transparent frames',()=>{
@@ -484,6 +484,16 @@ test('interior forest variation uses only retained spruce frames at rooted ancho
   assert.doesNotMatch(treeRenderer,/rect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient/);
 });
 
+test('loam enrichment uses map-specific retained sprite records instead of a shared stamp lattice',()=>{
+  const source=read('game.js').toString();
+  const renderer=source.slice(source.indexOf('function drawLoamFloor'),source.indexOf('function drawMoonlightPools'));
+  assert.match(renderer,/for\(const patch of LOAM_PATCH_LAYOUT\[area\]\)/);
+  assert.match(renderer,/ctx\.drawImage\(art\.loam,patch\.frame\*160,0,160,96/);
+  assert.match(renderer,/ctx\.scale\(-1,1\)/);
+  assert.doesNotMatch(renderer,/for\(let y=-6|x=-28|x\+=66|y\+=42/);
+  assert.doesNotMatch(renderer,/\brect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient/);
+});
+
 test('root platforms render as varied retained loam shelves without a procedural substitute',()=>{
   const source=read('game.js').toString(),html=read('index.html').toString();
   const renderer=source.slice(source.indexOf('function rootPlatform'),source.indexOf('function exitTree'));
@@ -568,6 +578,6 @@ test('the dense top-canopy renderer consumes the same exported layout as its roo
   const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-interior-forest-29/);
-  assert.match(html,/game\.js\?v=moonwell-interior-forest-29/);
+  assert.match(html,/game-core\.js\?v=moonwell-loam-layout-30/);
+  assert.match(html,/game\.js\?v=moonwell-loam-layout-30/);
 });

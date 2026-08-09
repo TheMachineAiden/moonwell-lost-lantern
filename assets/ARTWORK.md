@@ -244,6 +244,19 @@ inspected separately and is already fully opaque, so its backing rectangle is
 not visible runtime art. `scripts/process-loam-base-art.sh`, invoked by the
 managed no-violet art workflow, rebuilds the base byte-identically.
 
+### Map-specific loam placement — 2026-08-09
+
+The four transparent 160 × 96 source cells in
+`moonwell-clearing-loam-patches-v3.png` remain the unchanged retained runtime
+family and keep their documented generated-source provenance. Runtime reduces
+them to the accepted 80 × 48 logical footprint, but now selects them through
+four explicit thirty-record placement layouts rather than one repeated stamp
+lattice. Code varies only sprite frame, four-pixel-aligned position,
+horizontal reflection, and subdued opacity. This creates distinct ground
+texture across the four maps without a new art source, derivative, procedural
+terrain primitive, or collision record; the managed processor remains the
+reproducible source-to-production workflow for every pixel used.
+
 ## Luna handoff reduction and Eir outline correction — 2026-08-03
 
 The approved Luna generation is retained intact under

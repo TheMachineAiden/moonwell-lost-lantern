@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const context={};
 vm.runInNewContext(fs.readFileSync(new URL('../game-core.js',import.meta.url),'utf8'),context);
-const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,starfallAltarState,watcherChoiceResult}=context.MoonwellCore;
+const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,LOAM_PATCH_LAYOUT,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,starfallAltarState,watcherChoiceResult}=context.MoonwellCore;
 
 test('the canonical world is a complete 20 by 13 tile canvas',()=>{
   assert.equal(TILE_SIZE,16);
@@ -97,6 +97,25 @@ test('interior blockers vary retained spruce silhouettes without moving their ro
       const object=objects.find(item=>item.id===`tree-${index}`);
       assert.deepEqual({x:object.x,y:object.y,w:object.w,h:object.h,solid:object.solid},{x:col*16,y:row*16,w:16,h:16,solid:true});
       assert.deepEqual(JSON.parse(JSON.stringify(collisionRectFor(object))),{x:col*16-2,y:row*16+4,w:20,h:12});
+    });
+  });
+});
+
+test('loam patches use distinct irregular retained-sprite layouts without adding geometry',()=>{
+  assert.equal(LOAM_PATCH_LAYOUT.length,4);
+  assert.equal(new Set(LOAM_PATCH_LAYOUT.map(layout=>JSON.stringify(layout))).size,4);
+  LOAM_PATCH_LAYOUT.forEach(layout=>{
+    assert.equal(layout.length,30);
+    assert.deepEqual([...new Set(layout.map(patch=>patch.frame))].sort(),[0,1,2,3]);
+    assert.ok(layout.some(patch=>patch.mirror));
+    assert.ok(layout.some(patch=>!patch.mirror));
+    assert.equal(new Set(layout.map(patch=>`${patch.x},${patch.y}`)).size,layout.length);
+    layout.forEach(patch=>{
+      assert.deepEqual({w:patch.w,h:patch.h},{w:80,h:48});
+      assert.ok(patch.x%4===0&&patch.y%4===0,'loam patch leaves the four-pixel placement rhythm');
+      assert.ok(patch.frame>=0&&patch.frame<4);
+      assert.ok(patch.alpha>=.66&&patch.alpha<=.76);
+      assert.equal('solid' in patch,false);
     });
   });
 });
