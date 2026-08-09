@@ -6,6 +6,21 @@ No third-party artwork, model output, or external asset is included. The project
 
 The final PNGs are deliberately small (72 × 88, 48 × 32, 96 × 24, and 72 × 24) with transparent backgrounds, keeping the static game's transfer and mobile memory cost negligible.
 
+## Quiet Moonroot bridge derivative — 2026-08-09
+
+`moonwell-art/production/moonwell-bridge-vertical-v5.png` is the retained
+32 × 64 runtime bridge. Its source chain remains the project-bound generated
+`generated/moonwell-vertical-bridge-source-v1.png` (SHA-256
+`2be0a36c497445282ffe7e971d6a994b4066dd8e765d2fe4a5ff6f7c9b734f91`)
+and the accepted no-violet v4 reduction documented below.
+
+`scripts/process-moonroot-bridge-art.sh` verifies that source identity and
+derives v5 from the freshly rebuilt v4 base. It does not redraw the bridge or
+change alpha: a fixed material mask lowers only warm bark-plank saturation and
+value, leaving root outlines, moss, cyan dew, silhouette, and exact two-by-four
+tile footprint intact. The script is part of the managed no-violet environment
+workflow and produces byte-identical PNG output.
+
 ## Quiet Whispering Hollow sentinel — 2026-08-09
 
 `generated/moonwell-hollow-sentinel-source-v1.png` is the retained 1536 ×

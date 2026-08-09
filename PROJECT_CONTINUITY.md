@@ -1,5 +1,25 @@
 # Moonwell visual art system — continuity record
 
+## Quiet Moonroot crossing hierarchy — 2026-08-09
+
+- A public four-map hierarchy audit found that Moonroot's otherwise accepted
+  bridge still formed a rigid, high-warmth ladder block across the cool river.
+  Its six regular post accents and bright plank field pulled attention ahead
+  of Eir and made the crossing feel newly constructed rather than forest-grown.
+- `moonwell-bridge-vertical-v5.png` is a deterministic retained derivative of
+  the accepted generated v1 bridge chain. It preserves every alpha pixel while
+  lowering only the warm constructed-wood field; dark roots, moss, cool dew,
+  and the water contrast remain intact.
+- The runtime still draws one 32 × 64 raster at the exact two-column by
+  four-row bridge record. Water collision, the bridge's passability, north and
+  south bank joins, Eir's three riddles, draw order, routes, and all other maps
+  are unchanged. The managed environment workflow rebuilds the v4 source base
+  and v5 derivative byte-identically, with the original generated source hash
+  pinned by the dedicated bridge processor.
+- Local acceptance passes syntax, 86/86 tests, deterministic regeneration,
+  build/source-dist identity, four-map desktop review, portrait fit, and
+  touch-landscape movement and pause/Continue with an empty console.
+
 ## Quiet route destination threshold — 2026-08-09
 
 - Actual-scale review found the open Glade threshold still read a little too

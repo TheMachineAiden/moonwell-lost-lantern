@@ -211,5 +211,6 @@ magick $luna_frames +append -strip -define png:exclude-chunk=date,time \
 MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-exit-moonroot-sprites.sh"
 MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-root-shelf-art.sh"
 MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-hollow-sentinel-art.sh"
+MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-moonroot-bridge-art.sh"
 
 printf '%s\n' "Rebuilt no-violet Moonwell runtime family in $production"

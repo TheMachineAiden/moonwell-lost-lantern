@@ -29,7 +29,7 @@ const environmentalFrames={
   'assets/moonwell-art/production/moonwell-firefly-variants-v2.png':16,
   'assets/moonwell-art/production/moonwell-light-pool-variants-v2.png':16,
   'assets/moonwell-art/production/moonwell-memory-loop-v3.png':16,
-  'assets/moonwell-art/production/moonwell-bridge-vertical-v4.png':32,
+  'assets/moonwell-art/production/moonwell-bridge-vertical-v5.png':32,
   'assets/moonwell-art/production/moonwell-rune-stone-v3.png':32,
   'assets/moonwell-art/production/moonwell-starroot-chime-variants-v4.png':24,
   'assets/moonwell-art/production/moonwell-sentinel-stones-v2.png':32,
@@ -71,7 +71,7 @@ test('luminous production assets preserve exact render footprints',()=>{
     'assets/moonwell-art/production/moonwell-mushroom-variants-v2.png':[32,16],
     'assets/moonwell-art/production/moonwell-firefly-variants-v2.png':[512,16],
     'assets/moonwell-art/production/moonwell-light-pool-variants-v2.png':[48,16],
-    'assets/moonwell-art/production/moonwell-bridge-vertical-v4.png':[32,64],
+    'assets/moonwell-art/production/moonwell-bridge-vertical-v5.png':[32,64],
     'assets/moonwell-art/production/moonwell-starroot-chime-variants-v4.png':[288,24],
     'assets/moonwell-art/production/moonwell-sentinel-stones-v2.png':[32,32],
     'assets/moonwell-art/production/moonwell-water-tile-v3.png':[64,16]
@@ -108,7 +108,7 @@ test('runtime references only production derivatives, never retained generation 
     'moonwell-mushroom-variants-v2.png',
     'moonwell-firefly-variants-v2.png',
     'moonwell-light-pool-variants-v2.png',
-    'moonwell-bridge-vertical-v4.png',
+    'moonwell-bridge-vertical-v5.png',
     'moonwell-starroot-chime-variants-v4.png',
     'moonwell-sentinel-stones-v2.png'
   ].forEach(asset=>assert.match(source,new RegExp(asset.replaceAll('.','\\.'))));
@@ -145,6 +145,37 @@ test('firefly collectibles use eight retained source-derived strips without chan
     strips.add(createHash('sha256').update(strip).digest('hex'));
   }
   assert.equal(strips.size,8,'placed fireflies repeat one retained animation strip');
+});
+
+test('Moonroot bridge keeps its retained footprint while yielding warm hierarchy to the crossing',()=>{
+  const source=read('game.js').toString(),html=read('index.html').toString();
+  const processor=read('scripts/process-moonroot-bridge-art.sh').toString();
+  const generated='assets/generated/moonwell-vertical-bridge-source-v1.png';
+  const base='assets/moonwell-art/production/moonwell-bridge-vertical-v4.png';
+  const asset='assets/moonwell-art/production/moonwell-bridge-vertical-v5.png';
+  assert.equal(createHash('sha256').update(read(generated)).digest('hex'),'2be0a36c497445282ffe7e971d6a994b4066dd8e765d2fe4a5ff6f7c9b734f91');
+  assert.match(processor,/moonwell-vertical-bridge-source-v1\.png/);
+  assert.match(processor,/2be0a36c497445282ffe7e971d6a994b4066dd8e765d2fe4a5ff6f7c9b734f91/);
+  assert.match(processor,/moonwell-bridge-vertical-v4\.png/);
+  assert.match(processor,/moonwell-bridge-vertical-v5\.png/);
+  assert.match(read('scripts/process-no-violet-environment-art.sh').toString(),/process-moonroot-bridge-art\.sh/);
+  assert.match(source,/bridge:loadArt\('assets\/moonwell-art\/production\/moonwell-bridge-vertical-v5\.png\?v=moonwell-quiet-bridge-1'\)/);
+  assert.match(html,/preload" as="image" href="assets\/moonwell-art\/production\/moonwell-bridge-vertical-v5\.png\?v=moonwell-quiet-bridge-1"/);
+  assert.doesNotMatch(source+html,/moonwell-bridge-vertical-v4\.png/);
+  assert.match(source,/object\.kind==='bridge'&&loaded\(art\.bridge\)\)ctx\.drawImage\(art\.bridge,object\.x,object\.y,object\.w,object\.h\)/);
+  const [basePixels,pixels]=[rgba(base),rgba(asset)];
+  assert.deepEqual(dimensions(asset),[32,64]);
+  let baseWarm=0,baseWarmValue=0,warmValue=0,baseOpaque=0,opaque=0;
+  for(let offset=0;offset<pixels.length;offset+=4){
+    const [br,bg,bb,ba]=basePixels.subarray(offset,offset+4),[r,g,b,a]=pixels.subarray(offset,offset+4);
+    if(ba>15)baseOpaque++;
+    if(a>15)opaque++;
+    if(ba>15&&br>bg*1.07&&bg>bb*1.05&&br>41){baseWarm++;baseWarmValue+=br+bg+bb;warmValue+=r+g+b}
+  }
+  assert.equal(opaque,baseOpaque,'quiet bridge must preserve the accepted raster silhouette');
+  assert.ok(baseWarm>800,'accepted bridge no longer exposes the audited warm material field');
+  assert.ok(warmValue<baseWarmValue*.88,'warm constructed-wood block did not recede enough');
+  assert.notDeepEqual(pixels,basePixels,'quiet bridge derivative is byte-identical to the accepted base');
 });
 
 test('exit clearing uses a raster state strip behind the rooted silhouette',()=>{
