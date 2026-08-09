@@ -30,7 +30,7 @@ const environmentalFrames={
   'assets/moonwell-art/production/moonwell-light-pool-variants-v2.png':16,
   'assets/moonwell-art/production/moonwell-memory-loop-v3.png':16,
   'assets/moonwell-art/production/moonwell-bridge-vertical-v5.png':32,
-  'assets/moonwell-art/production/moonwell-rune-stone-v3.png':32,
+  'assets/moonwell-art/production/moonwell-rune-stone-variants-v1.png':16,
   'assets/moonwell-art/production/moonwell-starroot-chime-variants-v4.png':24,
   'assets/moonwell-art/production/moonwell-sentinel-stones-v2.png':32,
   'assets/moonwell-art/production/moonwell-altar-v3.png':64,
@@ -72,6 +72,7 @@ test('luminous production assets preserve exact render footprints',()=>{
     'assets/moonwell-art/production/moonwell-firefly-variants-v2.png':[512,16],
     'assets/moonwell-art/production/moonwell-light-pool-variants-v2.png':[48,16],
     'assets/moonwell-art/production/moonwell-bridge-vertical-v5.png':[32,64],
+    'assets/moonwell-art/production/moonwell-rune-stone-variants-v1.png':[48,16],
     'assets/moonwell-art/production/moonwell-starroot-chime-variants-v4.png':[288,24],
     'assets/moonwell-art/production/moonwell-sentinel-stones-v2.png':[32,32],
     'assets/moonwell-art/production/moonwell-water-tile-v3.png':[64,16]
@@ -109,6 +110,7 @@ test('runtime references only production derivatives, never retained generation 
     'moonwell-firefly-variants-v2.png',
     'moonwell-light-pool-variants-v2.png',
     'moonwell-bridge-vertical-v5.png',
+    'moonwell-rune-stone-variants-v1.png',
     'moonwell-starroot-chime-variants-v4.png',
     'moonwell-sentinel-stones-v2.png'
   ].forEach(asset=>assert.match(source,new RegExp(asset.replaceAll('.','\\.'))));
@@ -161,7 +163,7 @@ test('Moonroot bridge keeps its retained footprint while yielding warm hierarchy
   assert.match(read('scripts/process-no-violet-environment-art.sh').toString(),/process-moonroot-bridge-art\.sh/);
   assert.match(source,/bridge:loadArt\('assets\/moonwell-art\/production\/moonwell-bridge-vertical-v5\.png\?v=moonwell-quiet-bridge-1'\)/);
   assert.match(html,/preload" as="image" href="assets\/moonwell-art\/production\/moonwell-bridge-vertical-v5\.png\?v=moonwell-quiet-bridge-1"/);
-  assert.match(html,/script src="game\.js\?v=moonwell-quiet-bridge-1"/);
+  assert.match(html,/script src="game\.js\?v=moonwell-varied-runes-1"/);
   assert.doesNotMatch(source+html,/moonwell-bridge-vertical-v4\.png/);
   assert.match(source,/object\.kind==='bridge'&&loaded\(art\.bridge\)\)ctx\.drawImage\(art\.bridge,object\.x,object\.y,object\.w,object\.h\)/);
   const [basePixels,pixels]=[rgba(base),rgba(asset)];
@@ -338,6 +340,32 @@ test('Whispering Hollow uses an unlit retained stone sentinel instead of a warm 
   assert.ok(new Set(rowWidths.filter(Boolean)).size>=6,'stone sentinel loses its irregular three-tier silhouette');
 });
 
+test('Whispering Hollow gives its three echo anchors distinct retained rune stones without changing their cells',()=>{
+  const source=read('game.js').toString(),html=read('index.html').toString();
+  const processor=read('scripts/process-hollow-rune-variants-art.sh').toString();
+  const paletteProcessor=read('scripts/process-no-violet-environment-art.sh').toString();
+  const generated='assets/moonwell-art/production/moonwell-rune-stone-v3.png';
+  const asset='assets/moonwell-art/production/moonwell-rune-stone-variants-v1.png';
+  assert.equal(createHash('sha256').update(read(generated)).digest('hex'),'608ba358262eb16de35098dc93b9e0acc5a3c04ac28beba0ee00cfcd91d8d605');
+  assert.match(processor,/moonwell-rune-stone-v3\.png/);
+  assert.match(processor,/608ba358262eb16de35098dc93b9e0acc5a3c04ac28beba0ee00cfcd91d8d605/);
+  assert.match(processor,/'0:16:16:0' '1:15:16:0' '2:15:15:1'/);
+  assert.match(processor,/moonwell-rune-stone-variants-v1\.png/);
+  assert.match(paletteProcessor,/process-hollow-rune-variants-art\.sh/);
+  assert.match(source,/rune:loadArt\('assets\/moonwell-art\/production\/moonwell-rune-stone-variants-v1\.png\?v=moonwell-varied-runes-1'\)/);
+  assert.match(html,/preload" as="image" href="assets\/moonwell-art\/production\/moonwell-rune-stone-variants-v1\.png\?v=moonwell-varied-runes-1"/);
+  assert.match(source,/ctx\.drawImage\(art\.rune,index\*16,0,16,16,stone\.x-8,stone\.y-8,16,16\)/);
+  assert.doesNotMatch(source+html,/moonwell-rune-stone-v3\.png/);
+  const pixels=rgba(asset),[width,height]=dimensions(asset);
+  assert.deepEqual([width,height],[48,16]);
+  const frames=[];
+  for(let frame=0;frame<3;frame++){
+    const cell=Buffer.concat([...Array(height)].map((_,y)=>pixels.subarray((y*width+frame*16)*4,(y*width+(frame+1)*16)*4)));
+    frames.push(createHash('sha256').update(cell).digest('hex'));
+  }
+  assert.equal(new Set(frames).size,3,'three echo anchors stamp one rune silhouette');
+});
+
 test('the opaque raster loam base replaces the exposed procedural forest-floor fill',()=>{
   const source=read('game.js').toString(),processor=read('scripts/process-loam-base-art.sh').toString();
   const floor=source.slice(source.indexOf('function drawLoamFloor'),source.indexOf('function drawMoonlightPools'));
@@ -422,7 +450,7 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
   assert.match(html,/game-core\.js\?v=moonwell-varied-fireflies-1/);
-  assert.match(html,/game\.js\?v=moonwell-varied-fireflies-1/);
+  assert.match(html,/game\.js\?v=moonwell-varied-runes-1/);
 });
 
 test('generated starroot grounding source is pinned and produces three distinct tapered strips',()=>{
@@ -786,5 +814,5 @@ test('the dense top-canopy renderer consumes the same exported layout as its roo
   assert.doesNotMatch(renderer,/\brect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient|\.svg/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
   assert.match(html,/game-core\.js\?v=moonwell-varied-fireflies-1/);
-  assert.match(html,/game\.js\?v=moonwell-varied-fireflies-1/);
+  assert.match(html,/game\.js\?v=moonwell-varied-runes-1/);
 });
