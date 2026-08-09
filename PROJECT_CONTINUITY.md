@@ -1,5 +1,27 @@
 # Moonwell visual art system — continuity record
 
+## Varied loam root shelves — 2026-08-09
+
+- Public actual-scale review across all four maps found the repeated root
+  platform to be the strongest remaining visual-system weakness: every 2 × 1
+  blocker read as the same high-contrast wooden bench or root fence, competing
+  with the bridge, sentinel, and altar landmarks.
+- Runtime now selects six retained 48 × 24 raster frames assembled from the
+  accepted no-violet loam, rooted-soil, and Moonroot-bank families. Broken
+  moss caps and shallow irregular soil faces read as natural raised shelves
+  instead of parallel root rails.
+- The managed no-violet workflow runs the new deterministic shelf processor
+  after its three retained inputs. No generated source is loaded at runtime;
+  no canvas primitive substitutes for the touched world objects.
+- All seven placements retain their exact 2 × 1 anchors, 40 × 14 colliders,
+  draw footprint, routes, and contact behavior. Only raster frame selection
+  varies by area and placement.
+- Local acceptance passes syntax, 70/70 tests, byte-identical managed art
+  regeneration, build, source/dist identity, and diff hygiene. Desktop review
+  covered all four maps, an open exit, and normal-input shelf contact;
+  390 × 844 × 3 portrait and 844 × 390 × 3 touch landscape passed fit,
+  movement, pause/Continue, asset responses, and clean consoles.
+
 ## Parted-spruce route opening — 2026-08-09
 
 - Public actual-scale review found that the accepted route cue still resolved
