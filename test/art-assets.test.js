@@ -280,8 +280,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v3\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-loam-layout-30/);
-  assert.match(html,/game\.js\?v=moonwell-loam-layout-30/);
+  assert.match(html,/game-core\.js\?v=moonwell-ground-layout-1/);
+  assert.match(html,/game\.js\?v=moonwell-ground-layout-1/);
 });
 
 test('generated starroot grounding source is pinned and produces tapered transparent frames',()=>{
@@ -427,7 +427,7 @@ test('ambient glowmoss cannot be mistaken for a collectible firefly',()=>{
   assert.match(source,/kind==='glowmoss'/);
   assert.doesNotMatch(source,/kind==='firefly'/);
   assert.doesNotMatch(core,/\['firefly',/);
-  assert.match(renderer,/kind==='glowmoss'&&loaded\(art\.foliage\).*ctx\.drawImage\(art\.foliage/);
+  assert.match(renderer,/kind==='glowmoss'\)drawGroundSprite\(art\.foliage,item,3,12,2,4\)/);
   assert.doesNotMatch(renderer,/kind==='glowmoss'[^}]*rect\(/);
 });
 
@@ -492,6 +492,18 @@ test('loam enrichment uses map-specific retained sprite records instead of a sha
   assert.match(renderer,/ctx\.scale\(-1,1\)/);
   assert.doesNotMatch(renderer,/for\(let y=-6|x=-28|x\+=66|y\+=42/);
   assert.doesNotMatch(renderer,/\brect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient/);
+});
+
+test('ground details use explicit map-specific raster records without a procedural substitute',()=>{
+  const source=read('game.js').toString(),core=read('game-core.js').toString();
+  const renderer=source.slice(source.indexOf('function drawGroundSprite'),source.indexOf('function worldObject'));
+  assert.match(core,/const GROUND_DECOR_LAYOUT=groundDecorLayout\(/);
+  assert.match(core,/frame:record\.frame,xOffset:record\.xOffset,yOffset:record\.yOffset,mirror:record\.mirror,alpha:record\.alpha/);
+  assert.match(renderer,/item\.x\+item\.xOffset/);
+  assert.match(renderer,/ctx\.scale\(-1,1\)/);
+  assert.match(renderer,/ctx\.drawImage\(image,frame\*T,0,T,T/);
+  for(const name of ['lightPool','ground','foliage','stone','mushroom'])assert.match(renderer,new RegExp(`art\\.${name}`));
+  assert.doesNotMatch(renderer,/Math\.floor\(x\/T\)|\brect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient/);
 });
 
 test('root platforms render as varied retained loam shelves without a procedural substitute',()=>{
@@ -578,6 +590,6 @@ test('the dense top-canopy renderer consumes the same exported layout as its roo
   const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-loam-layout-30/);
-  assert.match(html,/game\.js\?v=moonwell-loam-layout-30/);
+  assert.match(html,/game-core\.js\?v=moonwell-ground-layout-1/);
+  assert.match(html,/game\.js\?v=moonwell-ground-layout-1/);
 });

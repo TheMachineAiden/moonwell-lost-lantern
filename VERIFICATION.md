@@ -1,5 +1,30 @@
 # Moonwell visual release audit
 
+## Map-specific understory detail layouts — 2026-08-09
+
+- Public 1440 × 900 comparison across all four developer scenes confirmed the
+  remaining repeated ground signature: the retained small-prop families were
+  map-specific only in part, with exact stone, root, mushroom, needles, fern,
+  and glowmoss cells recurring across the later maps.
+- Four explicit fourteen-record layouts now choose the retained production
+  raster frame, reflection, opacity, and one- or two-pixel placement offset.
+  The four maps share the same understated vocabulary without sharing a
+  visible coordinate for any one kind. Moonroot keeps these records on its
+  dry banks so the water and vertical bridge remain visually dominant.
+- The ground renderer contains no rectangle, path, gradient, SVG, or other
+  procedural world-art fallback. No new asset was required: all visible detail
+  still comes from the established foliage, ground-texture, stone, mushroom,
+  and light-pool PNG families and their reproducible managed pipeline.
+- Geometry is unchanged. All fifty-six records retain 16 × 16 logical cells,
+  `solid:false`, and no participation in `createWorldObjects`; every route,
+  tree/root collider, water cell, bridge span, landmark, interaction, exit
+  state, and progression contract remains accepted.
+- Local release acceptance passed syntax, 75/75 deterministic tests,
+  byte-identical environment-art regeneration, build/source-dist identity,
+  and diff hygiene. Desktop actual-scale review covered all four maps without
+  clipping, landmark competition, false collectible cues, or exposed art
+  fallbacks.
+
 ## Map-specific loam patch layouts — 2026-08-09
 
 - Baseline comparison at 1440 × 900 showed the four retained loam sprites
