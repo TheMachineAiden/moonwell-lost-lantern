@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const context={};
 vm.runInNewContext(fs.readFileSync(new URL('../game-core.js',import.meta.url),'utf8'),context);
-const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUTS,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,LOAM_PATCH_LAYOUT,GROUND_DECOR_LAYOUT,MOONLIGHT_POOL_LAYOUT,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,starfallAltarState,watcherChoiceResult}=context.MoonwellCore;
+const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUTS,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,LOAM_PATCH_LAYOUT,GROUND_DECOR_LAYOUT,MOONLIGHT_POOL_LAYOUT,WATER_TILE_LAYOUT,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,starfallAltarState,watcherChoiceResult}=context.MoonwellCore;
 
 test('the canonical world is a complete 20 by 13 tile canvas',()=>{
   assert.equal(TILE_SIZE,16);
@@ -146,6 +146,20 @@ test('moonlight pools create distinct map-specific interaction hierarchy without
     assert.equal(createWorldObjects(areaIndex,areaIndex===1).some(object=>object.kind==='moonlight-pool'),false);
   });
   assert.equal(new Set(MOONLIGHT_POOL_LAYOUT.map(([pool])=>`${pool.x},${pool.y}`)).size,4);
+});
+
+test('Moonroot varies its retained water frames without changing the four-row collision field',()=>{
+  assert.equal(WATER_TILE_LAYOUT.length,4);
+  WATER_TILE_LAYOUT.forEach((row,rowIndex)=>{
+    assert.equal(row.length,18);
+    assert.deepEqual([...new Set(row)].sort(),[0,1,2,3]);
+    for(let col=1;col<row.length;col++)assert.notEqual(row[col],row[col-1],`water repeats horizontally at ${col},${rowIndex}`);
+  });
+  for(let row=1;row<WATER_TILE_LAYOUT.length;row++)for(let col=0;col<18;col++)assert.notEqual(WATER_TILE_LAYOUT[row][col],WATER_TILE_LAYOUT[row-1][col],`water repeats vertically at ${col},${row}`);
+  const gated=createWorldObjects(1,false),solved=createWorldObjects(1,true);
+  assert.equal(gated.filter(object=>object.kind==='water').length,72);
+  assert.equal(solved.filter(object=>object.kind==='water').length,64);
+  for(const objects of [gated,solved])objects.filter(object=>object.kind==='water').forEach(object=>assert.deepEqual({w:object.w,h:object.h,solid:object.solid},{w:16,h:16,solid:true}));
 });
 
 test('every visible top-canopy root cell maps to a seam-free blocker in all four areas',()=>{

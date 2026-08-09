@@ -55,7 +55,28 @@ sprite "$world_alpha" '220x270+480+400' 32x32 "$output/moonwell-rune-stone-v2.pn
 sprite "$world_alpha" '190x270+755+390' 32x48 "$output/moonwell-skybell-v2.png"
 sprite "$world_alpha" '410x310+985+380' 48x48 "$output/moonwell-sentinel-v3.png"
 sprite "$world_alpha" '360x270+145+700' 64x48 "$output/moonwell-altar-v2.png"
-sprite "$world_alpha" '240x240+620+720' 16x16 "$output/moonwell-water-tile-v2.png"
+
+# Preserve the accepted water tile as frame zero, then derive three additional
+# current-scale surface variants from distinct regions of the same retained
+# water source. Every frame receives frame zero's one-pixel perimeter so the
+# established edge transition stays stable when unlike variants meet.
+magick "$world_alpha" -crop '240x240+620+720' +repage -trim +repage \
+  "$output/.water-source.png"
+magick "$output/.water-source.png" -filter point -resize '16x16!' \
+  "$output/.water-frame-0.png"
+magick -size 16x16 xc:black -fill white \
+  -draw 'rectangle 0,0 15,0 rectangle 0,15 15,15 rectangle 0,0 0,15 rectangle 15,0 15,15' \
+  "$output/.water-border-mask.png"
+for spec in '1:96x96+0+0' '2:96x96+104+8' '3:96x96+48+96'; do
+  frame=${spec%%:*}
+  crop=${spec#*:}
+  magick "$output/.water-source.png" -crop "$crop" +repage \
+    -filter point -resize '16x16!' -alpha off "$output/.water-variant-$frame.png"
+  magick "$output/.water-variant-$frame.png" "$output/.water-frame-0.png" \
+    "$output/.water-border-mask.png" -composite "$output/.water-frame-$frame.png"
+done
+magick "$output"/.water-frame-{0,1,2,3}.png +append \
+  "$output/moonwell-water-tile-v2.png"
 
 # Grid-exact replacements: one 16 × 16 tree, one 32 × 16 root platform, and
 # one 32 × 32 sentinel. These are intentionally not trimmed beyond their
@@ -79,6 +100,8 @@ magick "$output"/.lantern-{0,1,2,3}.png -background none -alpha on +append "$out
 magick "$output"/.skybell-{0,1,2,3}.png -background none -alpha on +append "$output/moonwell-skybell-loop-v2.png"
 
 rm "$output"/.world-alpha.png "$output"/.animated-alpha.png "$output"/.grid-reference-alpha.png \
+  "$output/.water-source.png" "$output/.water-border-mask.png" \
+  "$output"/.water-variant-{1,2,3}.png "$output"/.water-frame-{0,1,2,3}.png \
   "$output"/.firefly-{0,1,2,3}.png \
   "$output"/.memory-{0,1,2,3}.png \
   "$output"/.lantern-{0,1,2,3}.png \
