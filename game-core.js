@@ -73,10 +73,10 @@ const platformCells=[[[8,3]],[[5,2],[11,9]],[[6,9],[13,6]],[[5,3],[16,6]]];
 // vary without moving the shared row-2 collision-only root footprints.
 const topCanopyLayouts=areas=>Object.freeze(areas.map(records=>Object.freeze(records.map(([x,y,frame,mirror])=>Object.freeze({x,y,w:128,h:56,frame,mirror})))));
 const TOP_CANOPY_LAYOUTS=topCanopyLayouts([
-  [[-6,-3,0,false],[96,-4,1,false],[202,-2,0,true]],
-  [[-10,-5,1,true],[90,-2,0,false],[198,-4,1,false]],
-  [[-2,-2,1,false],[102,-5,1,true],[206,-3,0,false]],
-  [[-8,-4,0,true],[94,-1,0,false],[204,-5,1,true]]
+  [[-6,0,0,false],[96,0,1,false],[202,0,0,true]],
+  [[-10,0,1,true],[90,0,0,false],[198,0,1,false]],
+  [[-2,0,1,false],[102,0,1,true],[206,0,0,false]],
+  [[-8,0,0,true],[94,0,0,false],[204,0,1,true]]
 ]);
 const TOP_CANOPY_ROOT_CELLS=Object.freeze(Array.from({length:20},(_,col)=>Object.freeze([col,2])));
 // The lower edge is one retained full-width cluster per map, while these exact
