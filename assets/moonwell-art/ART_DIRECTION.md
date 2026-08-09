@@ -29,7 +29,7 @@ geometry, not permission to render beyond the runtime footprint.
 | Rooted forest exit | 1 x 1 tile (16 x 16) | The warm clearing is painted behind the flanking roots and remains centred on the existing home coordinate; never render it as a point light or lantern. |
 | Starroot chime | 1 x 1 logical tile (16 x 16) | Non-solid grounded interaction; 24 × 24 visual with an amber seed glow and one tile-centred interaction point. |
 | Tree | 1 x 1 logical tile (16 x 16) | A 20 × 12 rooted contact mask sits at offset −2,+4; perimeter canopy may overhang to 40 × 56 px and interior canopy to 24 × 40 px. |
-| Sentinel | 2 x 2 tiles (32 x 32) | Deliberate solid landmark with an exact 2 × 2 mask. |
+| Sentinel | 2 x 2 tiles (32 x 32) | Deliberate solid root-bound stone landmark with an exact 2 × 2 mask; unlit and non-interactive, with no face, chest, lantern, glyph, or objective glow. |
 | Root platform | 2 x 1 logical tiles (32 x 16) | 48 × 24 visual; its visible shelf/face uses a 40 × 14 contact mask at offset −4,+2, leaving only a clearly decorative 4 px side and 8 px top overhang. |
 | Bridge segment | 1 x 1 tile (16 x 16) | Repeat as separate tile records across a passable span. |
 | Moonwell endgame altar | 2 x 2 tiles (32 x 32) | Simple focal object; declare its collision choice with the record. |
@@ -107,6 +107,7 @@ This is the authoritative mapping:
 | Rooted forest exit | 1 × 1 cell, solid through `revealed`; non-solid at `open` | 48 × 64 px; 16 px left/right and 48 px top overhang. Its one-cell warm clearing is drawn behind the rooted silhouette so the tree masks it into a natural threshold. |
 | Root platform | 40 × 14 px contact mask at −4,+2 from its 2 × 1 record | 48 × 24 px; 4 px side and 8 px top overhang |
 | Starroot chime | non-solid one-cell interaction anchor, radius 15 px | 24 × 24 px; anchor −12,−16; rooted baseline and fixed silhouette |
+| Hollow sentinel | exact 32 × 32 px solid record | 32 × 32 px retained raster with a side safety gutter and grounded baseline; quiet root-bound stone, no separate light or procedural backing |
 | Eir | one non-solid cell-centred interaction anchor, radius 22 px | 16 × 24 px runtime draw; anchor −8, −22; four unchanged 64 × 96 raster source cells |
 | Loam patch | no collider | 80 × 48 px overlapping floor layer; four explicit thirty-record map layouts select retained frames, aligned offsets, reflection, and restrained opacity |
 | Moonroot shore | no collider; water remains solid outside the revealed bridge cells | Two 288 × 12 px retained raster rows, layered over the north/south water edges and under the 32 × 64 bridge |
@@ -114,6 +115,8 @@ This is the authoritative mapping:
 | Top canopy curtain | 20 one-cell root records across row 2; each uses the rooted 20 × 12 px mask at −2,+4 and is collision-only because the art is drawn as a shared backdrop | Three unchanged 128 × 56 px overlapping clusters; their visible root contact ends at y=48 |
 
 The only larger logical collider exception remains the 2 × 2 Hollow sentinel.
+Its complete retained stone-and-root formation fills the same raster cell and
+stays deliberately below the three cool echo runes in value hierarchy.
 The root platform uses a 40 × 14 perceived-contact mask around its 2 × 1 record
 so its shelf face and collision agree. Eir and starroot chimes are deliberately
 non-blocking. Spruce canopy overhang does not enlarge its rooted contact mask;
