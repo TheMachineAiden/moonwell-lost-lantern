@@ -1,5 +1,20 @@
 # Moonwell visual art system — continuity record
 
+## Map-specific lower forest silhouettes — 2026-08-09
+
+- Four-map actual-scale review found the accepted irregular lower forest edge
+  still used one identical twenty-tree skyline in every area. Each map now
+  rephases that same retained no-violet spruce sequence, so the foreground
+  frame changes with the place without adding or regenerating artwork.
+- All eighty bottom anchors retain their exact row-12 one-tile records,
+  20 × 12 rooted colliders, common baselines, safe scale/offset bounds, and
+  overlaps into the side forest. Routes, landmarks, water, exits, encounters,
+  progression, and the dense inner top boundary are unchanged.
+- Regression coverage pins four distinct twenty-record layouts, complete
+  frame/reflection/scale diversity, retained-raster-only rendering, immutable
+  collision rectangles, and the release cache identity for both changed
+  scripts.
+
 ## Varied Whispering Hollow echo stones — 2026-08-09
 
 - The three echoed rune anchors previously stamped one 16 × 16 rune raster.

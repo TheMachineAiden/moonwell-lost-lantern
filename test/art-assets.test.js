@@ -163,7 +163,7 @@ test('Moonroot bridge keeps its retained footprint while yielding warm hierarchy
   assert.match(read('scripts/process-no-violet-environment-art.sh').toString(),/process-moonroot-bridge-art\.sh/);
   assert.match(source,/bridge:loadArt\('assets\/moonwell-art\/production\/moonwell-bridge-vertical-v5\.png\?v=moonwell-quiet-bridge-1'\)/);
   assert.match(html,/preload" as="image" href="assets\/moonwell-art\/production\/moonwell-bridge-vertical-v5\.png\?v=moonwell-quiet-bridge-1"/);
-  assert.match(html,/script src="game\.js\?v=moonwell-varied-runes-1"/);
+  assert.match(html,/script src="game\.js\?v=moonwell-map-bottoms-1"/);
   assert.doesNotMatch(source+html,/moonwell-bridge-vertical-v4\.png/);
   assert.match(source,/object\.kind==='bridge'&&loaded\(art\.bridge\)\)ctx\.drawImage\(art\.bridge,object\.x,object\.y,object\.w,object\.h\)/);
   const [basePixels,pixels]=[rgba(base),rgba(asset)];
@@ -449,8 +449,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-variants-v4\.png\?v=moonwell-varied-starroots-1/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-varied-fireflies-1/);
-  assert.match(html,/game\.js\?v=moonwell-varied-runes-1/);
+  assert.match(html,/game-core\.js\?v=moonwell-map-bottoms-1/);
+  assert.match(html,/game\.js\?v=moonwell-map-bottoms-1/);
 });
 
 test('generated starroot grounding source is pinned and produces three distinct tapered strips',()=>{
@@ -660,10 +660,10 @@ test('ambient tree and canopy pinlights stay cool while gameplay fireflies retai
   assert.match(html,/moonwell-inner-forest-boundary-v1\.png\?v=moonwell-inner-forest-boundary-1/);
 });
 
-test('bottom forest variation uses only retained spruce frames and no procedural tree substitute',()=>{
+test('map-specific bottom forest variation uses only retained spruce frames and no procedural tree substitute',()=>{
   const source=read('game.js').toString();
   const treeRenderer=source.slice(source.indexOf('function tree('),source.indexOf('function glow('));
-  assert.match(treeRenderer,/BOTTOM_FOREST_LAYOUT\[Math\.floor\(x\/T\)\]/);
+  assert.match(treeRenderer,/BOTTOM_FOREST_LAYOUTS\[area\]\[Math\.floor\(x\/T\)\]/);
   assert.match(treeRenderer,/ctx\.scale\(-1,1\)/);
   assert.match(treeRenderer,/ctx\.drawImage\(art\.spruce/);
   assert.doesNotMatch(treeRenderer,/rect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient/);
@@ -813,6 +813,6 @@ test('the dense top-canopy renderer consumes the same exported layout as its roo
   assert.match(renderer,/ctx\.scale\(-1,1\)/);
   assert.doesNotMatch(renderer,/\brect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient|\.svg/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-varied-fireflies-1/);
-  assert.match(html,/game\.js\?v=moonwell-varied-runes-1/);
+  assert.match(html,/game-core\.js\?v=moonwell-map-bottoms-1/);
+  assert.match(html,/game\.js\?v=moonwell-map-bottoms-1/);
 });
