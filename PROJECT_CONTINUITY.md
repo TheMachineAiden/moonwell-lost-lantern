@@ -1,5 +1,12 @@
 # Moonwell visual art system — continuity record
 
+## Varied collectible firefly family — 2026-08-09
+
+- A fresh public hierarchy audit found the remaining repeated placed-sprite signature in the eight amber collectibles: every light used the same four-frame 16 × 16 loop.
+- The retained animated-props generation source is hash-pinned by the new firefly processor. It derives eight distinct four-frame strips through only point scaling, grounding, and reflection, then the managed no-violet pass writes `moonwell-firefly-variants-v2.png` as one 512 × 16 production atlas.
+- Runtime maps the existing light records to those strips without moving a light or changing its 16 × 16 draw, glow cadence, pickup radius, hidden gate, count, route, collider, exit state, or progression.
+- Regression coverage pins source identity, eight distinct strips, native draw rectangle, stable per-placement mapping, palette audit, full managed byte-identical regeneration, and source/dist identity. Desktop review covers all four maps; portrait and touch landscape retain accepted fit, movement, pause/Continue, clean-console, and network behavior.
+
 ## Sprite-only runtime world entities — 2026-08-09
 
 - The acceptance audit found eight remaining rectangle fallbacks in the entity

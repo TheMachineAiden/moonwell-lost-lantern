@@ -26,7 +26,7 @@ const environmentalFrames={
   'assets/moonwell-art/production/moonwell-ground-texture-variants-v2.png':16,
   'assets/moonwell-art/production/moonwell-stone-variants-v2.png':16,
   'assets/moonwell-art/production/moonwell-mushroom-variants-v2.png':16,
-  'assets/moonwell-art/production/moonwell-clearing-firefly-loop-v6.png':16,
+  'assets/moonwell-art/production/moonwell-firefly-variants-v2.png':16,
   'assets/moonwell-art/production/moonwell-light-pool-variants-v2.png':16,
   'assets/moonwell-art/production/moonwell-memory-loop-v3.png':16,
   'assets/moonwell-art/production/moonwell-bridge-vertical-v4.png':32,
@@ -69,7 +69,7 @@ test('luminous production assets preserve exact render footprints',()=>{
     'assets/moonwell-art/production/moonwell-ground-texture-variants-v2.png':[48,16],
     'assets/moonwell-art/production/moonwell-stone-variants-v2.png':[48,16],
     'assets/moonwell-art/production/moonwell-mushroom-variants-v2.png':[32,16],
-    'assets/moonwell-art/production/moonwell-clearing-firefly-loop-v6.png':[64,16],
+    'assets/moonwell-art/production/moonwell-firefly-variants-v2.png':[512,16],
     'assets/moonwell-art/production/moonwell-light-pool-variants-v2.png':[48,16],
     'assets/moonwell-art/production/moonwell-bridge-vertical-v4.png':[32,64],
     'assets/moonwell-art/production/moonwell-starroot-chime-variants-v4.png':[288,24],
@@ -106,7 +106,7 @@ test('runtime references only production derivatives, never retained generation 
     'moonwell-ground-texture-variants-v2.png',
     'moonwell-stone-variants-v2.png',
     'moonwell-mushroom-variants-v2.png',
-    'moonwell-clearing-firefly-loop-v6.png',
+    'moonwell-firefly-variants-v2.png',
     'moonwell-light-pool-variants-v2.png',
     'moonwell-bridge-vertical-v4.png',
     'moonwell-starroot-chime-variants-v4.png',
@@ -121,6 +121,30 @@ test('every runtime-loaded raster is explicitly classified for palette audit',()
   const audited=new Set([...Object.keys(environmentalFrames),...Object.keys(characterFrames)]);
   assert.deepEqual([...runtimeRasters].sort(),[...audited].sort());
   for(const asset of Object.keys(characterFrames))assert.ok(runtimeRasters.has(asset),`${asset} lost its character palette audit`);
+});
+
+test('firefly collectibles use eight retained source-derived strips without changing their 16-pixel draw',()=>{
+  const source=read('game.js').toString(),core=read('game-core.js').toString(),html=read('index.html').toString();
+  const processor=read('scripts/process-firefly-variants-art.sh').toString();
+  const generated='assets/generated/moonwell-animated-props-atlas-v2-source.png';
+  const asset='assets/moonwell-art/production/moonwell-firefly-variants-v2.png';
+  assert.equal(createHash('sha256').update(read(generated)).digest('hex'),'c933e841e31fa5980764353eb6add1796b4a4623cc413bafe2f492f13b09c815');
+  assert.match(processor,/moonwell-animated-props-atlas-v2-source\.png/);
+  assert.match(processor,/c933e841e31fa5980764353eb6add1796b4a4623cc413bafe2f492f13b09c815/);
+  assert.match(processor,/'0:16:16:0'.*'7:15:14:0'/);
+  assert.match(source,/FIREFLY_VARIANTS\[area\]\[index\]/);
+  assert.match(source,/\(variant\*4\+animationFrame\(\)\)\*16,0,16,16,light\.x-8,light\.y-8,16,16/);
+  assert.match(source,/moonwell-firefly-variants-v2\.png\?v=moonwell-varied-fireflies-1/);
+  assert.match(html,/moonwell-firefly-variants-v2\.png\?v=moonwell-varied-fireflies-1/);
+  assert.match(core,/FIREFLY_VARIANTS=Object\.freeze\(\[\[0,1,2\],\[3,4\],\[5\],\[6,7\]\]/);
+  const pixels=rgba(asset),[width,height]=dimensions(asset);
+  assert.deepEqual([width,height],[512,16]);
+  const strips=new Set();
+  for(let variant=0;variant<8;variant++){
+    const strip=Buffer.concat([...Array(height)].map((_,y)=>pixels.subarray((y*width+variant*64)*4,(y*width+(variant+1)*64)*4)));
+    strips.add(createHash('sha256').update(strip).digest('hex'));
+  }
+  assert.equal(strips.size,8,'placed fireflies repeat one retained animation strip');
 });
 
 test('exit clearing uses a raster state strip behind the rooted silhouette',()=>{
@@ -364,8 +388,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-variants-v4\.png\?v=moonwell-varied-starroots-1/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-varied-starroots-1/);
-  assert.match(html,/game\.js\?v=moonwell-varied-starroots-1/);
+  assert.match(html,/game-core\.js\?v=moonwell-varied-fireflies-1/);
+  assert.match(html,/game\.js\?v=moonwell-varied-fireflies-1/);
 });
 
 test('generated starroot grounding source is pinned and produces three distinct tapered strips',()=>{
@@ -565,7 +589,7 @@ test('ambient tree and canopy pinlights stay cool while gameplay fireflies retai
     }
     assert.equal(falseAmber,0,`${asset} restores an ambient amber objective cue`);
   }
-  const fireflies=rgba('assets/moonwell-art/production/moonwell-clearing-firefly-loop-v6.png');
+  const fireflies=rgba('assets/moonwell-art/production/moonwell-firefly-variants-v2.png');
   let collectibleAmber=0;
   for(let offset=0;offset<fireflies.length;offset+=4)if(brightWarm(fireflies[offset],fireflies[offset+1],fireflies[offset+2],fireflies[offset+3]))collectibleAmber++;
   assert.ok(collectibleAmber>=8,'collectible fireflies lose their warm hierarchy');
@@ -728,6 +752,6 @@ test('the dense top-canopy renderer consumes the same exported layout as its roo
   assert.match(renderer,/ctx\.scale\(-1,1\)/);
   assert.doesNotMatch(renderer,/\brect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient|\.svg/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-varied-starroots-1/);
-  assert.match(html,/game\.js\?v=moonwell-varied-starroots-1/);
+  assert.match(html,/game-core\.js\?v=moonwell-varied-fireflies-1/);
+  assert.match(html,/game\.js\?v=moonwell-varied-fireflies-1/);
 });

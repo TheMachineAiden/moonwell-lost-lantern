@@ -1,5 +1,11 @@
 # Moonwell visual release audit
 
+## Varied collectible firefly family — 2026-08-09
+
+- `moonwell-firefly-variants-v2.png` contains eight distinct retained, no-violet four-frame strips at the existing 16 × 16 cell size. Its source is `assets/generated/moonwell-animated-props-atlas-v2-source.png`, pinned to SHA-256 `c933e841e31fa5980764353eb6add1796b4a4623cc413bafe2f492f13b09c815`.
+- `scripts/process-firefly-variants-art.sh` derives the v1 source family with point reduction, common grounding, and reflection only; the managed no-violet environment pipeline produces the v2 runtime atlas. The runtime maps every existing collectible to one strip without altering world records or gameplay geometry.
+- Acceptance: `npm run check`; 85/85 tests; byte-identical full managed art regeneration; build/source-dist identity for changed code and atlas; and `git diff --check` pass. Browser QA: four desktop scenes, 390 × 844 × 3 portrait gate with no horizontal overflow, and 844 × 390 × 3 touch movement plus pause/Continue. The new atlas returned 304 and the console was empty.
+
 ## Sprite-only runtime entity acceptance — 2026-08-09
 
 - Production PNGs are now the only final representations for Luna, her echo,
