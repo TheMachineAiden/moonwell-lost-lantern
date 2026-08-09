@@ -866,3 +866,28 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
   pause/Continue, the 600 × 390 canvas, 132 × 132 steering, and 44 × 44 pause
   target pass; all 27 document/script/image requests return 200 and the console
   is empty.
+
+## Public propagation and route-opening acceptance — 2026-08-09
+
+- Delivery identity: GitHub Pages now serves byte-identical copies of the local
+  `index.html`, `game.js`, and `game-core.js` at commit
+  `bf87f0d5f8a94330db7b16fa3a1e66b1500f38c8`. The published
+  `moonwell-exit-clearing-states-v4.png`,
+  `moonwell-route-opening-overhang-v1.png`,
+  `moonwell-inner-forest-boundary-v1.png`, and
+  `moonwell-moonroot-shores-v1.png` also match their retained local bytes.
+- Route invariant: the live opening keeps its four retained raster states
+  behind the rooted overhang. Its open state is non-solid at the existing home
+  coordinate; it reads as a quiet, textured loam gap between trees, never as a
+  lantern or a new gameplay object.
+- Public visual acceptance: local 1440 × 900 developer-scene review covered
+  Lantern Glade, Moonroot Crossing, Whispering Hollow, and Starfall Grove.
+  The matching live build was separately reviewed at 1440 × 900 with the
+  Lantern Glade opening forced open; the dense upper curtain stayed continuous
+  and the threshold remained legible without widening its one-tile footprint.
+- Phone acceptance: the live 390 × 844 × 3 portrait entry shows its complete
+  rotation gate with no horizontal overflow. At 844 × 390 × 3 touch landscape,
+  normal input opened and skipped the prologue, then showed the centred
+  600 × 390 world canvas, 44 × 44 directional controls, and pause control
+  without clipping. The public console remained empty and all observed world
+  image and script requests returned HTTP 200.
