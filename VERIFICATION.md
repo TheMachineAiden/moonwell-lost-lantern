@@ -1,5 +1,30 @@
 # Moonwell visual release audit
 
+## Map-specific moonlight hierarchy — 2026-08-09
+
+- Fresh 1440 × 900 actual-scale review found the remaining shared composition:
+  Lantern Glade, Whispering Hollow, and Starfall Grove all placed their
+  strongest retained moonlight pool in nearly the same lower-centre band. In
+  Hollow it spotlit the sentinel more strongly than the first rune, while in
+  Starfall it sat below the altar instead of supporting the finale landmark.
+- Four explicit two-pool layouts now place the same retained raster family by
+  map purpose. Lantern Glade follows the lower-left gathering route and keeps
+  a quiet lead toward its upper-right exit; Moonroot supports Eir and the
+  bridge landing; Hollow traces the first-to-second-rune diagonal; Starfall
+  centres its dominant cool light behind the altar and quietly marks the left
+  chime. Dominant anchors, frames, positions, sizes, and opacity are distinct.
+- The renderer still uses only
+  `moonwell-clearing-moonlight-v4.png`. The pool records are visual-only and
+  never enter `createWorldObjects`; assets, routes, colliders, water, bridge,
+  exit timing, interaction anchors, progression, and the dense inner forest
+  boundary are unchanged.
+- Deterministic coverage pins all four layouts to the four-pixel placement
+  rhythm, retained raster footprints, in-world bounds, restrained opacity,
+  intended interaction anchors, raster-only rendering, and absence from world
+  geometry. Proportional release acceptance covers the full test suite,
+  build/source-dist identity, and public desktop, portrait, and touch-landscape
+  browser QA.
+
 ## Map-specific understory detail layouts — 2026-08-09
 
 - Public 1440 × 900 comparison across all four developer scenes confirmed the

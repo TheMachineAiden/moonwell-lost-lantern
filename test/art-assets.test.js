@@ -120,7 +120,7 @@ test('exit clearing uses a raster state strip behind the rooted silhouette',()=>
   const exitRenderer=source.slice(source.indexOf('function drawExitClearing'),source.indexOf('function watcher'));
   const draw=source.slice(source.indexOf('function draw(){'),source.indexOf('function refreshWorld'));
   assert.match(source,/perimeter\?40:24/);
-  assert.match(source,/w:112,h:66,alpha:\.9/);
+  assert.match(source,/for\(const pool of MOONLIGHT_POOL_LAYOUT\[area\]\)/);
   assert.match(source,/drawExitClearing\(object\)/);
   assert.match(source,/exitTree:loadArt\('assets\/moonwell-art\/production\/moonwell-route-opening-overhang-v1\.png'\)/);
   assert.match(source,/exitClearing:loadArt\('assets\/moonwell-art\/production\/moonwell-exit-clearing-states-v3\.png\?v=moonwell-loam-opening-1'\)/);
@@ -280,8 +280,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v3\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-ground-layout-1/);
-  assert.match(html,/game\.js\?v=moonwell-ground-layout-1/);
+  assert.match(html,/game-core\.js\?v=moonwell-moonlight-layout-1/);
+  assert.match(html,/game\.js\?v=moonwell-moonlight-layout-1/);
 });
 
 test('generated starroot grounding source is pinned and produces tapered transparent frames',()=>{
@@ -494,6 +494,16 @@ test('loam enrichment uses map-specific retained sprite records instead of a sha
   assert.doesNotMatch(renderer,/\brect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient/);
 });
 
+test('map-specific moonlight hierarchy uses only the retained raster pool atlas',()=>{
+  const source=read('game.js').toString(),core=read('game-core.js').toString();
+  const renderer=source.slice(source.indexOf('function drawMoonlightPools'),source.indexOf('function drawMoonrootShore'));
+  assert.match(core,/const MOONLIGHT_POOL_LAYOUT=moonlightPoolLayout\(/);
+  assert.match(source,/luminousPool:loadArt\('assets\/moonwell-art\/production\/moonwell-clearing-moonlight-v4\.png'\)/);
+  assert.match(renderer,/for\(const pool of MOONLIGHT_POOL_LAYOUT\[area\]\)/);
+  assert.match(renderer,/ctx\.drawImage\(art\.luminousPool,pool\.frame\*192,0,192,112,pool\.x,pool\.y,pool\.w,pool\.h\)/);
+  assert.doesNotMatch(renderer,/\brect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient|\.svg/);
+});
+
 test('ground details use explicit map-specific raster records without a procedural substitute',()=>{
   const source=read('game.js').toString(),core=read('game-core.js').toString();
   const renderer=source.slice(source.indexOf('function drawGroundSprite'),source.indexOf('function worldObject'));
@@ -590,6 +600,6 @@ test('the dense top-canopy renderer consumes the same exported layout as its roo
   const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-ground-layout-1/);
-  assert.match(html,/game\.js\?v=moonwell-ground-layout-1/);
+  assert.match(html,/game-core\.js\?v=moonwell-moonlight-layout-1/);
+  assert.match(html,/game\.js\?v=moonwell-moonlight-layout-1/);
 });

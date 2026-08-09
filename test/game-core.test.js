@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const context={};
 vm.runInNewContext(fs.readFileSync(new URL('../game-core.js',import.meta.url),'utf8'),context);
-const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,LOAM_PATCH_LAYOUT,GROUND_DECOR_LAYOUT,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,starfallAltarState,watcherChoiceResult}=context.MoonwellCore;
+const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,LOAM_PATCH_LAYOUT,GROUND_DECOR_LAYOUT,MOONLIGHT_POOL_LAYOUT,TOTAL_FIREFLIES,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,starfallAltarState,watcherChoiceResult}=context.MoonwellCore;
 
 test('the canonical world is a complete 20 by 13 tile canvas',()=>{
   assert.equal(TILE_SIZE,16);
@@ -118,6 +118,34 @@ test('loam patches use distinct irregular retained-sprite layouts without adding
       assert.equal('solid' in patch,false);
     });
   });
+});
+
+test('moonlight pools create distinct map-specific interaction hierarchy without adding geometry',()=>{
+  assert.equal(MOONLIGHT_POOL_LAYOUT.length,4);
+  assert.equal(new Set(MOONLIGHT_POOL_LAYOUT.map(layout=>JSON.stringify(layout))).size,4);
+  const areas=createAreas(),targets=[
+    [areas[0].lights[1],areas[0].home],
+    [areas[1].watcher,{x:160,y:144}],
+    [areas[2].runes[0],areas[2].runes[1]],
+    [areas[3].altar,areas[3].starroots[2]]
+  ];
+  MOONLIGHT_POOL_LAYOUT.forEach((layout,areaIndex)=>{
+    assert.equal(layout.length,2);
+    const [dominant,secondary]=layout;
+    assert.deepEqual({w:dominant.w,h:dominant.h},{w:112,h:66});
+    assert.ok(secondary.w<dominant.w&&secondary.h<dominant.h);
+    layout.forEach((pool,index)=>{
+      assert.ok(pool.x%4===0&&pool.y%4===0,'moonlight leaves the four-pixel placement rhythm');
+      assert.ok(pool.x>=0&&pool.y>=0&&pool.x+pool.w<=WORLD_WIDTH&&pool.y+pool.h<=WORLD_HEIGHT);
+      assert.ok(pool.frame>=0&&pool.frame<3);
+      assert.ok(pool.alpha>=.24&&pool.alpha<=.78);
+      assert.equal('solid' in pool,false);
+      const centre={x:pool.x+pool.w/2,y:pool.y+pool.h/2},target=targets[areaIndex][index];
+      assert.ok(Math.hypot(centre.x-target.x,centre.y-target.y)<=33,`area ${areaIndex} pool ${index} loses its interaction anchor`);
+    });
+    assert.equal(createWorldObjects(areaIndex,areaIndex===1).some(object=>object.kind==='moonlight-pool'),false);
+  });
+  assert.equal(new Set(MOONLIGHT_POOL_LAYOUT.map(([pool])=>`${pool.x},${pool.y}`)).size,4);
 });
 
 test('every visible top-canopy root cell maps to a seam-free blocker in all four areas',()=>{
