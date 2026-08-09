@@ -66,16 +66,20 @@ test('every map gets a distinct retained-sprite bottom forest without moving roo
 
 test('side forests vary retained spruce silhouettes without moving rooted blockers',()=>{
   for(const side of ['left','right']){
-    const layout=SIDE_FOREST_LAYOUT[side];
-    assert.equal(layout.length,11);
-    assert.equal(new Set(layout.map(item=>JSON.stringify(item))).size,11);
-    assert.deepEqual([...new Set(layout.map(item=>item.frame))].sort(),[0,1,2]);
-    assert.ok(layout.some(item=>item.mirror));
-    assert.ok(layout.some(item=>!item.mirror));
-    assert.ok(Math.max(...layout.map(item=>item.width))-Math.min(...layout.map(item=>item.width))>=8);
-    assert.ok(Math.max(...layout.map(item=>item.height))-Math.min(...layout.map(item=>item.height))>=8);
+    const layouts=SIDE_FOREST_LAYOUT[side];
+    assert.equal(layouts.length,4);
+    assert.equal(new Set(layouts.map(layout=>layout.map(item=>JSON.stringify(item)).join('|'))).size,4);
+    for(const layout of layouts){
+      assert.equal(layout.length,11);
+      assert.equal(new Set(layout.map(item=>JSON.stringify(item))).size,11);
+      assert.deepEqual([...new Set(layout.map(item=>item.frame))].sort(),[0,1,2]);
+      assert.ok(layout.some(item=>item.mirror));
+      assert.ok(layout.some(item=>!item.mirror));
+      assert.ok(Math.max(...layout.map(item=>item.width))-Math.min(...layout.map(item=>item.width))>=8);
+      assert.ok(Math.max(...layout.map(item=>item.height))-Math.min(...layout.map(item=>item.height))>=8);
+    }
   }
-  assert.equal(new Set([...SIDE_FOREST_LAYOUT.left,...SIDE_FOREST_LAYOUT.right].map(item=>JSON.stringify(item))).size,22);
+  assert.equal(new Set([...SIDE_FOREST_LAYOUT.left.flat(),...SIDE_FOREST_LAYOUT.right.flat()].map(item=>JSON.stringify(item))).size,22);
   for(let areaIndex=0;areaIndex<4;areaIndex++){
     const objects=createWorldObjects(areaIndex,false);
     for(const [side,col] of [['left',0],['right',19]])objects.filter(object=>object.id.startsWith(`edge-${side}-`)).forEach((object,index)=>{
