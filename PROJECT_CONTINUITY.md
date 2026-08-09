@@ -1,5 +1,22 @@
 # Moonwell visual art system — continuity record
 
+## Sprite-only runtime world entities — 2026-08-09
+
+- The acceptance audit found eight remaining rectangle fallbacks in the entity
+  renderers. They could turn Luna, her echo, a firefly, memory, Eir, a rune,
+  a starroot, or the altar into procedural world art during a raster load
+  failure.
+- Each renderer now waits for its already-retained production PNG before it
+  draws either the object or its supporting transient light. There is no new
+  artwork, load path, world record, interaction, timing, collision, route, or
+  progression change; an unavailable asset leaves that world entity absent
+  rather than substituting canvas geometry.
+- Regression coverage isolates all touched renderers and rejects rectangle,
+  stroke, gradient, SVG, and other procedural raster fallbacks. Local
+  acceptance passes syntax, 81/81 tests, deterministic regeneration,
+  build/source-dist identity, four desktop scenes, portrait fit, and normal
+  touch-landscape entry, movement, pause, and resume with clean consoles.
+
 ## Quiet Whispering Hollow sentinel — 2026-08-09
 
 - Public actual-scale review confirmed the planned Hollow audit: the untouched

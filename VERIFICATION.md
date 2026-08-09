@@ -1,5 +1,19 @@
 # Moonwell visual release audit
 
+## Sprite-only runtime entity acceptance — 2026-08-09
+
+- Production PNGs are now the only final representations for Luna, her echo,
+  fireflies, memories, Eir, runes, starroot chimes, and the Moonwell altar.
+  Their existing raster states, positions, layering, interactions, and
+  colliders are unchanged; code no longer draws procedural fallback shapes if
+  one of those assets is unavailable.
+- `npm run check`, `npm test` (81/81), managed no-violet deterministic
+  regeneration, `npm run build`, source/dist identity, and diff hygiene pass.
+- Local Chrome review covered all four developer scenes at 1440 × 900,
+  portrait 390 × 844 × 3, and touch landscape 844 × 390 × 3. Every reviewed
+  canvas/control region fit, touch entry/movement/pause/Continue completed,
+  and consoles were empty.
+
 ## Map-specific moonlight hierarchy — 2026-08-09
 
 - Fresh 1440 × 900 actual-scale review found the remaining shared composition:
