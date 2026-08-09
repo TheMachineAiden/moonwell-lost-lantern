@@ -21,7 +21,7 @@ const environmentalFrames={
   'assets/moonwell-art/production/moonwell-clearing-moonlight-v4.png':192,
   'assets/moonwell-art/production/moonwell-route-opening-overhang-v1.png':64,
   'assets/moonwell-art/production/moonwell-exit-clearing-states-v2.png':32,
-  'assets/moonwell-art/production/moonwell-clearing-root-platform-v3.png':192,
+  'assets/moonwell-art/production/moonwell-root-shelf-variants-v1.png':48,
   'assets/moonwell-art/production/moonwell-foliage-variants-v2.png':16,
   'assets/moonwell-art/production/moonwell-ground-texture-variants-v2.png':16,
   'assets/moonwell-art/production/moonwell-stone-variants-v2.png':16,
@@ -56,7 +56,7 @@ test('luminous production assets preserve exact render footprints',()=>{
     'assets/moonwell-art/production/moonwell-route-opening-overhang-v1.png':[256,72],
     'assets/moonwell-art/production/moonwell-exit-clearing-states-v2.png':[128,40],
     'assets/moonwell-art/production/moonwell-moonroot-shores-v1.png':[288,24],
-    'assets/moonwell-art/production/moonwell-clearing-root-platform-v3.png':[192,64],
+    'assets/moonwell-art/production/moonwell-root-shelf-variants-v1.png':[288,24],
     'assets/moonwell-art/production/moonwell-eir-rootwatcher-idle-v2.png':[256,96],
     'assets/moonwell-art/production/moonwell-eir-rootwatcher-portrait-v2.png':[512,512],
     'assets/moonwell-art/production/moonwell-foliage-variants-v2.png':[48,16],
@@ -90,7 +90,7 @@ test('runtime references only production derivatives, never retained generation 
     'moonwell-clearing-loam-patches-v3.png',
     'moonwell-clearing-moonlight-v4.png',
     'moonwell-route-opening-overhang-v1.png',
-    'moonwell-clearing-root-platform-v3.png',
+    'moonwell-root-shelf-variants-v1.png',
     'moonwell-eir-rootwatcher-idle-v2.png',
     'moonwell-eir-rootwatcher-portrait-v2.png',
     'moonwell-foliage-variants-v2.png',
@@ -269,8 +269,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v3\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-route-opening-26/);
-  assert.match(html,/game\.js\?v=moonwell-route-opening-26/);
+  assert.match(html,/game-core\.js\?v=moonwell-root-shelves-27/);
+  assert.match(html,/game\.js\?v=moonwell-root-shelves-27/);
 });
 
 test('generated starroot grounding source is pinned and produces tapered transparent frames',()=>{
@@ -464,6 +464,38 @@ test('side forest variation uses the retained spruce raster across both perimete
   assert.doesNotMatch(treeRenderer,/rect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient/);
 });
 
+test('root platforms render as varied retained loam shelves without a procedural substitute',()=>{
+  const source=read('game.js').toString(),html=read('index.html').toString();
+  const renderer=source.slice(source.indexOf('function rootPlatform'),source.indexOf('function exitTree'));
+  const processor=read('scripts/process-root-shelf-art.sh').toString();
+  const asset='assets/moonwell-art/production/moonwell-root-shelf-variants-v1.png';
+  const pixels=rgba(asset),[width,height]=dimensions(asset);
+  assert.deepEqual([width,height],[288,24]);
+  assert.match(source,/platform:loadArt\('assets\/moonwell-art\/production\/moonwell-root-shelf-variants-v1\.png\?v=moonwell-root-shelves-1'\)/);
+  assert.match(html,/moonwell-root-shelf-variants-v1\.png\?v=moonwell-root-shelves-1/);
+  assert.match(renderer,/frame=\(area\*2\+index\)%6/);
+  assert.match(renderer,/frame\*48,0,48,24,object\.x-8,object\.y-8,48,24/);
+  assert.doesNotMatch(renderer,/rect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient/);
+  assert.match(processor,/moonwell-clearing-loam-patches-v3\.png/);
+  assert.match(processor,/moonwell-clearing-root-platform-v3\.png/);
+  assert.match(processor,/moonwell-moonroot-shores-v1\.png/);
+  assert.match(processor,/statistic Median 17x3/);
+  const signatures=new Set(),bottomProfiles=new Set();
+  for(let frame=0;frame<6;frame++){
+    const cell=Buffer.concat([...Array(height)].map((_,y)=>pixels.subarray((y*width+frame*48)*4,(y*width+(frame+1)*48)*4)));
+    signatures.add(createHash('sha256').update(cell).digest('hex'));
+    const depths=[];
+    for(let x=frame*48;x<(frame+1)*48;x++){
+      let depth=0;for(let y=0;y<height;y++)if(pixels[(y*width+x)*4+3]>15)depth=y+1;
+      depths.push(depth);
+    }
+    bottomProfiles.add(depths.join(','));
+    assert.ok(new Set(depths).size>=3,`frame ${frame} loses its irregular soil edge`);
+  }
+  assert.equal(signatures.size,6,'root shelves visibly repeat a packed frame');
+  assert.equal(bottomProfiles.size,6,'root shelves repeat the same lower silhouette');
+});
+
 test('Starfall altar has an undistorted draw, solid base, and explicit return finale',()=>{
   const source=read('game.js').toString(),core=read('game-core.js').toString();
   assert.match(source,/ctx\.drawImage\(art\.altar,point\.x-16,point\.y-24,32,24\)/);
@@ -516,6 +548,6 @@ test('the dense top-canopy renderer consumes the same exported layout as its roo
   const source=read('game.js').toString(),html=read('index.html').toString();
   assert.match(source,/for\(const curtain of TOP_CANOPY_LAYOUT\)/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-route-opening-26/);
-  assert.match(html,/game\.js\?v=moonwell-route-opening-26/);
+  assert.match(html,/game-core\.js\?v=moonwell-root-shelves-27/);
+  assert.match(html,/game\.js\?v=moonwell-root-shelves-27/);
 });

@@ -360,3 +360,19 @@ as a straight root fence at actual desktop scale. The 288 × 24 raster remains
 purely visual: layer order, water collision, and the bridge's four-cell
 crossing are unchanged. The shared no-violet workflow rebuilds this derivative
 after its final loam and root inputs, keeping regeneration byte-identical.
+
+## Varied loam root shelves — 2026-08-09
+
+`scripts/process-root-shelf-art.sh` replaces the repeated bench-like runtime
+platform with six compact raster variants. It derives the broken 48 × 16 loam
+caps from `moonwell-clearing-loam-patches-v3.png`, the shallow soil texture from
+the approved rooted `moonwell-clearing-root-platform-v3.png`, and six distinct
+lower alpha profiles from `moonwell-moonroot-shores-v1.png`. The output is the
+288 × 24 strip `moonwell-root-shelf-variants-v1.png`.
+
+These retained inputs remain reproducible from their documented image-
+generated sources through the managed no-violet workflow. The shelf processor
+uses point reduction, a bounded median texture pass, retained alpha masks, and
+fixed palette reduction; it strips metadata for byte-identical output. Runtime
+only selects one of six packed frames and draws it at the existing 48 × 24
+visual footprint. All seven 2 × 1 anchors and 40 × 14 colliders are unchanged.

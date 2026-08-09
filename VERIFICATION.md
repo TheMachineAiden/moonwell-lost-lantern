@@ -1,5 +1,28 @@
 # Moonwell visual release audit
 
+## Varied loam root shelves — 2026-08-09
+
+- The public baseline used one identical broad rooted sprite for all seven
+  platform blockers. Four-map desktop comparison showed the repeated dark
+  ribs reading as benches or fences and overpowering map-specific landmarks.
+- `moonwell-root-shelf-variants-v1.png` packs six 48 × 24 retained-raster
+  frames. Runtime varies only the source frame; every platform anchor, draw
+  rectangle, 2 × 1 logical footprint, and 40 × 14 contact rectangle remains
+  unchanged.
+- Deterministic coverage pins the six distinct raster signatures and lower
+  silhouettes, exact retained inputs, managed regeneration, palette audit,
+  raster-only renderer, cache identity, and existing all-map collider tests.
+- Release acceptance passed: syntax, 70/70 tests, byte-identical art
+  regeneration, build and source/dist identity, and desktop all-map visual
+  review. Normal keyboard input stopped Luna at y=54.67 against the unchanged
+  Moonroot shelf contact at y=34–48. The open Lantern Glade exit stayed
+  passable and visually clear.
+- At 390 × 844 × 3, the portrait modal and complete 342 × 267 gate fit with
+  document width 390. At 844 × 390 × 3, the 600 × 390 screen, 116 × 116 touch
+  steering, and 44 × 44 pause control fit; touch movement and the complete
+  pause/Continue cycle passed. The new raster, cache-keyed scripts, and all
+  reviewed assets returned 200/304, with no console errors or warnings.
+
 ## Varied side forest edges — 2026-08-09
 
 - Public desktop inspection across all four developer scenes found the left
