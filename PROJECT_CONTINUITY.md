@@ -1,5 +1,20 @@
 # Moonwell visual art system — continuity record
 
+## Quiet route destination threshold — 2026-08-09
+
+- Actual-scale review found the open Glade threshold still read a little too
+  much like a broad tan patch. `moonwell-exit-clearing-states-v4.png` is a
+  retained, deterministic derivative of the existing no-violet loam source:
+  its warmth is restrained and its near edge has an uneven taper so the gap
+  reads as a subtle destination between the parted trees.
+- The raster remains four 32 × 40 states behind the existing overhang. Exit
+  anchor, 24 × 12 collider, opening timing, state progression, and the one-tile
+  passable opening remain unchanged.
+- Coverage pins the retained production asset, its source-to-production
+  processor, low warm-pixel ceiling, no bright point, state growth, and broken
+  lower edge. The next audit should prefer another untouched world-art
+  hierarchy surface rather than revisiting this accepted route cue.
+
 ## Varied collectible firefly family — 2026-08-09
 
 - A fresh public hierarchy audit found the remaining repeated placed-sprite signature in the eight amber collectibles: every light used the same four-frame 16 × 16 loop.

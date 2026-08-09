@@ -424,10 +424,14 @@ after its final loam and root inputs, keeping regeneration byte-identical.
 
 ### Irregular loam opening refinement — 2026-08-09
 
-`moonwell-exit-clearing-states-v3.png` supersedes the v2 clearing strip at
+`moonwell-exit-clearing-states-v4.png` supersedes the v3 clearing strip at
 runtime. Actual-scale review showed that v2's shallow retained root-platform
 lip stayed too rectangular and too light, so the open state read as an upright
 wooden slab even though the paired spruces had parted correctly.
+
+The v4 refinement keeps that retained loam provenance and four-state footprint,
+but quiets the warm material and breaks the near edge further so the open route
+reads as a clearing between trees rather than a broad platform.
 
 The same deterministic `scripts/process-exit-moonroot-sprites.sh` workflow now
 uses only `moonwell-clearing-loam-patches-v3.png` for the clearing surface. It
