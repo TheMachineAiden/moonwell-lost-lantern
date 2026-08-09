@@ -45,6 +45,12 @@ const characterFrames={
 const context={globalThis:{}};
 runInNewContext(read('game-core.js').toString(),context);
 
+test('touch direction controls retain the 44-pixel target contract in phone landscape',()=>{
+  const html=read('index.html').toString();
+  assert.match(html,/grid-template-columns:repeat\(3,44px\);grid-template-rows:repeat\(3,44px\);width:132px;height:132px/);
+  assert.match(html,/\.touch button\{margin:0;min-width:44px;min-height:44px/);
+});
+
 test('luminous production assets preserve exact render footprints',()=>{
   const expected={
     'assets/moonwell-art/production/moonwell-keeper-walk-v7.png':[104,40],
