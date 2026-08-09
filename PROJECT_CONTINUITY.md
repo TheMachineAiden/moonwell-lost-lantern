@@ -19,6 +19,9 @@
 - Local acceptance passes syntax, 86/86 tests, deterministic regeneration,
   build/source-dist identity, four-map desktop review, portrait fit, and
   touch-landscape movement and pause/Continue with an empty console.
+- Initial public QA caught Pages serving the new v5 preload beside a cached
+  older game script. The release-specific `game.js` cache key is now part of
+  the bridge regression, preventing the live runtime from requesting v4.
 
 ## Quiet route destination threshold — 2026-08-09
 

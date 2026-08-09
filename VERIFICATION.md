@@ -19,6 +19,10 @@
   and pause/Continue pass. The v5 asset returns 200/304 and the console is
   empty. Moonroot collision, geometry, riddles, bank joins, route comfort, and
   the other three maps remain unchanged regression surfaces.
+- Public release QA exposed and corrected one Pages cache mismatch: the new
+  v5 preload arrived before the previously keyed game script. Coverage now
+  pins `game.js?v=moonwell-quiet-bridge-1` so the public runtime and retained
+  asset revision advance together without an unused-preload warning.
 
 ## Quiet route destination threshold — 2026-08-09
 
