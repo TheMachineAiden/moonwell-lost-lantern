@@ -30,7 +30,7 @@ geometry, not permission to render beyond the runtime footprint.
 | Starroot chime | 1 x 1 logical tile (16 x 16) | Non-solid grounded interaction; 24 × 24 visual with an amber seed glow and one tile-centred interaction point. |
 | Tree | 1 x 1 logical tile (16 x 16) | A 20 × 12 rooted contact mask sits at offset −2,+4; perimeter canopy may overhang to 40 × 56 px and interior canopy to 24 × 40 px. |
 | Sentinel | 2 x 2 tiles (32 x 32) | Deliberate solid root-bound stone landmark with an exact 2 × 2 mask; unlit and non-interactive, with no face, chest, lantern, glyph, or objective glow. |
-| Root platform | 2 x 1 logical tiles (32 x 16) | 48 × 24 visual; its visible shelf/face uses a 40 × 14 contact mask at offset −4,+2, leaving only a clearly decorative 4 px side and 8 px top overhang. |
+| Root platform | 2 x 1 logical tiles (32 x 16) | 48 × 24 visual; its full moss cap, bark forks, and grounded root face must read as a physical shelf rather than a dark opening. The visible shelf/face uses a 40 × 14 contact mask at offset −4,+2, leaving only a clearly decorative 4 px side and 8 px top overhang. |
 | Bridge segment | 1 x 1 tile (16 x 16) | Repeat as separate tile records across a passable span. |
 | Moonwell endgame altar | 2 x 2 tiles (32 x 32) | Simple focal object; declare its collision choice with the record. |
 | Water | 1 x 1 tile (16 x 16) | Seamless on all four edges. |
@@ -105,7 +105,7 @@ This is the authoritative mapping:
 | Luna | 10 × 10 px solid movement box | 26 × 40 px; anchor −13, −39 from the precise foot point; four direct-reduction v7 cells |
 | Ordinary spruce | rooted 20 × 12 px mask at −2,+4 from its 1-cell anchor | Perimeter 40 × 56 px; interior 24 × 40 px; canopy overhang is passable, trunk/root contact is not |
 | Rooted forest exit | 1 × 1 cell, solid through `revealed`; non-solid at `open` | 48 × 64 px; 16 px left/right and 48 px top overhang. Its one-cell warm clearing is drawn behind the rooted silhouette so the tree masks it into a natural threshold. |
-| Root platform | 40 × 14 px contact mask at −4,+2 from its 2 × 1 record | 48 × 24 px; 4 px side and 8 px top overhang |
+| Root platform | 40 × 14 px contact mask at −4,+2 from its 2 × 1 record | 48 × 24 px; full-height irregular moss-and-root silhouette, with 4 px side and 8 px top overhang |
 | Starroot chime | non-solid one-cell interaction anchor, radius 15 px | 24 × 24 px; anchor −12,−16; rooted baseline and fixed silhouette |
 | Hollow sentinel | exact 32 × 32 px solid record | 32 × 32 px retained raster with a side safety gutter and grounded baseline; quiet root-bound stone, no separate light or procedural backing |
 | Eir | one non-solid cell-centred interaction anchor, radius 22 px | 16 × 24 px runtime draw; anchor −8, −22; four unchanged 64 × 96 raster source cells |

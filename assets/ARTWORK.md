@@ -449,3 +449,23 @@ uses point reduction, a bounded median texture pass, retained alpha masks, and
 fixed palette reduction; it strips metadata for byte-identical output. Runtime
 only selects one of six packed frames and draws it at the existing 48 × 24
 visual footprint. All seven 2 × 1 anchors and 40 × 14 colliders are unchanged.
+
+### Full rooted-shelf refinement — 2026-08-09
+
+Actual-scale public review found that the shallow v1 soil faces still collapsed
+into dark horizontal slots, visually echoing the passable forest openings. The
+v2 runtime strip instead uses the retained generated world-props rootfall
+`moonwell-root-platform-v2.png` (SHA-256
+`110e266368e4ea01e3f736af2ba7c25acac3a966bae5998e20cb336a54aae863`).
+That derivative is reproducible from the retained project-bound generation
+source `moonwell-world-props-atlas-v2-source.png` (SHA-256
+`1f28c764f0a3b4e0c50b287e29312471081f35007265219e87e16aeb80a317b4`).
+
+`scripts/process-root-shelf-art.sh` point-reduces the complete rootfall into six
+20–23 px-tall states inside the unchanged 48 × 24 frame, varying only retained
+scale, placement, and reflection. It subdues their value and applies the shared
+no-violet predicate after scaling. The byte-reproducible
+runtime strip is `moonwell-root-shelf-variants-v2.png` (SHA-256
+`4b2a4ef6c58559d83e64d63825d3a673bab1df41947f6faf42c94dcc7f850180`).
+Runtime still only selects and places the retained PNG cells; all seven
+anchors, 40 × 14 colliders, routes, and gameplay remain unchanged.
