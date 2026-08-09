@@ -1,5 +1,25 @@
 # Moonwell visual release audit
 
+## Quiet Moonroot crossing hierarchy — 2026-08-09
+
+- Public 1440 × 900 comparison identified the bridge as the strongest
+  remaining untouched hierarchy surface: its warm rectangular plank field
+  dominated Moonroot ahead of Eir, the water, and the bank transition.
+- `scripts/process-moonroot-bridge-art.sh` pins the retained generated source,
+  consumes the accepted no-violet v4 base, preserves the exact alpha
+  silhouette, and emits `moonwell-bridge-vertical-v5.png` with only the warm
+  constructed-wood field subdued. Runtime still contains one raster draw and
+  no procedural bridge substitute.
+- Local acceptance passes syntax, 86/86 tests, byte-identical managed art
+  regeneration, build/source-dist identity, and diff hygiene. Desktop review
+  covers all four maps and confirms the bridge recedes without losing its
+  north-to-south crossing read. At 390 × 844 × 3, the complete rotation gate
+  fits with zero horizontal overflow. At 844 × 390 × 3, the 600 × 390 canvas,
+  132 × 132 steering control, and 44 × 44 pause control fit; touch movement
+  and pause/Continue pass. The v5 asset returns 200/304 and the console is
+  empty. Moonroot collision, geometry, riddles, bank joins, route comfort, and
+  the other three maps remain unchanged regression surfaces.
+
 ## Quiet route destination threshold — 2026-08-09
 
 - `moonwell-exit-clearing-states-v4.png` is the current four-state retained
