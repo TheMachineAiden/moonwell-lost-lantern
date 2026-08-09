@@ -1,5 +1,23 @@
 # Moonwell visual art system — continuity record
 
+## Cool-dormant Starroot hierarchy — 2026-08-09
+
+- Actual-scale Starfall review found that all six runtime dormant chime frames
+  still contained lantern-bright amber points, blurring the deliberate
+  difference between a sleeping rooted chime and its awakened state.
+  `moonwell-starroot-chime-variants-v5.png` is a retained deterministic
+  derivative of the accepted v4 atlas: it changes only those dormant bright
+  pixels to restrained moonlit cyan. The authored root, moss, alpha,
+  silhouette, and waking/lit amber frames remain intact.
+- The dedicated processor pins the accepted v4 digest and is run at the end
+  of the managed no-violet environment workflow. Runtime loads only the v5
+  PNG with a matching preload and game-script cache key.
+- All three anchors, 24 × 24 draw footprint, interaction radius, wake order,
+  hidden-light release, altar hierarchy, routes, colliders, and progression
+  are unchanged. Regression coverage verifies the raster's provenance,
+  byte-identical regeneration, no lantern-bright dormant pixels, retained
+  amber wake state, and source/dist identity.
+
 ## Map-specific lower forest silhouettes — 2026-08-09
 
 - Four-map actual-scale review found the accepted irregular lower forest edge
