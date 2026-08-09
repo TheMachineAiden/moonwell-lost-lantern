@@ -90,6 +90,41 @@ const SIDE_FOREST_LAYOUT=Object.freeze({
     [2,39,55,0,false],[1,41,62,2,true],[0,37,53,-1,false]
   ])
 });
+// Retained loam sprites cover the base floor through explicit, irregular
+// map-specific records. Their fixed 80 x 48 footprint stays aligned to the
+// quarter-tile rhythm while offsets, frames, reflection, and opacity break the
+// former shared staggered lattice. These records are visual only.
+const loamPatchLayout=areas=>Object.freeze(areas.map(records=>Object.freeze(records.map(([frame,x,y,mirror,alpha])=>Object.freeze({frame,x,y,w:80,h:48,mirror,alpha})))));
+const LOAM_PATCH_LAYOUT=loamPatchLayout([
+  [
+    [0,-32,-16,false,.72],[2,32,-8,true,.68],[1,96,-20,false,.74],[3,164,-4,true,.70],[0,236,-12,false,.76],[2,292,-20,true,.66],
+    [1,-48,32,true,.70],[3,16,40,false,.74],[0,88,28,true,.68],[2,152,44,false,.72],[1,224,36,true,.76],[3,284,24,false,.68],
+    [2,-32,76,false,.74],[0,40,68,true,.70],[3,108,84,false,.76],[1,180,72,true,.68],[2,248,88,false,.72],[0,300,76,true,.66],
+    [3,-48,124,true,.68],[1,24,112,false,.76],[2,96,132,true,.72],[0,164,116,false,.70],[3,236,128,true,.74],[1,292,108,false,.66],
+    [0,-28,168,false,.76],[2,40,156,true,.70],[1,112,176,false,.72],[3,184,164,true,.68],[0,252,172,false,.74],[2,304,160,true,.66]
+  ],
+  [
+    [2,-44,-8,true,.70],[0,20,-20,false,.76],[3,92,-4,true,.68],[1,156,-16,false,.72],[2,228,-8,true,.74],[0,288,-20,false,.66],
+    [3,-28,40,false,.74],[1,44,28,true,.68],[2,108,44,false,.72],[0,176,32,true,.76],[3,244,24,false,.70],[1,304,40,true,.66],
+    [0,-48,80,true,.68],[2,16,68,false,.74],[1,84,88,true,.70],[3,156,72,false,.76],[0,220,84,true,.68],[2,288,64,false,.72],
+    [1,-24,120,false,.76],[3,48,132,true,.70],[0,116,112,false,.68],[2,184,128,true,.74],[1,252,116,false,.72],[3,308,136,true,.66],
+    [2,-44,164,true,.70],[0,24,176,false,.74],[3,96,156,true,.68],[1,168,172,false,.76],[2,232,160,true,.72],[0,296,180,false,.66]
+  ],
+  [
+    [1,-24,-20,false,.76],[3,44,-4,true,.68],[0,108,-16,false,.72],[2,176,-8,true,.74],[1,248,-20,false,.70],[3,304,-4,true,.66],
+    [0,-48,28,true,.68],[2,24,44,false,.74],[1,92,32,true,.76],[3,164,24,false,.70],[0,232,40,true,.72],[2,288,28,false,.66],
+    [3,-28,84,false,.72],[1,40,68,true,.76],[2,112,80,false,.68],[0,176,92,true,.74],[3,248,72,false,.70],[1,304,88,true,.66],
+    [2,-44,112,true,.70],[0,20,132,false,.68],[3,88,120,true,.74],[1,160,136,false,.72],[2,228,116,true,.76],[0,292,128,false,.66],
+    [1,-20,176,false,.74],[3,48,160,true,.70],[0,120,172,false,.76],[2,188,156,true,.68],[1,256,180,false,.72],[3,312,164,true,.66]
+  ],
+  [
+    [3,-48,-4,true,.68],[1,20,-16,false,.74],[2,88,-8,true,.72],[0,156,-20,false,.76],[3,224,-4,true,.70],[1,288,-16,false,.66],
+    [2,-24,36,false,.76],[0,48,24,true,.70],[3,116,44,false,.68],[1,184,28,true,.74],[2,252,40,false,.72],[0,308,24,true,.66],
+    [1,-44,72,true,.70],[3,24,88,false,.74],[0,96,68,true,.76],[2,164,84,false,.68],[1,232,76,true,.72],[3,296,92,false,.66],
+    [0,-28,132,false,.72],[2,40,116,true,.68],[1,108,128,false,.76],[3,176,112,true,.70],[0,244,136,false,.74],[2,304,120,true,.66],
+    [3,-48,160,true,.68],[1,20,176,false,.76],[2,92,164,true,.72],[0,164,180,false,.70],[3,236,156,true,.74],[1,296,172,false,.66]
+  ]
+]);
 // Decorative cells never participate in collision. Moon/shadow patches are
 // value blocks; the remaining kinds are one-tile understory props.
 const groundDecorCells=[
@@ -172,5 +207,5 @@ function createEchoReplay(trail,origin){
 }
 const canResolveEchoRune=(stage,echoHolding,player,runes)=>stage===2&&echoHolding&&nearPoint(player,runes[2]);
 function watcherChoiceResult(step,choice){const riddle=WATCHER_DIALOGUE.riddles[step];if(!riddle)return Object.freeze({correct:false,complete:false,nextStep:step,reply:'Eir has no more riddles to ask.'});const correct=choice===riddle.answer,nextStep=correct?step+1:step;return Object.freeze({correct,complete:correct&&nextStep===WATCHER_DIALOGUE.riddles.length,nextStep,reply:correct?riddle.correct:riddle.wrong})}
-globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,MEMORY_DIALOGUE_TYPOGRAPHY,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_STATE_DURATIONS,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,starfallAltarState,watcherChoiceResult});
+globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,LOAM_PATCH_LAYOUT,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,MEMORY_DIALOGUE_TYPOGRAPHY,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_STATE_DURATIONS,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,starfallAltarState,watcherChoiceResult});
 })();

@@ -1,5 +1,28 @@
 # Moonwell visual release audit
 
+## Map-specific loam patch layouts — 2026-08-09
+
+- Baseline comparison at 1440 × 900 showed the four retained loam sprites
+  repeating on the same shared staggered lattice in every map. The change is
+  limited to their placement contract: four distinct layouts now supply thirty
+  records each with one of four source frames, a fixed 80 × 48 draw footprint,
+  four-pixel-aligned offsets, reflection, and opacity from 0.66 through 0.76.
+- The renderer uses only the existing retained
+  `moonwell-clearing-loam-patches-v3.png` atlas; it contains no terrain
+  rectangle, path, SVG, gradient, or newly generated asset. The managed
+  no-violet workflow still rebuilds the complete runtime raster family
+  byte-identically.
+- Geometry is unchanged. The new records have no `solid` field and never enter
+  `createWorldObjects`; all anchors, collider rectangles, routes, water,
+  bridge, Moonroot banks, root shelves, top-root blockers, exit progression,
+  interactions, and finale state retain their accepted contracts.
+- Automated local acceptance passed syntax and 74/74 deterministic tests.
+  Browser review covered all four maps at 1440 × 900, the 390 × 844 × 3
+  portrait gate, and Lantern Glade at 844 × 390 × 3. The 600 × 390 game view,
+  116 × 116 steering control, and 44 × 44 pause control fit; touch movement and
+  pause/Continue passed, the portrait gate had zero horizontal overflow, and
+  the preserved console was empty.
+
 ## Varied interior spruce blockers — 2026-08-09
 
 - The verified public baseline used one 24 × 40 footprint for all 39 ordinary

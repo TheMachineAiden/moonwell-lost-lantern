@@ -1,5 +1,28 @@
 # Moonwell visual art system — continuity record
 
+## Map-specific loam patch layouts — 2026-08-09
+
+- A fresh actual-scale audit of all four accepted maps found that the retained
+  loam patch atlas still repeated on one shared 66 × 42 staggered stamp grid.
+  Root, stone, fern, and moss silhouettes therefore aligned into visible bands
+  beneath otherwise varied forest blockers and perimeter art.
+- `LOAM_PATCH_LAYOUT` now gives each map thirty explicit retained-sprite
+  records. Every record keeps the established 80 × 48 footprint and chooses
+  one of the four existing `moonwell-clearing-loam-patches-v3.png` frames with
+  a four-pixel-aligned offset, reflection state, and restrained opacity. No new
+  generated source or production raster was needed, so the existing managed
+  source-to-production evidence and byte-identical workflow remain complete.
+- Runtime removed only the shared placement formula. The opaque raster base,
+  moonlight, water, Moonroot banks and bridge, sprites, landmarks, routes,
+  colliders, encounter anchors, exit states, timing, and progression are
+  unchanged. Loam records remain purely visual and never enter world collision.
+- Regression coverage pins four distinct thirty-record layouts, all four atlas
+  frames, mirrored and unmirrored use, pixel-aligned placement, opacity bounds,
+  fixed visual footprints, raster-only drawing, and removal of the old stamp
+  lattice. Local acceptance passes syntax, 74/74 tests including byte-identical
+  managed art regeneration, four-map desktop review, portrait fit, touch-
+  landscape movement and pause/Continue, and clean-console checks.
+
 ## Varied interior spruce blockers — 2026-08-09
 
 - Public four-map review at desktop and touch-landscape scale found the next
