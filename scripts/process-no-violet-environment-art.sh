@@ -109,6 +109,32 @@ cool_ambient_glints() {
   mv "$cooled" "$output"
 }
 
+# Palette replacement can shift equivalent near-navy edge pixels by a few
+# values when source variants contain different keyed colour families. Copy
+# frame zero's final opaque perimeter onto every water frame after recoloring,
+# preserving the established tile transition while keeping varied interiors.
+normalize_water_perimeters() {
+  output="$production/moonwell-water-tile-v3.png"
+  top="$work_dir/water-border-top.png"
+  bottom="$work_dir/water-border-bottom.png"
+  left="$work_dir/water-border-left.png"
+  right="$work_dir/water-border-right.png"
+  magick "$output" -crop '16x1+0+0' +repage "$top"
+  magick "$output" -crop '16x1+0+15' +repage "$bottom"
+  magick "$output" -crop '1x16+0+0' +repage "$left"
+  magick "$output" -crop '1x16+15+0' +repage "$right"
+  for frame in 0 1 2 3; do
+    cell="$work_dir/water-frame-final-$frame.png"
+    magick "$output" -crop "16x16+$((frame * 16))+0" +repage \
+      "$top" -geometry +0+0 -compose over -composite \
+      "$bottom" -geometry +0+15 -compose over -composite \
+      "$left" -geometry +0+0 -compose over -composite \
+      "$right" -geometry +15+0 -compose over -composite "$cell"
+  done
+  magick "$work_dir"/water-frame-final-{0,1,2,3}.png +append \
+    -strip -define png:exclude-chunk=date,time PNG32:"$output"
+}
+
 # Deep, muted teal for foliage, loam, silhouettes, and small ground detail.
 recolor moonwell-spruce-overhang-v2.png moonwell-spruce-overhang-v3.png 44% .48 .72
 recolor moonwell-clearing-canopy-v2.png moonwell-clearing-canopy-v3.png 44% .48 .72
@@ -121,6 +147,7 @@ recolor moonwell-light-pool-variants-v1.png moonwell-light-pool-variants-v2.png 
 recolor moonwell-clearing-firefly-loop-v5.png moonwell-clearing-firefly-loop-v6.png 44% .42 .78
 recolor moonwell-sentinel-tile-v4.png moonwell-sentinel-tile-v5.png 44% .42 .72
 recolor moonwell-water-tile-v2.png moonwell-water-tile-v3.png 47% .38 .80
+normalize_water_perimeters
 
 # The final floor substrate is a retained opaque derivative of the freshly
 # rebuilt loam raster. Keep it after the palette pass so its source and output

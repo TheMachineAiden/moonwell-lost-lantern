@@ -6,6 +6,25 @@ No third-party artwork, model output, or external asset is included. The project
 
 The final PNGs are deliberately small (72 × 88, 48 × 32, 96 × 24, and 72 × 24) with transparent backgrounds, keeping the static game's transfer and mobile memory cost negligible.
 
+## Varied Moonroot water surface — 2026-08-09
+
+The current `moonwell-art/production/moonwell-water-tile-v3.png` supersedes
+the earlier single repeated water cell with a four-frame 64 × 16 atlas. No new
+generation output was needed: all four frames derive from the water region of
+the already retained project-bound
+`generated/moonwell-world-props-atlas-v2-source.png` (SHA-256
+`1f28c764f0a3b4e0c50b287e29312471081f35007265219e87e16aeb80a317b4`).
+
+`scripts/process-moonwell-art.sh` preserves the accepted frame zero, crops
+three additional source regions, point-reduces them to the same 16 × 16 pixel
+scale, and copies the accepted one-pixel edge transition around every frame.
+The shared no-violet workflow applies its existing water palette pass and
+normalizes those final perimeters after recoloring. The reproducible runtime
+atlas hash is
+`8d12e1c565417bb900944b91bc4a6db4b9d80e0de3a034917ca12d938458429f`.
+Runtime selects only these retained PNG cells; it no longer paints a canvas
+rectangle behind the touched surface.
+
 ## Generated refresh — 2026-07-28
 
 `moonwell-forest-v2.png` (40 × 48), `moonwell-fairies-v2.png` (54 × 24), and `moonwell-keeper-v2.png` (32 × 40) are new project-bound pixel-art assets for the environment, fireflies, and playable keeper. They were generated with the built-in ChatGPT image-generation tool (`gpt-image-2`), then chroma-keyed, cropped, point-downsampled, and palette-limited locally with ImageMagick. The unmodified source output is retained at `assets/generated/moonwell-sprite-source.png`.

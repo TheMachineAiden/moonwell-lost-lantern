@@ -1,5 +1,25 @@
 # Moonwell visual art system — continuity record
 
+## Varied Moonroot water surface — 2026-08-09
+
+- Public actual-scale review found the strongest untouched sprite repetition
+  in Moonroot Crossing: one 16 × 16 water tile repeated across all seventy-two
+  river cells, creating a checker texture that competed with the bridge.
+- The managed world-art processor now derives four opaque 16 × 16 frames from
+  distinct regions of the existing retained
+  `moonwell-world-props-atlas-v2-source.png` water source. Frame zero remains
+  the accepted tile; the other three retain its final one-pixel perimeter so
+  unlike cells meet with the same established edge transition.
+- `WATER_TILE_LAYOUT` selects the four retained frames across the unchanged
+  eighteen-by-four river footprint without equal horizontal or vertical
+  neighbours. Runtime removed the now-touched inert canvas rectangle and draws
+  only `moonwell-water-tile-v3.png` for the surface.
+- The water objects, four-row collision field, 32 × 64 bridge footprint,
+  riddles, shores, draw order, routes, progression, and all other maps are
+  unchanged. Regression coverage pins four distinct opaque cool frames,
+  stable perimeters, raster-only rendering, layout diversity, and gated/solved
+  water counts.
+
 ## Map-specific understory detail layouts — 2026-08-09
 
 - A fresh public actual-scale hierarchy audit found the remaining shared

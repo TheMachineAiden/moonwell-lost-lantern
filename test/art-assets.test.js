@@ -66,7 +66,8 @@ test('luminous production assets preserve exact render footprints',()=>{
     'assets/moonwell-art/production/moonwell-clearing-firefly-loop-v6.png':[64,16],
     'assets/moonwell-art/production/moonwell-light-pool-variants-v2.png':[48,16],
     'assets/moonwell-art/production/moonwell-bridge-vertical-v4.png':[32,64],
-    'assets/moonwell-art/production/moonwell-starroot-chime-loop-v3.png':[96,24]
+    'assets/moonwell-art/production/moonwell-starroot-chime-loop-v3.png':[96,24],
+    'assets/moonwell-art/production/moonwell-water-tile-v3.png':[64,16]
   };
   for(const [path,size] of Object.entries(expected))assert.deepEqual(dimensions(path),size,path);
 });
@@ -201,6 +202,39 @@ test('Moonroot water receives a raster shore strip without covering its bridge',
   assert.doesNotMatch(processor,/tile % 3/);
 });
 
+test('Moonroot water uses four opaque source-derived raster variants without a canvas substitute',()=>{
+  const source=read('game.js').toString(),html=read('index.html').toString(),processor=read('scripts/process-moonwell-art.sh').toString(),paletteProcessor=read('scripts/process-no-violet-environment-art.sh').toString();
+  const renderer=source.slice(source.indexOf('function drawWater'),source.indexOf('function worldObject'));
+  const asset='assets/moonwell-art/production/moonwell-water-tile-v3.png',pixels=rgba(asset),[width,height]=dimensions(asset);
+  assert.deepEqual([width,height],[64,16]);
+  assert.match(source,/water:loadArt\('assets\/moonwell-art\/production\/moonwell-water-tile-v3\.png\?v=moonwell-water-variants-1'\)/);
+  assert.match(html,/preload" as="image" href="assets\/moonwell-art\/production\/moonwell-water-tile-v3\.png\?v=moonwell-water-variants-1"/);
+  assert.match(renderer,/WATER_TILE_LAYOUT\[row\]\[col\]/);
+  assert.match(renderer,/ctx\.drawImage\(art\.water,frame\*T,0,T,T,object\.x,object\.y,T,T\)/);
+  assert.doesNotMatch(renderer,/\brect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient|\.svg/);
+  assert.match(processor,/\.water-source\.png/);
+  assert.match(processor,/\.water-border-mask\.png/);
+  assert.match(processor,/\.water-frame-\{0,1,2,3\}\.png \+append/);
+  assert.match(paletteProcessor,/normalize_water_perimeters/);
+  const signatures=new Set();
+  for(let frame=0;frame<4;frame++){
+    const cell=Buffer.concat([...Array(height)].map((_,y)=>pixels.subarray((y*width+frame*16)*4,(y*width+(frame+1)*16)*4)));
+    const signature=createHash('sha256').update(cell).digest('hex');
+    signatures.add(signature);
+    if(frame===0)assert.equal(signature,'8efb36e8474d3bbd9bad0be2c5f16573b47968744c3c69af99ea3d9367c032d8','accepted water frame zero changed pixels');
+    for(let y=0;y<height;y++)for(let x=0;x<16;x++){
+      const offset=(y*width+frame*16+x)*4;
+      assert.equal(pixels[offset+3],255,`water frame ${frame} leaves a transparent terrain gap`);
+      assert.equal(brightWarm(pixels[offset],pixels[offset+1],pixels[offset+2],pixels[offset+3]),false,`water frame ${frame} introduces a warm objective cue`);
+      if(frame>0&&(x===0||x===15||y===0||y===15)){
+        const canonical=(y*width+x)*4;
+        assert.deepEqual([...pixels.subarray(offset,offset+4)],[...pixels.subarray(canonical,canonical+4)],`water frame ${frame} changes the stable tile perimeter at ${x},${y}`);
+      }
+    }
+  }
+  assert.equal(signatures.size,4,'water atlas repeats a packed frame');
+});
+
 test('the opaque raster loam base replaces the exposed procedural forest-floor fill',()=>{
   const source=read('game.js').toString(),processor=read('scripts/process-loam-base-art.sh').toString();
   const floor=source.slice(source.indexOf('function drawLoamFloor'),source.indexOf('function drawMoonlightPools'));
@@ -280,8 +314,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v3\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-canopy-layout-2/);
-  assert.match(html,/game\.js\?v=moonwell-canopy-layout-2/);
+  assert.match(html,/game-core\.js\?v=moonwell-water-variants-1/);
+  assert.match(html,/game\.js\?v=moonwell-water-variants-1/);
 });
 
 test('generated starroot grounding source is pinned and produces tapered transparent frames',()=>{
@@ -604,6 +638,6 @@ test('the dense top-canopy renderer consumes the same exported layout as its roo
   assert.match(renderer,/ctx\.scale\(-1,1\)/);
   assert.doesNotMatch(renderer,/\brect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient|\.svg/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-canopy-layout-2/);
-  assert.match(html,/game\.js\?v=moonwell-canopy-layout-2/);
+  assert.match(html,/game-core\.js\?v=moonwell-water-variants-1/);
+  assert.match(html,/game\.js\?v=moonwell-water-variants-1/);
 });

@@ -254,6 +254,24 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
 
 `node --check game.js` and `git diff --check` are required local release checks. The hidden query route is intentionally not linked from the player experience; its small `window.__moonwellAudit` API exists only for deterministic browser checks.
 
+## Varied Moonroot water surface acceptance — 2026-08-09
+
+- Sprite provenance: the 64 × 16 runtime atlas is a deterministic four-cell
+  derivative of the retained generated world-props source. Its SHA-256 is
+  `8d12e1c565417bb900944b91bc4a6db4b9d80e0de3a034917ca12d938458429f`;
+  the managed no-violet workflow regenerates it byte-identically.
+- Visual invariant: all four cool water frames are opaque and distinct, share
+  frame zero's final one-pixel perimeter, and are placed without equal
+  horizontal or vertical neighbours. The bridge remains the dominant river
+  landmark at actual desktop and phone gameplay scale.
+- Sprite-first invariant: the touched water renderer selects one retained PNG
+  frame per existing water object and contains no rectangle, path, gradient,
+  SVG, or procedural terrain fallback.
+- Gameplay invariant: the gated river still has seventy-two solid one-cell
+  water objects; the solved state removes only the existing eight bridge cells
+  and adds the unchanged non-solid 32 × 64 bridge. Shores, riddles, routes,
+  progression, collision, and draw order are unchanged.
+
 ## Selected forest post-release acceptance — 2026-08-02
 
 - Deterministic suite: 22/22. New assertions cover exact production-strip
