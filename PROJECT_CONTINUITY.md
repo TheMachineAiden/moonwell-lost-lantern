@@ -958,3 +958,17 @@ then look for the next small player-visible improvement.
   Continue pass with a fitted 600 × 390 canvas, 132 × 132 steering, 44 × 44
   pause target, 27 successful document/script/image requests, and no console
   messages.
+## Clustered lower forest edge — 2026-08-09
+
+- A fresh four-map actual-scale audit found the lower boundary still read as a
+  conspicuous row of individual spruces, despite the earlier varied placement
+  data. It visually competed with the dense top wall and made the map read as
+  an enclosed card rather than a continuous forest.
+- `moonwell-bottom-forest-clusters-v1.png` replaces only the lower rendering
+  treatment with four source-derived 320 × 64 foreground clusters. The runtime
+  selects the map panel after depth-sorted entities; the prior twenty bottom
+  tree records remain the exact same solid anchors and 20 × 12 contact masks.
+- The deterministic managed environment-art workflow rebuilds the PNG from
+  retained no-violet spruce production art. It has no generated source at
+  runtime, procedural terrain draw, changed route, collider, pickup, or
+  progression value.

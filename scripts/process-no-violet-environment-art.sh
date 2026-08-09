@@ -209,6 +209,7 @@ magick $luna_frames +append -strip -define png:exclude-chunk=date,time \
 # no-violet forest inputs exist. This keeps both derivatives inside the same
 # deterministic managed world-art pass as their retained source families.
 MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-exit-moonroot-sprites.sh"
+MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-bottom-forest-cluster-art.sh"
 MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-root-shelf-art.sh"
 MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-hollow-sentinel-art.sh"
 MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-hollow-rune-variants-art.sh"
