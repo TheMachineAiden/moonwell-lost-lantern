@@ -1,5 +1,22 @@
 # Moonwell visual release audit
 
+## Cool-dormant Starroot hierarchy — 2026-08-09
+
+- The retained v5 Starroot atlas is derived deterministically from the
+  accepted hash-pinned v4 raster. Only the six runtime dormant cells' existing
+  lantern-bright amber pixels become restrained cool cyan; rooted silhouette,
+  alpha coverage, 24 × 24 cell geometry, and every waking/lit amber frame are
+  retained.
+- Runtime now preloads and draws only the v5 PNG behind a matching game-script
+  cache identity. The three Starroot anchors, interaction radius, wake order,
+  hidden-light release, altar state, route and collision contracts are
+  unchanged.
+- Automated acceptance: 88/88 tests, syntax, byte-identical dedicated and
+  managed environment regeneration, build/source-dist identity, and diff
+  hygiene. Local Chrome review covered desktop Starfall, portrait bounds, and
+  touch landscape (movement plus pause/Continue) with no console warnings or
+  errors.
+
 ## Map-specific lower forest silhouettes — 2026-08-09
 
 - Live four-map comparison showed one remaining whole-scene placement
