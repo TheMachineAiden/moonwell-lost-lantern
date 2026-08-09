@@ -32,6 +32,7 @@ MOONWELL_ART_OUTPUT="$legacy" MOONWELL_WRITE_COMPARISON=0 \
 MOONWELL_ART_OUTPUT="$legacy" sh "$repo_dir/scripts/process-luminous-forest-art.sh"
 MOONWELL_ART_OUTPUT="$legacy" sh "$repo_dir/scripts/process-bottom-right-clearing-art.sh"
 MOONWELL_ART_OUTPUT="$legacy" sh "$repo_dir/scripts/process-starroot-chime-art.sh"
+MOONWELL_ART_OUTPUT="$legacy" sh "$repo_dir/scripts/process-firefly-variants-art.sh"
 
 # The vertical bridge is a project-bound image-generation source on a flat
 # magenta field. Key, trim, and point-reduce it to the exact 2 × 4-cell span
@@ -145,6 +146,7 @@ recolor moonwell-stone-variants-v1.png moonwell-stone-variants-v2.png 47% .30 .7
 recolor moonwell-mushroom-variants-v1.png moonwell-mushroom-variants-v2.png 44% .38 .78
 recolor moonwell-light-pool-variants-v1.png moonwell-light-pool-variants-v2.png 48% .38 .82
 recolor moonwell-clearing-firefly-loop-v5.png moonwell-clearing-firefly-loop-v6.png 44% .42 .78
+recolor moonwell-firefly-variants-v1.png moonwell-firefly-variants-v2.png 44% .42 .78
 recolor moonwell-sentinel-tile-v4.png moonwell-sentinel-tile-v5.png 44% .42 .72
 recolor moonwell-water-tile-v2.png moonwell-water-tile-v3.png 47% .38 .80
 normalize_water_perimeters
