@@ -40,7 +40,7 @@ const environmentalFrames={
 };
 const characterFrames={
   'assets/moonwell-art/production/moonwell-keeper-walk-v7.png':26,
-  'assets/moonwell-art/production/moonwell-eir-rootwatcher-idle-v2.png':64,
+  'assets/moonwell-art/production/moonwell-eir-rootwatcher-idle-v3.png':64,
   'assets/moonwell-art/production/moonwell-eir-rootwatcher-portrait-v2.png':512
 };
 const context={globalThis:{}};
@@ -65,7 +65,7 @@ test('luminous production assets preserve exact render footprints',()=>{
     'assets/moonwell-art/production/moonwell-exit-clearing-states-v4.png':[128,40],
     'assets/moonwell-art/production/moonwell-moonroot-shores-v1.png':[288,24],
     'assets/moonwell-art/production/moonwell-root-shelf-variants-v2.png':[288,24],
-    'assets/moonwell-art/production/moonwell-eir-rootwatcher-idle-v2.png':[256,96],
+    'assets/moonwell-art/production/moonwell-eir-rootwatcher-idle-v3.png':[256,96],
     'assets/moonwell-art/production/moonwell-eir-rootwatcher-portrait-v2.png':[512,512],
     'assets/moonwell-art/production/moonwell-foliage-variants-v2.png':[48,16],
     'assets/moonwell-art/production/moonwell-ground-texture-variants-v2.png':[48,16],
@@ -104,7 +104,7 @@ test('runtime references only production derivatives, never retained generation 
     'moonwell-route-opening-overhang-v1.png',
     'moonwell-exit-clearing-states-v4.png',
     'moonwell-root-shelf-variants-v2.png',
-    'moonwell-eir-rootwatcher-idle-v2.png',
+    'moonwell-eir-rootwatcher-idle-v3.png',
     'moonwell-eir-rootwatcher-portrait-v2.png',
     'moonwell-foliage-variants-v2.png',
     'moonwell-ground-texture-variants-v2.png',
@@ -546,6 +546,24 @@ test('Eir retains the corrected no-purple character palette',()=>{
   }
 });
 
+test('Eir readability sprite is a deterministic cool contact derivative without changing her runtime footprint',()=>{
+  const source='assets/moonwell-art/production/moonwell-eir-rootwatcher-idle-v2.png';
+  const asset='assets/moonwell-art/production/moonwell-eir-rootwatcher-idle-v3.png';
+  const processor=read('scripts/process-eir-rootwatcher-readability-art.sh').toString();
+  const digest=path=>createHash('sha256').update(read(path)).digest('hex');
+  assert.equal(digest(source),'4bc70c41fd73e083af2f1654ee38273981da949928c57229b553831f6d22a4cd');
+  assert.match(processor,/moonwell-eir-rootwatcher-idle-v2\.png/);
+  assert.match(processor,/4bc70c41fd73e083af2f1654ee38273981da949928c57229b553831f6d22a4cd/);
+  assert.match(processor,/moonwell-eir-rootwatcher-idle-v3\.png/);
+  assert.match(processor,/Dilate Diamond:1/);
+  assert.match(processor,/'16x24!'/);
+  assert.deepEqual(dimensions(asset),[256,96]);
+  const before=digest(asset);
+  execFileSync('sh',[fileURLToPath(new URL('scripts/process-eir-rootwatcher-readability-art.sh',root))],{stdio:'pipe',timeout:120000});
+  assert.equal(digest(asset),before);
+  assert.notEqual(digest(asset),digest(source));
+});
+
 test('exact owner Luna source reduces literally to four readable padded frames',()=>{
   const ownerSource='artifacts/owner-handoffs/luna-exact-owner-source-2026-08-03.png';
   const runtimeAtlas='assets/moonwell-art/production/moonwell-keeper-walk-v7.png';
@@ -638,7 +656,7 @@ test('world characters, collectibles, memories, and landmarks have no procedural
 test('Eir dialogue uses raster production art and has no SVG or drawn-sigil fallback',()=>{
   const source=read('game.js').toString();
   const html=read('index.html').toString();
-  assert.match(source,/moonwell-eir-rootwatcher-idle-v2\.png/);
+  assert.match(source,/moonwell-eir-rootwatcher-idle-v3\.png\?v=moonwell-eir-readability-1/);
   assert.match(source,/moonwell-eir-rootwatcher-portrait-v2\.png/);
   assert.match(source,/frame\*64,0,64,96,point\.x-8,point\.y-22,16,24/);
   assert.match(source,/Math\.hypot\(player\.x-point\.x,player\.y-point\.y\)>22/);

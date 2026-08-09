@@ -182,6 +182,7 @@ recolor moonwell-starroot-chime-variants-v3.png moonwell-starroot-chime-variants
 # the larger portrait maps its sparse purple undergrowth accents to muted teal.
 flat_recolor moonwell-eir-rootwatcher-idle-v1.png moonwell-eir-rootwatcher-idle-v2.png '#081928'
 flat_recolor moonwell-eir-rootwatcher-portrait-v1.png moonwell-eir-rootwatcher-portrait-v2.png '#0F4559'
+MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-eir-rootwatcher-readability-art.sh"
 
 # The attachment is four 499 px-wide poses on a magenta generation background.
 # For each pose, key only that background family into alpha, trim transparent

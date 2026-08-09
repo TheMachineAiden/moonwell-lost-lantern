@@ -6,6 +6,21 @@ No third-party artwork, model output, or external asset is included. The project
 
 The final PNGs are deliberately small (72 × 88, 48 × 32, 96 × 24, and 72 × 24) with transparent backgrounds, keeping the static game's transfer and mobile memory cost negligible.
 
+## Eir Rootwatcher readability derivative — 2026-08-09
+
+`moonwell-art/production/moonwell-eir-rootwatcher-idle-v3.png` is the retained
+four-frame runtime atlas for Eir at Moonroot Crossing. It derives only from the
+accepted `moonwell-eir-rootwatcher-idle-v2.png` (SHA-256
+`4bc70c41fd73e083af2f1654ee38273981da949928c57229b553831f6d22a4cd`).
+`scripts/process-eir-rootwatcher-readability-art.sh` verifies that identity,
+resolves every 64 × 96 source cell to its actual 16 × 24 runtime grid, and
+adds a one-pixel cool teal contact silhouette behind the existing figure before
+point-expanding it back to the exact four 64 × 96 source cells. The runtime
+therefore remains raster-only and byte-reproducible, with Eir’s unchanged
+16 × 24 draw, anchor −8,−22, non-solid encounter point, 22-pixel talk radius,
+bridge progression, and Moonroot collider layout. The source atlas is retained
+in the repository and never served by the page.
+
 ## Quiet Moonroot bridge derivative — 2026-08-09
 
 `moonwell-art/production/moonwell-bridge-vertical-v5.png` is the retained
