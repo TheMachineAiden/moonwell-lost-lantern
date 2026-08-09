@@ -16,6 +16,7 @@ const brightWarm=(r,g,b,a)=>a>15&&r>158&&g>82&&b<82&&r>g*1.08&&g>b*1.2;
 const environmentalFrames={
   'assets/moonwell-art/production/moonwell-spruce-overhang-v3.png':80,
   'assets/moonwell-art/production/moonwell-inner-forest-boundary-v1.png':256,
+  'assets/moonwell-art/production/moonwell-bottom-forest-clusters-v1.png':320,
   'assets/moonwell-art/production/moonwell-loam-base-tiles-v1.png':16,
   'assets/moonwell-art/production/moonwell-clearing-loam-patches-v3.png':160,
   'assets/moonwell-art/production/moonwell-clearing-moonlight-v4.png':192,
@@ -56,6 +57,7 @@ test('luminous production assets preserve exact render footprints',()=>{
     'assets/moonwell-art/production/moonwell-keeper-walk-v7.png':[104,40],
     'assets/moonwell-art/production/moonwell-spruce-overhang-v3.png':[480,112],
     'assets/moonwell-art/production/moonwell-inner-forest-boundary-v1.png':[512,112],
+    'assets/moonwell-art/production/moonwell-bottom-forest-clusters-v1.png':[1280,64],
     'assets/moonwell-art/production/moonwell-loam-base-tiles-v1.png':[64,16],
     'assets/moonwell-art/production/moonwell-clearing-loam-patches-v3.png':[640,96],
     'assets/moonwell-art/production/moonwell-clearing-moonlight-v4.png':[576,112],
@@ -95,6 +97,7 @@ test('runtime references only production derivatives, never retained generation 
     'moonwell-keeper-walk-v7.png',
     'moonwell-spruce-overhang-v3.png',
     'moonwell-inner-forest-boundary-v1.png',
+    'moonwell-bottom-forest-clusters-v1.png',
     'moonwell-loam-base-tiles-v1.png',
     'moonwell-clearing-loam-patches-v3.png',
     'moonwell-clearing-moonlight-v4.png',
@@ -164,7 +167,7 @@ test('Moonroot bridge keeps its retained footprint while yielding warm hierarchy
   assert.match(read('scripts/process-no-violet-environment-art.sh').toString(),/process-moonroot-bridge-art\.sh/);
   assert.match(source,/bridge:loadArt\('assets\/moonwell-art\/production\/moonwell-bridge-vertical-v5\.png\?v=moonwell-quiet-bridge-1'\)/);
   assert.match(html,/preload" as="image" href="assets\/moonwell-art\/production\/moonwell-bridge-vertical-v5\.png\?v=moonwell-quiet-bridge-1"/);
-  assert.match(html,/script src="game\.js\?v=moonwell-cool-dormant-starroots-1"/);
+  assert.match(html,/script src="game\.js\?v=moonwell-bottom-clusters-1"/);
   assert.doesNotMatch(source+html,/moonwell-bridge-vertical-v4\.png/);
   assert.match(source,/object\.kind==='bridge'&&loaded\(art\.bridge\)\)ctx\.drawImage\(art\.bridge,object\.x,object\.y,object\.w,object\.h\)/);
   const [basePixels,pixels]=[rgba(base),rgba(asset)];
@@ -460,8 +463,8 @@ test('Starfall uses grounded cool-dormant starroot art and contains no sky-bell 
   assert.match(html,/preload" as="image" href="assets\/moonwell-art\/production\/moonwell-starroot-chime-variants-v5\.png\?v=moonwell-cool-dormant-starroots-1"/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-map-bottoms-1/);
-  assert.match(html,/game\.js\?v=moonwell-cool-dormant-starroots-1/);
+  assert.match(html,/game-core\.js\?v=moonwell-bottom-clusters-1/);
+  assert.match(html,/game\.js\?v=moonwell-bottom-clusters-1/);
 });
 
 test('generated Starroot source produces grounded strips with cool dormant and amber-lit states',()=>{
@@ -688,13 +691,26 @@ test('ambient tree and canopy pinlights stay cool while gameplay fireflies retai
   assert.match(html,/moonwell-inner-forest-boundary-v1\.png\?v=moonwell-inner-forest-boundary-1/);
 });
 
-test('map-specific bottom forest variation uses only retained spruce frames and no procedural tree substitute',()=>{
-  const source=read('game.js').toString();
-  const treeRenderer=source.slice(source.indexOf('function tree('),source.indexOf('function glow('));
-  assert.match(treeRenderer,/BOTTOM_FOREST_LAYOUTS\[area\]\[Math\.floor\(x\/T\)\]/);
-  assert.match(treeRenderer,/ctx\.scale\(-1,1\)/);
-  assert.match(treeRenderer,/ctx\.drawImage\(art\.spruce/);
-  assert.doesNotMatch(treeRenderer,/rect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient/);
+test('map-specific bottom forest uses four retained raster clusters without changing rooted blockers',()=>{
+  const source=read('game.js').toString(),core=read('game-core.js').toString(),processor=read('scripts/process-bottom-forest-cluster-art.sh').toString();
+  const [width,height]=dimensions('assets/moonwell-art/production/moonwell-bottom-forest-clusters-v1.png');
+  const pixels=rgba('assets/moonwell-art/production/moonwell-bottom-forest-clusters-v1.png');
+  assert.equal(width,1280);assert.equal(height,64);
+  assert.match(source,/bottomForest:loadArt\('assets\/moonwell-art\/production\/moonwell-bottom-forest-clusters-v1\.png\?v=moonwell-bottom-clusters-1'\)/);
+  assert.match(source,/function drawBottomForest\(\)\{if\(loaded\(art\.bottomForest\)\)ctx\.drawImage\(art\.bottomForest,area\*BOTTOM_FOREST_CLUSTER\.width,0,BOTTOM_FOREST_CLUSTER\.width,BOTTOM_FOREST_CLUSTER\.height,0,BOTTOM_FOREST_CLUSTER\.y,BOTTOM_FOREST_CLUSTER\.width,BOTTOM_FOREST_CLUSTER\.height\)\}/);
+  assert.match(source,/!object\.id\.startsWith\('edge-bottom-'\)/);
+  assert.match(source,/entities\.sort\(\(a,b\)=>a\.y-b\.y\)\.forEach\(entity=>entity\.draw\(\)\);drawBottomForest\(\)/);
+  assert.match(processor,/moonwell-spruce-overhang-v3\.png/);
+  assert.doesNotMatch(processor,/xc:'#?[0-9a-f]{6}'|fillRect|strokeRect|create(?:Linear|Radial)Gradient/i);
+  assert.match(core,/BOTTOM_FOREST_CLUSTER=Object\.freeze\(\{width:320,height:64,y:144,frames:4\}\)/);
+  const panels=[];
+  for(let frame=0;frame<4;frame++){
+    const panel=Buffer.concat([...Array(height)].map((_,y)=>pixels.subarray((y*width+frame*320)*4,(y*width+(frame+1)*320)*4)));
+    panels.push(createHash('sha256').update(panel).digest('hex'));
+    let contact=0;for(let x=0;x<320;x++)if([...Array(16)].some((_,row)=>pixels[((48+row)*width+frame*320+x)*4+3]>15))contact++;
+    assert.ok(contact>=300,`frame ${frame} leaves a visible ground channel`);
+  }
+  assert.equal(new Set(panels).size,4,'bottom forest repeats one packed skyline across maps');
 });
 
 test('side forest variation uses the retained spruce raster across both perimeter junctions',()=>{
@@ -841,6 +857,6 @@ test('the dense top-canopy renderer consumes the same exported layout as its roo
   assert.match(renderer,/ctx\.scale\(-1,1\)/);
   assert.doesNotMatch(renderer,/\brect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient|\.svg/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-map-bottoms-1/);
-  assert.match(html,/game\.js\?v=moonwell-cool-dormant-starroots-1/);
+  assert.match(html,/game-core\.js\?v=moonwell-bottom-clusters-1/);
+  assert.match(html,/game\.js\?v=moonwell-bottom-clusters-1/);
 });

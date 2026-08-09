@@ -908,3 +908,22 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
   600 × 390 world canvas, 44 × 44 directional controls, and pause control
   without clipping. The public console remained empty and all observed world
   image and script requests returned HTTP 200.
+## Clustered lower forest edge — local acceptance, 2026-08-09
+
+- Raster invariant: `moonwell-bottom-forest-clusters-v1.png` is a retained
+  1280 × 64 four-panel PNG derived deterministically from the no-violet spruce
+  family. Each 320-pixel panel has continuous lower contact across at least
+  300 columns and a distinct packed silhouette; runtime uses no generated
+  source or procedural forest substitute.
+- Geometry invariant: all four maps retain their twenty bottom-edge logical
+  tree anchors at row 12 and their existing 20 × 12 collision rectangles. The
+  foreground sprite only replaces visual selection and is drawn after sorted
+  entities, matching the earlier occlusion order.
+- Local release profile: `npm run check`, 88/88 tests, byte-identical managed
+  art regeneration, `npm run build`, source/dist identity, and diff hygiene
+  pass. Desktop visual review covers all four 640 × 416 developer scenes with
+  fitted canvases and no horizontal overflow. The 390 × 844 × 3 portrait gate
+  fits without overflow. At 844 × 390 × 3, normal touch input entered/skipped
+  the prologue, moved Luna, and completed pause/Continue; the 600 × 390 canvas
+  and every 44 × 44 control fit, 27 required asset/script requests returned
+  200, and the console is empty.

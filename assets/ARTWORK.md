@@ -509,3 +509,17 @@ runtime strip is `moonwell-root-shelf-variants-v2.png` (SHA-256
 `4b2a4ef6c58559d83e64d63825d3a673bab1df41947f6faf42c94dcc7f850180`).
 Runtime still only selects and places the retained PNG cells; all seven
 anchors, 40 × 14 colliders, routes, and gameplay remain unchanged.
+
+## Clustered lower forest edge — 2026-08-09
+
+`scripts/process-bottom-forest-cluster-art.sh` derives four full-width 320 ×
+64 foreground panels from the retained no-violet `moonwell-spruce-overhang-v3`
+family. Each panel overlaps varied point-scaled, mirrored spruce silhouettes
+into a continuous rooted foreground, then packs deterministically into
+`moonwell-bottom-forest-clusters-v1.png` (1280 × 64). No generated source is
+loaded at runtime and the processor introduces no procedural terrain pixels.
+
+The renderer selects the panel matching the map, after depth-sorted entities,
+while the established twenty bottom-edge tree records remain collision-only
+for rendering. Their anchors, 20 × 12 contact rectangles, playable bounds,
+routes, interactions, and phone-scale clarity are unchanged.

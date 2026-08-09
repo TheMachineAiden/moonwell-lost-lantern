@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const context={};
 vm.runInNewContext(fs.readFileSync(new URL('../game-core.js',import.meta.url),'utf8'),context);
-const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUTS,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUTS,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,LOAM_PATCH_LAYOUT,GROUND_DECOR_LAYOUT,MOONLIGHT_POOL_LAYOUT,WATER_TILE_LAYOUT,TOTAL_FIREFLIES,FIREFLY_VARIANTS,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,starfallAltarState,watcherChoiceResult}=context.MoonwellCore;
+const {TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUTS,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_CLUSTER,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,LOAM_PATCH_LAYOUT,GROUND_DECOR_LAYOUT,MOONLIGHT_POOL_LAYOUT,WATER_TILE_LAYOUT,TOTAL_FIREFLIES,FIREFLY_VARIANTS,MEMORY_DIALOGUE_TYPOGRAPHY,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nextAreaIndex,starfallAltarState,watcherChoiceResult}=context.MoonwellCore;
 
 test('the canonical world is a complete 20 by 13 tile canvas',()=>{
   assert.equal(TILE_SIZE,16);
@@ -47,18 +47,8 @@ test('logical cells are decoupled from the two-times luminous render surface',()
   });
 });
 
-test('every map gets a distinct retained-sprite bottom forest without moving rooted blockers',()=>{
-  assert.equal(BOTTOM_FOREST_LAYOUTS.length,4);
-  assert.equal(new Set(BOTTOM_FOREST_LAYOUTS.map(layout=>layout.map(item=>JSON.stringify(item)).join('|'))).size,4);
-  for(const layout of BOTTOM_FOREST_LAYOUTS){
-    assert.equal(layout.length,20);
-    assert.equal(new Set(layout.map(item=>JSON.stringify(item))).size,20);
-    assert.deepEqual([...new Set(layout.map(item=>item.frame))].sort(),[0,1,2]);
-    assert.ok(layout.some(item=>item.mirror));
-    assert.ok(layout.some(item=>!item.mirror));
-    assert.ok(Math.max(...layout.map(item=>item.width))-Math.min(...layout.map(item=>item.width))>=8);
-    assert.ok(Math.max(...layout.map(item=>item.height))-Math.min(...layout.map(item=>item.height))>=8);
-  }
+test('the full-width retained bottom forest keeps all rooted blockers in place',()=>{
+  assert.deepEqual(JSON.parse(JSON.stringify(BOTTOM_FOREST_CLUSTER)),{width:320,height:64,y:144,frames:4});
   for(let areaIndex=0;areaIndex<4;areaIndex++)createWorldObjects(areaIndex,false).filter(object=>object.id.startsWith('edge-bottom-')).forEach((object,col)=>{
     assert.deepEqual(JSON.parse(JSON.stringify(collisionRectFor(object))),{x:col*16-2,y:196,w:20,h:12});
   });
