@@ -1,5 +1,27 @@
 # Moonwell visual art system — continuity record
 
+## Quiet Whispering Hollow sentinel — 2026-08-09
+
+- Public actual-scale review confirmed the planned Hollow audit: the untouched
+  central sentinel was a robot/lantern-faced sprite with two amber eyes, so it
+  read as a treasure chest and became the map's warm focal point ahead of the
+  three cool echo runes.
+- A new retained project-bound generation source provides one broad,
+  root-bound blue-green stone formation with no face, chest, lantern, opening,
+  rune, symbol, glow, or warm point. The dedicated processor pins the source
+  hash, applies hard chroma alpha, point-reduces the complete formation into
+  the existing 32 × 32 raster cell, repairs prohibited accent pixels, and
+  restrains pale root highlights.
+- Runtime now loads only `moonwell-sentinel-stones-v2.png`; its renderer remains
+  one raster draw with no canvas world-art primitive or transient halo.
+  Whispering Hollow's exact 32 × 32 solid record at (144,96), all three echo
+  runes, their routes and timing, the hidden firefly, exits, progression, and
+  every other map remain unchanged.
+- Regression coverage pins source identity, deterministic processing, raster-
+  only rendering, footprint coverage, grounded irregular silhouette, zero warm
+  objective pixels, no bright cluster, palette compliance, and unchanged
+  collider geometry.
+
 ## Varied Moonroot water surface — 2026-08-09
 
 - Public actual-scale review found the strongest untouched sprite repetition

@@ -700,3 +700,37 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
   zero horizontal overflow. Starfall's inactive and waking raster states were
   reviewed at both gameplay scales. No important clipping, hierarchy conflict,
   procedural cross, or console message remained.
+
+## Quiet Whispering Hollow sentinel acceptance — 2026-08-09
+
+- Baseline finding: actual-scale 1440 × 900 review confirmed the old 32 × 32
+  robot/lantern-faced sentinel presented two amber eye-like points and a chest
+  silhouette at the centre of Whispering Hollow, competing with its three cool
+  echo runes and the hidden firefly.
+- Sprite provenance: retained project-bound source
+  `assets/generated/moonwell-hollow-sentinel-source-v1.png` is 1536 × 1024
+  with pinned SHA-256
+  `dc70ee658015592b769d2fdddbc4b8aa549ab9f88bcd634167d0302c642809ea`.
+  `scripts/process-hollow-sentinel-art.sh` verifies that identity, applies a
+  hard chroma-alpha predicate, point-reduces the complete root-bound stone
+  formation into the unchanged 32 × 32 cell, repairs prohibited accents, and
+  restrains pale root highlights. Full managed regeneration is byte-identical.
+- Visual invariant: the runtime `moonwell-sentinel-stones-v2.png` has no warm
+  objective pixels, no bright cluster, no face/chest/lantern/glyph treatment,
+  an irregular grounded silhouette, and a broad contained footprint. Its
+  renderer remains one retained-raster draw with no canvas primitive, halo,
+  SVG, or loaded generated source.
+- Gameplay invariant: Whispering Hollow retains the exact solid sentinel record
+  at (144,96) with width and height 32, all three echo-rune anchors and
+  collision-safe routes, echo timing, hidden firefly, exit progression, and
+  every other map unchanged.
+- Automated acceptance: `npm run check`, 80/80 tests, managed no-violet
+  byte regeneration, `npm run build`, source/dist identity, and diff hygiene
+  pass locally.
+- Browser acceptance: 1440 × 900 review covered all four developer scenes and
+  their dense top boundaries; Whispering Hollow restored the runes/firefly
+  hierarchy. The normal 390 × 844 × 3 portrait entry retained its complete
+  rotation gate with zero horizontal overflow. At 844 × 390 × 3 touch
+  landscape, the area used a centred 600 × 390 canvas; touch movement changed
+  Luna's position, Pause/Continue completed a full cycle, every observed
+  request returned 200 or 304, and the preserved console was empty.

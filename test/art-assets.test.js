@@ -32,7 +32,7 @@ const environmentalFrames={
   'assets/moonwell-art/production/moonwell-bridge-vertical-v4.png':32,
   'assets/moonwell-art/production/moonwell-rune-stone-v3.png':32,
   'assets/moonwell-art/production/moonwell-starroot-chime-loop-v3.png':24,
-  'assets/moonwell-art/production/moonwell-sentinel-tile-v5.png':32,
+  'assets/moonwell-art/production/moonwell-sentinel-stones-v2.png':32,
   'assets/moonwell-art/production/moonwell-altar-v3.png':64,
   'assets/moonwell-art/production/moonwell-water-tile-v3.png':16,
   'assets/moonwell-art/production/moonwell-moonroot-shores-v1.png':288
@@ -67,6 +67,7 @@ test('luminous production assets preserve exact render footprints',()=>{
     'assets/moonwell-art/production/moonwell-light-pool-variants-v2.png':[48,16],
     'assets/moonwell-art/production/moonwell-bridge-vertical-v4.png':[32,64],
     'assets/moonwell-art/production/moonwell-starroot-chime-loop-v3.png':[96,24],
+    'assets/moonwell-art/production/moonwell-sentinel-stones-v2.png':[32,32],
     'assets/moonwell-art/production/moonwell-water-tile-v3.png':[64,16]
   };
   for(const [path,size] of Object.entries(expected))assert.deepEqual(dimensions(path),size,path);
@@ -102,9 +103,10 @@ test('runtime references only production derivatives, never retained generation 
     'moonwell-clearing-firefly-loop-v6.png',
     'moonwell-light-pool-variants-v2.png',
     'moonwell-bridge-vertical-v4.png',
-    'moonwell-starroot-chime-loop-v3.png'
+    'moonwell-starroot-chime-loop-v3.png',
+    'moonwell-sentinel-stones-v2.png'
   ].forEach(asset=>assert.match(source,new RegExp(asset.replaceAll('.','\\.'))));
-  assert.doesNotMatch(source,/selected-forest-production-source|luminous-forest-production-source|bottom-right-clearing-source|eir-rootwatcher-(?:sprite|portrait)-source|320x208-art-direction-source/);
+  assert.doesNotMatch(source,/selected-forest-production-source|luminous-forest-production-source|bottom-right-clearing-source|world-sprite-source|eir-rootwatcher-(?:sprite|portrait)-source|320x208-art-direction-source/);
 });
 
 test('every runtime-loaded raster is explicitly classified for palette audit',()=>{
@@ -235,6 +237,44 @@ test('Moonroot water uses four opaque source-derived raster variants without a c
   assert.equal(signatures.size,4,'water atlas repeats a packed frame');
 });
 
+test('Whispering Hollow uses an unlit retained stone sentinel instead of a warm chest-like cue',()=>{
+  const source=read('game.js').toString(),html=read('index.html').toString();
+  const processor=read('scripts/process-hollow-sentinel-art.sh').toString();
+  const paletteProcessor=read('scripts/process-no-violet-environment-art.sh').toString();
+  const renderer=source.slice(source.indexOf('function worldObject'),source.indexOf('function rune'));
+  const asset='assets/moonwell-art/production/moonwell-sentinel-stones-v2.png';
+  const pixels=rgba(asset),[width,height]=dimensions(asset);
+  assert.deepEqual([width,height],[32,32]);
+  assert.match(source,/sentinel:loadArt\('assets\/moonwell-art\/production\/moonwell-sentinel-stones-v2\.png'\)/);
+  assert.match(html,/preload" as="image" href="assets\/moonwell-art\/production\/moonwell-sentinel-stones-v2\.png"/);
+  assert.match(renderer,/object\.kind==='sentinel'.*ctx\.drawImage\(art\.sentinel,object\.x,object\.y,object\.w,object\.h\)/);
+  assert.doesNotMatch(renderer,/\bglow\(|\brect\(|create(?:Linear|Radial)Gradient|\.svg/);
+  assert.match(processor,/moonwell-hollow-sentinel-source-v1\.png/);
+  assert.match(processor,/dc70ee658015592b769d2fdddbc4b8aa549ab9f88bcd634167d0302c642809ea/);
+  assert.match(processor,/-trim \+repage -filter point -resize '30x30!'/);
+  assert.match(processor,/-gravity south -background none -extent 32x32/);
+  assert.match(processor,/moonwell-sentinel-stones-v2\.png/);
+  assert.match(paletteProcessor,/process-hollow-sentinel-art\.sh/);
+  let opaque=0,warm=0,bright=0;
+  const rowWidths=[];
+  for(let y=0;y<height;y++){
+    let row=0;
+    for(let x=0;x<width;x++){
+      const offset=(y*width+x)*4,r=pixels[offset],g=pixels[offset+1],b=pixels[offset+2],a=pixels[offset+3];
+      if(a<=15)continue;
+      opaque++;row++;
+      if(brightWarm(r,g,b,a))warm++;
+      if((r+g+b)/3>180)bright++;
+    }
+    rowWidths.push(row);
+  }
+  assert.ok(opaque>=620&&opaque<=720,'stone sentinel loses its broad but contained two-cell silhouette');
+  assert.equal(warm,0,'stone sentinel introduces a warm objective cue');
+  assert.ok(bright<=1,'stone sentinel introduces a rune-like bright cluster');
+  assert.ok(rowWidths.at(-1)>=6&&Math.max(...rowWidths.slice(-10))>=28,'stone sentinel is not visibly grounded against its collider');
+  assert.ok(new Set(rowWidths.filter(Boolean)).size>=6,'stone sentinel loses its irregular three-tier silhouette');
+});
+
 test('the opaque raster loam base replaces the exposed procedural forest-floor fill',()=>{
   const source=read('game.js').toString(),processor=read('scripts/process-loam-base-art.sh').toString();
   const floor=source.slice(source.indexOf('function drawLoamFloor'),source.indexOf('function drawMoonlightPools'));
@@ -314,8 +354,8 @@ test('Starfall uses grounded starroot art and contains no sky-bell runtime path 
   assert.match(source,/moonwell-starroot-chime-loop-v3\.png/);
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
-  assert.match(html,/game-core\.js\?v=moonwell-water-variants-1/);
-  assert.match(html,/game\.js\?v=moonwell-water-variants-1/);
+  assert.match(html,/game-core\.js\?v=moonwell-stone-sentinel-1/);
+  assert.match(html,/game\.js\?v=moonwell-stone-sentinel-1/);
 });
 
 test('generated starroot grounding source is pinned and produces tapered transparent frames',()=>{
@@ -638,6 +678,6 @@ test('the dense top-canopy renderer consumes the same exported layout as its roo
   assert.match(renderer,/ctx\.scale\(-1,1\)/);
   assert.doesNotMatch(renderer,/\brect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient|\.svg/);
   assert.match(source,/worldObjects\.filter\(object=>!object\.collisionOnly/);
-  assert.match(html,/game-core\.js\?v=moonwell-water-variants-1/);
-  assert.match(html,/game\.js\?v=moonwell-water-variants-1/);
+  assert.match(html,/game-core\.js\?v=moonwell-stone-sentinel-1/);
+  assert.match(html,/game\.js\?v=moonwell-stone-sentinel-1/);
 });

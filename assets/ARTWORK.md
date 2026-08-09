@@ -6,6 +6,31 @@ No third-party artwork, model output, or external asset is included. The project
 
 The final PNGs are deliberately small (72 × 88, 48 × 32, 96 × 24, and 72 × 24) with transparent backgrounds, keeping the static game's transfer and mobile memory cost negligible.
 
+## Quiet Whispering Hollow sentinel — 2026-08-09
+
+`generated/moonwell-hollow-sentinel-source-v1.png` is the retained 1536 ×
+1024 project-bound image-generation source for Whispering Hollow's replacement
+stone blocker. It was created with the built-in image-generation workflow
+(`gpt-image-2`) using the accepted bottom-right clearing source as a style
+reference. Its pinned SHA-256 is
+`dc70ee658015592b769d2fdddbc4b8aa549ab9f88bcd634167d0302c642809ea`.
+
+Prompt summary: “Create one compact broad, root-bound blue-green stone
+formation on a flat `#ff00ff` key, matching Moonwell's crisp navy/teal pixel
+art. It is a silent impassable 2 × 2 forest blocker, not an objective: no
+face, eyes, chest, lantern, opening, arch, shrine, rune, glyph, crescent,
+symbol, glow, halo, bright point, warm gold, text, grid, or extra object.”
+
+`scripts/process-hollow-sentinel-art.sh` verifies the source identity, removes
+the chroma field with hard pixel alpha, point-reduces the complete retained
+formation into a 30 × 30 image with a side safety gutter and grounded baseline
+inside its exact 32 × 32 footprint, maps remaining prohibited accents to muted
+teal, and lowers pale root highlights below objective value. The
+byte-reproducible runtime sprite is
+`moonwell-art/production/moonwell-sentinel-stones-v2.png` (SHA-256
+`e3568515fec56416587438c5fc2118784b671c285743a90693d59f28de7096fa`).
+The retained source is never loaded by the page.
+
 ## Varied Moonroot water surface — 2026-08-09
 
 The current `moonwell-art/production/moonwell-water-tile-v3.png` supersedes
