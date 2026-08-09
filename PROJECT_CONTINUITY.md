@@ -833,10 +833,35 @@ then look for the next small player-visible improvement.
   anchors, 48 × 24 draws, 40 × 14 colliders, routes, progression, and top
   forest geometry are unchanged. The managed no-violet workflow rebuilds the
   derivative byte-identically from retained source art.
-- Local acceptance passes syntax, 82/82 tests, byte-identical managed art
+- Local acceptance passes syntax, 83/83 tests, byte-identical standalone and managed art
   regeneration, build, source/dist identity, and diff hygiene. All four maps
   were reviewed at 640 × 416; the rootfalls read as solid forest obstacles
   without competing with the bridge, echo runes, fireflies, or altar. Desktop
   keyboard movement and pause/Continue pass. The 390 × 844 × 3 portrait gate
   and 844 × 390 × 3 touch-landscape movement, pause cycle, 132 × 132 steering,
   44 × 44 pause target, viewport fit, asset responses, and console all pass.
+
+## Varied Starfall chime family — 2026-08-09
+
+- The post-rootfall public hierarchy audit confirmed the enclosure, route cue,
+  Moonroot crossing, Hollow sentinel, and landmark hierarchy. Starfall's three
+  chimes were the strongest remaining placed-sprite repetition: all three
+  advanced through one synchronized 24 × 24 strip and stamped the same rooted
+  silhouette around the altar.
+- The pinned generated Starroot grounding source now produces three distinct
+  four-state strips. Retained point scaling, reflection, and a shared grounded
+  baseline vary their height and root spread without inventing new pixels;
+  the managed no-violet workflow writes one 288 × 24 runtime PNG.
+- Runtime selects each strip by the chime's existing array index and staggers
+  only its dormant two-frame phase. All three interaction points, 24 × 24 draw
+  rectangles, non-solid one-tile footprints, 15-pixel interaction radius,
+  waking sequence, altar progression, and Starfall routes remain unchanged.
+  No canvas world-art primitive or source image is loaded at runtime.
+- Local acceptance passes syntax, 82/82 tests, byte-identical managed art
+  regeneration, build/source-dist identity, and diff hygiene. Desktop review
+  covers all four maps plus the fully open Glade route; keyboard movement and
+  pause/Continue pass. The 390 × 844 × 3 portrait gate fits without horizontal
+  overflow. At 844 × 390 × 3, touch entry/prologue skip, movement, pause and
+  Continue pass with a fitted 600 × 390 canvas, 132 × 132 steering, 44 × 44
+  pause target, 27 successful document/script/image requests, and no console
+  messages.

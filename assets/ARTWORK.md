@@ -267,14 +267,18 @@ moss, cool wet-soil, and restrained inner amber palette; no rectangle, cross,
 platform, path, doorway, lantern, halo, text, grid, or extra object.”
 
 `scripts/process-starroot-chime-art.sh` verifies the exact source hash, removes
-the keyed field with a hard pixel-art alpha predicate, point-reduces each
-quarter to a common 24 × 24 cell with transparent gutters, and packs
-`moonwell-starroot-chime-loop-v2.png`. The shared no-violet processor writes
-the runtime `moonwell-starroot-chime-loop-v3.png`. The authored root-and-moss
-contact is now inside every raster frame; runtime canvas shapes no longer draw
-a Starroot clearing. The small static glowmoss floor marks now select, scale,
-and dim the retained `moonwell-foliage-variants-v2.png` strip rather than
-drawing rectangle clusters.
+the keyed field with a hard pixel-art alpha predicate, and point-reduces each
+quarter into three four-state strips with common 24 × 24 cells and transparent
+gutters. The strips vary only retained scale and reflection, producing the
+reproducible intermediate `moonwell-starroot-chime-variants-v3.png` (SHA-256
+`0e1e510397b4568b9b6613b80bf64dd1dc9d7365fb94ba5fa1800a30c31e2d58`).
+The shared no-violet processor writes the runtime
+`moonwell-starroot-chime-variants-v4.png` (SHA-256
+`b0878645ab0d9ad743a2aa18e07bc8da610583317ddd138b74398b9c51640b7d`).
+The authored root-and-moss contact is inside every raster frame; runtime canvas
+shapes no longer draw a Starroot clearing. The small static glowmoss floor
+marks select, scale, and dim the retained `moonwell-foliage-variants-v2.png`
+strip rather than drawing rectangle clusters.
 
 ## Opaque loam substrate — 2026-08-09
 
