@@ -1,5 +1,31 @@
 # Moonwell visual release audit
 
+## Irregular loam route clearing — 2026-08-09
+
+- Public actual-scale review found that the accepted parted-spruce exit still
+  exposed an opaque, high-contrast rectangular root-platform lip. In the open
+  state it read as an upright tan slab rather than space between trees.
+- `moonwell-exit-clearing-states-v3.png` keeps the four 32 × 40 raster states
+  but derives one widening, tapered loam silhouette from the retained
+  no-violet clearing texture. The rectangular lip is gone; each lower profile
+  varies across at least three row widths, ends narrower than its apron, grows
+  monotonically by state, retains muted warm loam pixels, and contains no
+  lantern-bright point.
+- Runtime still draws the clearing behind the unchanged paired-spruce v1
+  overhang. All three one-tile anchors, the 24 × 12 rooted collider, blocked
+  closed/opening/revealed states, two-second timing, open-state passability,
+  routes, and progression remain unchanged.
+- Focused acceptance passed 70/70 tests, including byte-identical managed
+  no-violet regeneration, raster-only rendering, palette classification,
+  retained-source routing, and the new anti-slab lower-profile invariant.
+- Local Chrome acceptance reviewed all four maps at 1440 × 900 and the open
+  cue at all three placements. The 640 × 416 canvas remained undistorted;
+  normal Arrow-key movement and pause/Continue passed. At 390 × 844 × 3 the
+  342 × 267 rotation gate fit with no horizontal overflow. At 844 × 390 × 3,
+  the 600 × 390 screen, 116 × 116 steering control, 44 × 44 pause control,
+  open clearing, touch movement, and pause/Continue all passed. The v3 asset
+  and cache-keyed scripts returned 200/304, and final consoles were empty.
+
 ## Varied loam root shelves — 2026-08-09
 
 - The public baseline used one identical broad rooted sprite for all seven

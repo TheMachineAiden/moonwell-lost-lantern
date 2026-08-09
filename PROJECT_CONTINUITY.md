@@ -1,5 +1,28 @@
 # Moonwell visual art system — continuity record
 
+## Irregular loam route clearing — 2026-08-09
+
+- A fresh public four-map review found the highest-leverage remaining
+  sprite-first defect at the established route cue: the open Glade exit showed
+  the v2 clearing's shallow root-platform crop as an upright tan slab. The
+  spruce gap itself, exit timing, collider, and route remained correct.
+- The deterministic exit/Moonroot processor now emits
+  `moonwell-exit-clearing-states-v3.png`, a four-frame retained raster derived
+  only from the accepted no-violet loam source. Its stepped mouth widens into
+  an irregular apron and tapers again at the near foot, removing every straight
+  rectangular threshold lip while keeping a subtle warm destination at native
+  pixel scale.
+- Runtime continues to place the clearing behind
+  `moonwell-route-opening-overhang-v1.png`; no canvas primitive, generated
+  source, new collider, route change, or asset-loading fallback was added.
+  The three exit anchors, 24 × 12 contact rectangle, two-second progression,
+  and fully-open passability are unchanged.
+- Focused checks pass: 70/70 tests, including byte-identical managed art
+  regeneration, palette/raster inventory, monotonic state coverage, no bright
+  point, and an anti-slab lower-edge signature. Desktop actual-scale review
+  covers all maps and every exit placement; portrait and touch-landscape pass
+  fit, touch movement, pause/Continue, and clean-console checks.
+
 ## Varied loam root shelves — 2026-08-09
 
 - Public actual-scale review across all four maps found the repeated root

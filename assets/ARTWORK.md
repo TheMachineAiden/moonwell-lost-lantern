@@ -361,6 +361,22 @@ purely visual: layer order, water collision, and the bridge's four-cell
 crossing are unchanged. The shared no-violet workflow rebuilds this derivative
 after its final loam and root inputs, keeping regeneration byte-identical.
 
+### Irregular loam opening refinement — 2026-08-09
+
+`moonwell-exit-clearing-states-v3.png` supersedes the v2 clearing strip at
+runtime. Actual-scale review showed that v2's shallow retained root-platform
+lip stayed too rectangular and too light, so the open state read as an upright
+wooden slab even though the paired spruces had parted correctly.
+
+The same deterministic `scripts/process-exit-moonroot-sprites.sh` workflow now
+uses only `moonwell-clearing-loam-patches-v3.png` for the clearing surface. It
+packs four 32 × 40 stepped silhouettes whose mouths, middles, and irregular
+aprons widen with the existing state sequence and taper again at the near edge.
+The asset retains muted warm loam texture but no root-platform rectangle,
+lantern-bright point, runtime shape drawing, or new generated source. The
+existing retained generation provenance of the no-violet loam family therefore
+remains the complete source-to-production evidence for this derivative.
+
 ## Varied loam root shelves — 2026-08-09
 
 `scripts/process-root-shelf-art.sh` replaces the repeated bench-like runtime
