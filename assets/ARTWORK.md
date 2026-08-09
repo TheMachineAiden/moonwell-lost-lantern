@@ -46,6 +46,23 @@ byte-reproducible runtime sprite is
 `e3568515fec56416587438c5fc2118784b671c285743a90693d59f28de7096fa`).
 The retained source is never loaded by the page.
 
+## Quiet Moonroot water derivative — 2026-08-09
+
+`moonwell-art/production/moonwell-water-tile-v4.png` is the current retained
+64 × 16 runtime atlas. It derives from the accepted four-frame v3 water atlas
+without moving a pixel cell, changing alpha, or altering the normalized edge
+transition. Its source chain remains the project-bound generated
+`generated/moonwell-world-props-atlas-v2-source.png` (SHA-256
+`1f28c764f0a3b4e0c50b287e29312471081f35007265219e87e16aeb80a317b4`).
+
+`scripts/process-moonroot-water-art.sh` pins that source identity and applies
+one fixed HSL material pass to the regenerated v3 base. It lowers the water’s
+saturation and value while preserving its cool ripple language, four distinct
+opaque frames, and one-pixel seams. The script is called by the managed
+no-violet environment workflow, has byte-identical output, and is the only
+water raster loaded at runtime. Collision, bridge passability, shore ordering,
+and the 18 × 4 river footprint are unchanged.
+
 ## Varied Moonroot water surface — 2026-08-09
 
 The current `moonwell-art/production/moonwell-water-tile-v3.png` supersedes
