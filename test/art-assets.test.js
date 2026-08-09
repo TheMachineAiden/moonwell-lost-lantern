@@ -474,6 +474,25 @@ test('Luna draws the unchanged v7 atlas at exact half size over one-cell control
   assert.match(source,/canMove=.*wall\(x-5,y-5\).*wall\(x\+5,y\+5\)/);
 });
 
+test('world characters, collectibles, memories, and landmarks have no procedural raster fallbacks',()=>{
+  const source=read('game.js').toString();
+  const renderer=(start,end)=>source.slice(source.indexOf(start),source.indexOf(end));
+  const renderers=[
+    renderer('function firefly(','function rootPlatform'),
+    renderer('function watcher(','function openWatcherDialogue'),
+    renderer('function memory(','function memoryRevealBox'),
+    renderer('function playerKeeper(','function drawGroundSprite'),
+    renderer('function rune(','function heldRadius'),
+    renderer('function starroot(','function drawLoamFloor')
+  ];
+  for(const section of renderers)assert.doesNotMatch(section,/\brect\(|fillRect|strokeRect|create(?:Linear|Radial)Gradient|\.svg/);
+  assert.match(source,/function firefly\(light,index\)\{if\(light\.got\|\|\(light\.hidden&&!hiddenLightVisible\(area,echoAwake,starfallAwake\)\)\|\|!loaded\(art\.firefly\)\)return/);
+  assert.match(source,/function memory\(place,index\)\{if\(!place\.memory\|\|place\.memory\.got\|\|!loaded\(art\.memory\)\)return/);
+  assert.match(source,/function playerKeeper\(\)\{if\(!loaded\(keeperArt\)\)return/);
+  assert.match(source,/function echoKeeper\(\)\{if\(!echo\.active\|\|!loaded\(keeperArt\)\)return/);
+  assert.match(source,/function moonwellAltar\(point\)\{if\(!loaded\(art\.altar\)\)return/);
+});
+
 test('Eir dialogue uses raster production art and has no SVG or drawn-sigil fallback',()=>{
   const source=read('game.js').toString();
   const html=read('index.html').toString();
