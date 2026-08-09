@@ -56,13 +56,15 @@ const INTERIOR_FOREST_LAYOUT=interiorForestLayout([
   [[0,28,44,-1,true],[2,23,39,2,false],[1,26,42,0,true],[0,22,38,1,false],[2,29,45,-2,true],[1,25,40,2,false],[0,27,43,-1,false],[2,25,41,1,true],[1,28,38,-2,false],[0,24,44,0,true]]
 ]);
 const platformCells=[[[8,3]],[[5,2],[11,9]],[[6,9],[13,6]],[[5,3],[16,6]]];
-// These three overlapping clusters are the unchanged top-canopy composition.
-// Their dense visible root face spans the world at row 2, so the same declared
-// layout also creates one seam-free line of collision-only root footprints.
-const TOP_CANOPY_LAYOUT=Object.freeze([
-  Object.freeze({x:-6,y:-3,w:128,h:56,frameOffset:0}),
-  Object.freeze({x:96,y:-4,w:128,h:56,frameOffset:1}),
-  Object.freeze({x:202,y:-2,w:128,h:56,frameOffset:0})
+// Each map composes three overlapping retained-raster canopy clusters into a
+// continuous forest wall. Frame order, overlap, height offset, and reflection
+// vary without moving the shared row-2 collision-only root footprints.
+const topCanopyLayouts=areas=>Object.freeze(areas.map(records=>Object.freeze(records.map(([x,y,frame,mirror])=>Object.freeze({x,y,w:128,h:56,frame,mirror})))));
+const TOP_CANOPY_LAYOUTS=topCanopyLayouts([
+  [[-6,-3,0,false],[96,-4,1,false],[202,-2,0,true]],
+  [[-10,-5,1,true],[90,-2,0,false],[198,-4,1,false]],
+  [[-2,-2,1,false],[102,-5,1,true],[206,-3,0,false]],
+  [[-8,-4,0,true],[94,-1,0,false],[204,-5,1,true]]
 ]);
 const TOP_CANOPY_ROOT_CELLS=Object.freeze(Array.from({length:20},(_,col)=>Object.freeze([col,2])));
 // Bottom-edge trees keep the same rooted tile anchors and colliders, while
@@ -241,5 +243,5 @@ function createEchoReplay(trail,origin){
 }
 const canResolveEchoRune=(stage,echoHolding,player,runes)=>stage===2&&echoHolding&&nearPoint(player,runes[2]);
 function watcherChoiceResult(step,choice){const riddle=WATCHER_DIALOGUE.riddles[step];if(!riddle)return Object.freeze({correct:false,complete:false,nextStep:step,reply:'Eir has no more riddles to ask.'});const correct=choice===riddle.answer,nextStep=correct?step+1:step;return Object.freeze({correct,complete:correct&&nextStep===WATCHER_DIALOGUE.riddles.length,nextStep,reply:correct?riddle.correct:riddle.wrong})}
-globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUT,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,LOAM_PATCH_LAYOUT,GROUND_DECOR_LAYOUT,MOONLIGHT_POOL_LAYOUT,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,MEMORY_DIALOGUE_TYPOGRAPHY,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_STATE_DURATIONS,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,starfallAltarState,watcherChoiceResult});
+globalThis.MoonwellCore=Object.freeze({MAP,TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,RENDER_WIDTH,RENDER_HEIGHT,VISUAL_FOOTPRINTS,TOP_CANOPY_LAYOUTS,TOP_CANOPY_ROOT_CELLS,BOTTOM_FOREST_LAYOUT,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,LOAM_PATCH_LAYOUT,GROUND_DECOR_LAYOUT,MOONLIGHT_POOL_LAYOUT,TOTAL_FIREFLIES,HOLLOW_ECHO_RADIUS,MEMORY_REVEAL_TIMING,MEMORY_REVEAL_LAYOUT,MEMORY_DIALOGUE_TYPOGRAPHY,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,STARFALL_ALTAR,STARFALL_ALTAR_STATES,EXIT_STATES,EXIT_STATE_DURATIONS,EXIT_CLEARING,addedTreeCells,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,isBlocked,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,starfallAltarState,watcherChoiceResult});
 })();

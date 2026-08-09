@@ -635,6 +635,24 @@ native resolution via the developer-only routes `?dev=scene&area=0` through
   844 × 390 × 3 touch landscape with movement, pause/Continue, viewport fit,
   and no console messages.
 
+## Map-specific inner forest curtain acceptance — 2026-08-09
+
+- Visual invariant: every map now composes three overlapping clusters from the
+  retained `moonwell-inner-forest-boundary-v1.png` atlas with its own frame
+  order, overlap, height offset, and reflection. The four records are distinct,
+  cover the complete 320-pixel width, and retain deliberate cluster overlap so
+  no ground channel or isolated-tree spacing appears in the top inner band.
+- Gameplay invariant: `TOP_CANOPY_ROOT_CELLS` remains the same complete row of
+  twenty collision-only cells at row 2. Player spawns, interaction anchors,
+  exit routes, and all other world-object records are unchanged.
+- Sprite-first invariant: the canopy renderer only selects, positions, mirrors,
+  and draws the retained raster atlas. It contains no rectangle, path, gradient,
+  SVG, or procedural world-art fallback.
+- Local profile: 77/77 tests, syntax checks, build, diff check, and 1440 × 900
+  browser review of all four maps passed. The boundary stayed dense and
+  continuous while Lantern/Whispering and Moonroot/Starfall no longer repeated
+  the same curtain composition.
+
 ## Sprite-first Starroot grounding acceptance — 2026-08-09
 
 - Provenance: retained source

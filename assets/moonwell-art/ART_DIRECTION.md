@@ -151,3 +151,9 @@ chime as the quiet secondary anchor.
 Amber is reserved for lantern/firefly/starroot focal points. Memory and rune
 magic use cool cyan, pale neutral, and teal so they remain localized without
 creating terrain or collider-edge language.
+
+The top inner forest uses four explicit compositions of the retained two-frame
+canopy atlas. Each map keeps three overlapping 128 × 56 clusters across the
+full 320-pixel width, while frame order, horizontal overlap, vertical offset,
+and reflection vary by map. The continuous row-2 root collider band remains
+shared and unchanged; the variation is visual placement only.
