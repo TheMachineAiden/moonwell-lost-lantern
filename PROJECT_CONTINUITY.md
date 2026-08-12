@@ -2,6 +2,12 @@
 
 ## Retained map-specific forest atmosphere — 2026-08-12
 
+- Follow-up audit removed the final static full-canvas `rgba(3,12,24,.08)`
+  tint from the runtime draw path. The retained four-panel atmosphere is now
+  the sole static forest-enclosure layer; the small completion warmth remains
+  a transient progression effect. Terrain, objects, map hierarchy, colliders,
+  routes, and timing are unchanged.
+
 - The remaining map-wide canvas vignette was visually significant even though
   its terrain beneath was already sprite-first. It is now a retained four-panel
   320 × 208 raster strip: each panel’s quiet centre tracks the existing dominant
