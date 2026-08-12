@@ -17,6 +17,7 @@ const environmentalFrames={
   'assets/moonwell-art/production/moonwell-spruce-overhang-v3.png':80,
   'assets/moonwell-art/production/moonwell-inner-forest-boundary-v1.png':256,
   'assets/moonwell-art/production/moonwell-bottom-forest-clusters-v1.png':320,
+  'assets/moonwell-art/production/moonwell-forest-atmosphere-v1.png':320,
   'assets/moonwell-art/production/moonwell-loam-base-tiles-v1.png':16,
   'assets/moonwell-art/production/moonwell-clearing-loam-patches-v3.png':160,
   'assets/moonwell-art/production/moonwell-clearing-moonlight-v4.png':192,
@@ -58,6 +59,7 @@ test('luminous production assets preserve exact render footprints',()=>{
     'assets/moonwell-art/production/moonwell-spruce-overhang-v3.png':[480,112],
     'assets/moonwell-art/production/moonwell-inner-forest-boundary-v1.png':[512,112],
     'assets/moonwell-art/production/moonwell-bottom-forest-clusters-v1.png':[1280,64],
+    'assets/moonwell-art/production/moonwell-forest-atmosphere-v1.png':[1280,208],
     'assets/moonwell-art/production/moonwell-loam-base-tiles-v1.png':[64,16],
     'assets/moonwell-art/production/moonwell-clearing-loam-patches-v3.png':[640,96],
     'assets/moonwell-art/production/moonwell-clearing-moonlight-v4.png':[576,112],
@@ -98,6 +100,7 @@ test('runtime references only production derivatives, never retained generation 
     'moonwell-spruce-overhang-v3.png',
     'moonwell-inner-forest-boundary-v1.png',
     'moonwell-bottom-forest-clusters-v1.png',
+    'moonwell-forest-atmosphere-v1.png',
     'moonwell-loam-base-tiles-v1.png',
     'moonwell-clearing-loam-patches-v3.png',
     'moonwell-clearing-moonlight-v4.png',
@@ -392,6 +395,36 @@ test('the opaque raster loam base replaces the exposed procedural forest-floor f
   assert.match(processor,/moonwell-clearing-loam-patches-v3\.png/);
   assert.match(processor,/moonwell-loam-base-tiles-v1\.png/);
   assert.match(processor,/-filter point -resize '16x16!'/);
+});
+
+test('map-specific retained atmosphere replaces the runtime canvas vignette',()=>{
+  const source=read('game.js').toString(),html=read('index.html').toString(),processor=read('scripts/process-forest-atmosphere-art.sh').toString();
+  const asset='assets/moonwell-art/production/moonwell-forest-atmosphere-v1.png';
+  const pixels=rgba(asset),[width,height]=dimensions(asset);
+  assert.deepEqual([width,height],[1280,208]);
+  assert.match(source,/atmosphere:loadArt\('assets\/moonwell-art\/production\/moonwell-forest-atmosphere-v1\.png\?v=moonwell-raster-atmosphere-1'\)/);
+  assert.match(html,/preload" as="image" href="assets\/moonwell-art\/production\/moonwell-forest-atmosphere-v1\.png\?v=moonwell-raster-atmosphere-1"/);
+  const renderer=source.slice(source.indexOf('function drawAtmosphere'),source.indexOf('function draw()'));
+  assert.match(renderer,/ctx\.drawImage\(art\.atmosphere,area\*W,0,W,H,0,0,W,H\)/);
+  assert.doesNotMatch(renderer,/rect\(|fillRect|create(?:Linear|Radial)Gradient|\.svg/);
+  assert.match(processor,/moonwell-clearing-moonlight-v4\.png/);
+  assert.match(processor,/53deeca95664eb4f87255eca69ea0a80595c36e9a72ecfea19e04d946a4a8a39/);
+  assert.match(processor,/radial-gradient/);
+  const panels=[];
+  for(let frame=0;frame<4;frame++){
+    const panel=Buffer.concat([...Array(height)].map((_,y)=>pixels.subarray((y*width+frame*320)*4,(y*width+(frame+1)*320)*4)));
+    panels.push(createHash('sha256').update(panel).digest('hex'));
+    assert.ok(pixels[(frame*320)*4+3]>0,'each raster panel retains a protective forest edge');
+  }
+  assert.equal(new Set(panels).size,4,'each map keeps its own moonlit opening');
+});
+
+test('forest atmosphere regeneration is byte-identical',()=>{
+  const asset='assets/moonwell-art/production/moonwell-forest-atmosphere-v1.png';
+  const digest=path=>createHash('sha256').update(read(path)).digest('hex');
+  const before=digest(asset);
+  execFileSync('sh',[fileURLToPath(new URL('scripts/process-forest-atmosphere-art.sh',root))],{stdio:'pipe',timeout:120000});
+  assert.equal(digest(asset),before);
 });
 
 test('Moonroot shore is a continuous, varied wet-soil bank rather than a repeated transparent rail',()=>{

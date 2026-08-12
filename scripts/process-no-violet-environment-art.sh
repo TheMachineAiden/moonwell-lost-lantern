@@ -217,5 +217,6 @@ MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-hollow-rune-vari
 MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-moonroot-bridge-art.sh"
 MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-moonroot-water-art.sh"
 MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-starroot-dormant-art.sh"
+MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-forest-atmosphere-art.sh"
 
 printf '%s\n' "Rebuilt no-violet Moonwell runtime family in $production"

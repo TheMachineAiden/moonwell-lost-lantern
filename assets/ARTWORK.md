@@ -6,6 +6,22 @@ No third-party artwork, model output, or external asset is included. The project
 
 The final PNGs are deliberately small (72 × 88, 48 × 32, 96 × 24, and 72 × 24) with transparent backgrounds, keeping the static game's transfer and mobile memory cost negligible.
 
+## Retained forest atmosphere overlays — 2026-08-12
+
+`moonwell-art/production/moonwell-forest-atmosphere-v1.png` is a four-panel
+320 × 208 retained raster strip for Lantern Glade, Moonroot Crossing,
+Whispering Hollow, and Starfall Grove. It replaces the runtime canvas vignette
+with quantized midnight falloffs whose quiet centres follow the established
+dominant moonlight pools. The panels keep the forest enclosed while leaving
+each map’s existing light-pool hierarchy readable at native pixel scale.
+
+`scripts/process-forest-atmosphere-art.sh` derives the strip deterministically
+from the accepted no-violet moonlight pool atlas (SHA-256
+`53deeca95664eb4f87255eca69ea0a80595c36e9a72ecfea19e04d946a4a8a39`),
+pins that provenance, and is included in the managed environment-art rebuild.
+The runtime loads only the production PNG. No terrain, object, route, collider,
+timing, interaction, or progression record changes.
+
 ## Eir Rootwatcher readability derivative — 2026-08-09
 
 `moonwell-art/production/moonwell-eir-rootwatcher-idle-v3.png` is the retained
