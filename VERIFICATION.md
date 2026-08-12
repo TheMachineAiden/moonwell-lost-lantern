@@ -1,5 +1,29 @@
 # Moonwell visual release audit
 
+## Retained Whispering Hollow echo — 2026-08-12
+
+- Actual-scale comparison of the two remaining partial interaction states
+  confirmed that one awakened Starroot already separates cleanly from two cool
+  dormant chimes. The moving Hollow echo was the weaker transition: Luna's
+  dark source colours at 38% opacity nearly disappeared over the central loam
+  and sentinel.
+- `moonwell-keeper-echo-v1.png` is a 104 × 40 retained character atlas derived
+  deterministically from the hash-pinned exact-owner v7 Luna production atlas.
+  Its four 26 × 40 alpha silhouettes, frame boundaries, baseline, and runtime
+  13 × 20 draw geometry are identical; only opaque RGB values move into a
+  restrained moonlit cyan range. The replay now selects those four frames in
+  flight and holds frame zero at the first rune.
+- The developer scene adds deterministic moving/holding echo and incremental
+  Starroot previews, plus an `echo-ready` state whose precondition is followed
+  by a real keyboard E or touch Echo action. These surfaces do not run during
+  normal play.
+- Replay direction and 96 px/s speed, 4.5-second hold, trail recording, rune
+  stages and anchors, hidden-firefly gate, routes, colliders, Luna's player
+  raster, and all world art remain unchanged. Acceptance covers deterministic
+  derivative/alpha identity, full tests, syntax, managed regeneration,
+  build/source identity, desktop E casting, portrait fit, and touch-landscape
+  Echo casting, movement, pause/Continue, viewport fit, requests, and console.
+
 ## Cool-dormant Starroot hierarchy — 2026-08-09
 
 - The retained v5 Starroot atlas is derived deterministically from the

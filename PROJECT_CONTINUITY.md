@@ -997,3 +997,19 @@ then look for the next small player-visible improvement.
   retained no-violet spruce production art. It has no generated source at
   runtime, procedural terrain draw, changed route, collider, pickup, or
   progression value.
+
+## Retained Whispering Hollow echo — 2026-08-12
+
+- A desktop and phone-scale audit compared the moving/holding Hollow echo with
+  one- and two-chime Starroot awakening. Starroot progression already reads
+  clearly; the dark, 38%-opaque echo nearly disappeared over Hollow's central
+  loam and sentinel.
+- `moonwell-keeper-echo-v1.png` is a deterministic cool-cyan derivative of the
+  exact-owner Luna v7 atlas. The processor pins the v7 hash, preserves every
+  alpha value and all four 26 × 40 cells, and participates in the managed
+  no-violet workflow. Runtime uses its four frames in flight and frame zero
+  while holding, at the existing 13 × 20 draw box and anchor.
+- Replay path, speed, hold timing, trail, runes, hidden light, route comfort,
+  collision, player Luna, and every other world-art layer are unchanged. New
+  developer previews cover both audited partial transitions, and the
+  `echo-ready` scene requires a normal keyboard E or touch Echo action.
