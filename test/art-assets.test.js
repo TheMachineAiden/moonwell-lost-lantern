@@ -405,8 +405,10 @@ test('map-specific retained atmosphere replaces the runtime canvas vignette',()=
   assert.match(source,/atmosphere:loadArt\('assets\/moonwell-art\/production\/moonwell-forest-atmosphere-v1\.png\?v=moonwell-raster-atmosphere-1'\)/);
   assert.match(html,/preload" as="image" href="assets\/moonwell-art\/production\/moonwell-forest-atmosphere-v1\.png\?v=moonwell-raster-atmosphere-1"/);
   const renderer=source.slice(source.indexOf('function drawAtmosphere'),source.indexOf('function draw()'));
+  const draw=source.slice(source.indexOf('function draw(){'),source.indexOf('function refreshWorld'));
   assert.match(renderer,/ctx\.drawImage\(art\.atmosphere,area\*W,0,W,H,0,0,W,H\)/);
   assert.doesNotMatch(renderer,/rect\(|fillRect|create(?:Linear|Radial)Gradient|\.svg/);
+  assert.doesNotMatch(draw,/rgba\(3,12,24,\.08\)/,'the retained atmosphere must be the only static full-canvas forest tint');
   assert.match(processor,/moonwell-clearing-moonlight-v4\.png/);
   assert.match(processor,/53deeca95664eb4f87255eca69ea0a80595c36e9a72ecfea19e04d946a4a8a39/);
   assert.match(processor,/radial-gradient/);
