@@ -1,5 +1,24 @@
 # Moonwell visual art system — continuity record
 
+## Retained map-specific forest atmosphere — 2026-08-12
+
+- The remaining map-wide canvas vignette was visually significant even though
+  its terrain beneath was already sprite-first. It is now a retained four-panel
+  320 × 208 raster strip: each panel’s quiet centre tracks the existing dominant
+  moonlight pool, giving every map a coherent enclosure without a runtime
+  gradient or canvas-painted atmosphere.
+- `scripts/process-forest-atmosphere-art.sh` hash-pins the accepted no-violet
+  moonlight source, writes `moonwell-forest-atmosphere-v1.png`
+  byte-identically, and is called by the managed environmental-art workflow.
+  Runtime selects its existing-area panel with one raster draw; it does not
+  change any terrain, object, route, collider, timing, interaction, or state.
+- Local acceptance: syntax and 91/91 tests including provenance, four distinct
+  panels, raster-only rendering, and deterministic regeneration. Browser QA
+  passed desktop Glade and Moonroot visual reviews, phone portrait orientation
+  gate fit, and touch-landscape start, movement, pause/Continue, viewport fit,
+  and clean console checks. Next audit should inspect a distinct untouched
+  world-art hierarchy rather than revisiting the accepted route or atmosphere.
+
 ## Cool-dormant Starroot hierarchy — 2026-08-09
 
 - Actual-scale Starfall review found that all six runtime dormant chime frames
