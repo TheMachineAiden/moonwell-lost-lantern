@@ -412,6 +412,23 @@ at its native 26 × 40 footprint from anchor −13,−39 while Luna's existing
 10 × 10 movement and collision box remains unchanged. Eir, world art, routes,
 colliders, and install icons are independent and unchanged.
 
+## Whispering Hollow echo derivative — 2026-08-12
+
+`moonwell-keeper-echo-v1.png` is a deterministic moonlit character derivative
+of the exact-owner v7 Luna atlas above. `scripts/process-hollow-echo-art.sh`
+pins the v7 SHA-256
+`a287641c02f9e243d5f58d8188e7a54084c42a92150542ce52adfa29e8315f07`,
+preserves every alpha value and all four 26 × 40 cells, and remaps only opaque
+RGB values into a restrained dark-teal-to-cyan range. Its production SHA-256
+is `9d8667c9553b3bb37d45b7c83e459a8d3963c739380cc1efec2922a4025ca3b3`.
+
+The Hollow replay selects the four retained walk frames while returning to the
+first rune and holds on frame zero. It draws through Luna's unchanged 13 × 20
+runtime box and anchor. Replay path, 96-pixel-per-second timing, 4.5-second
+hold, rune anchors, interaction radius, collision, and player art are
+unchanged. The managed no-violet workflow rebuilds this derivative only after
+rebuilding the exact v7 source atlas.
+
 ## Moonwell home-screen icon — 2026-08-03
 
 `assets/generated/moonwell-home-screen-icon-generated-raw-v1.png` is the
