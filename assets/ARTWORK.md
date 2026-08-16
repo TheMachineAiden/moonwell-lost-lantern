@@ -407,10 +407,28 @@ of the four supplied poses, and pads it into a 26 × 40 cell with safe frame
 edges and a shared one-pixel ground margin. It performs no redraw, generated
 replacement, palette reinterpretation, or per-frame motion invention.
 
-The v7 runtime atlas is `moonwell-keeper-walk-v7.png` (104 × 40). It renders
-at its native 26 × 40 footprint from anchor −13,−39 while Luna's existing
-10 × 10 movement and collision box remains unchanged. Eir, world art, routes,
-colliders, and install icons are independent and unchanged.
+The accepted v7 base atlas is `moonwell-keeper-walk-v7.png` (104 × 40). Its
+four 26 × 40 source cells established Luna's current exact-owner pixel
+identity. Runtime draws those cells at 13 × 20 from anchor −6.5,−19.5 while
+Luna's existing 10 × 10 movement and collision box remains unchanged. Eir,
+world art, routes, colliders, and install icons are independent and unchanged.
+
+## Luna contact-silhouette derivative — 2026-08-16
+
+`moonwell-keeper-walk-v8.png` is the current retained runtime atlas. Its
+authoritative source remains the exact-owner handoff and literal v7 reduction
+above. `scripts/process-luna-readability-art.sh` pins the v7 SHA-256
+`a287641c02f9e243d5f58d8188e7a54084c42a92150542ce52adfa29e8315f07`,
+preserves every opaque v7 RGBA pixel, and adds only a one-source-pixel muted
+teal (`#275c63`) contact silhouette behind the figure. The byte-reproducible
+v8 SHA-256 is
+`ca658ed41aadea959226f237e2c2a728fc6c5d9a72f851184afb7418237d5876`.
+
+The derivative remains four 26 × 40 cells and draws through the unchanged
+13 × 20 runtime box at anchor −6.5,−19.5. Frame order, walk timing, mirroring,
+baseline, 10 × 10 movement/collision, routes, interactions, world art, and
+the v7-derived Hollow echo are unchanged. The contact edge is retained raster
+art, not a runtime outline, glow, or procedural fallback.
 
 ## Whispering Hollow echo derivative — 2026-08-12
 

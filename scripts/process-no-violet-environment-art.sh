@@ -205,6 +205,7 @@ done
 # shellcheck disable=SC2086 # one controlled path per generated frame
 magick $luna_frames +append -strip -define png:exclude-chunk=date,time \
   PNG32:"$production/moonwell-keeper-walk-v7.png"
+MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-luna-readability-art.sh"
 MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-hollow-echo-art.sh"
 
 # Rebuild the routed exit threshold and Moonroot banks only after their final

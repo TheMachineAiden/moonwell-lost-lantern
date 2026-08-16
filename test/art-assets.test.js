@@ -40,7 +40,7 @@ const environmentalFrames={
   'assets/moonwell-art/production/moonwell-moonroot-shores-v1.png':288
 };
 const characterFrames={
-  'assets/moonwell-art/production/moonwell-keeper-walk-v7.png':26,
+  'assets/moonwell-art/production/moonwell-keeper-walk-v8.png':26,
   'assets/moonwell-art/production/moonwell-keeper-echo-v1.png':26,
   'assets/moonwell-art/production/moonwell-eir-rootwatcher-idle-v3.png':64,
   'assets/moonwell-art/production/moonwell-eir-rootwatcher-portrait-v2.png':512
@@ -56,7 +56,7 @@ test('touch direction controls retain the 44-pixel target contract in phone land
 
 test('luminous production assets preserve exact render footprints',()=>{
   const expected={
-    'assets/moonwell-art/production/moonwell-keeper-walk-v7.png':[104,40],
+    'assets/moonwell-art/production/moonwell-keeper-walk-v8.png':[104,40],
     'assets/moonwell-art/production/moonwell-keeper-echo-v1.png':[104,40],
     'assets/moonwell-art/production/moonwell-spruce-overhang-v3.png':[480,112],
     'assets/moonwell-art/production/moonwell-inner-forest-boundary-v1.png':[512,112],
@@ -98,7 +98,7 @@ test('all four areas receive the selected forest floor vocabulary without new co
 test('runtime references only production derivatives, never retained generation sources',()=>{
   const source=read('game.js').toString();
   [
-    'moonwell-keeper-walk-v7.png',
+    'moonwell-keeper-walk-v8.png',
     'moonwell-keeper-echo-v1.png',
     'moonwell-spruce-overhang-v3.png',
     'moonwell-inner-forest-boundary-v1.png',
@@ -173,7 +173,7 @@ test('Moonroot bridge keeps its retained footprint while yielding warm hierarchy
   assert.match(read('scripts/process-no-violet-environment-art.sh').toString(),/process-moonroot-bridge-art\.sh/);
   assert.match(source,/bridge:loadArt\('assets\/moonwell-art\/production\/moonwell-bridge-vertical-v5\.png\?v=moonwell-quiet-bridge-1'\)/);
   assert.match(html,/preload" as="image" href="assets\/moonwell-art\/production\/moonwell-bridge-vertical-v5\.png\?v=moonwell-quiet-bridge-1"/);
-  assert.match(html,/script src="game\.js\?v=moonwell-hollow-echo-1"/);
+  assert.match(html,/script src="game\.js\?v=moonwell-luna-readability-1"/);
   assert.doesNotMatch(source+html,/moonwell-bridge-vertical-v4\.png/);
   assert.match(source,/object\.kind==='bridge'&&loaded\(art\.bridge\)\)ctx\.drawImage\(art\.bridge,object\.x,object\.y,object\.w,object\.h\)/);
   const [basePixels,pixels]=[rgba(base),rgba(asset)];
@@ -502,7 +502,7 @@ test('Starfall uses grounded cool-dormant starroot art and contains no sky-bell 
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
   assert.match(html,/game-core\.js\?v=moonwell-top-boundary-1/);
-  assert.match(html,/game\.js\?v=moonwell-hollow-echo-1/);
+  assert.match(html,/game\.js\?v=moonwell-luna-readability-1/);
 });
 
 test('generated Starroot source produces grounded strips with cool dormant and amber-lit states',()=>{
@@ -640,6 +640,36 @@ test('exact owner Luna source reduces literally to four readable padded frames',
   }
 });
 
+test('Luna readability derivative preserves every exact-owner pixel and adds only a muted contact edge',()=>{
+  const source='assets/moonwell-art/production/moonwell-keeper-walk-v7.png';
+  const asset='assets/moonwell-art/production/moonwell-keeper-walk-v8.png';
+  const processor=read('scripts/process-luna-readability-art.sh').toString();
+  const managed=read('scripts/process-no-violet-environment-art.sh').toString();
+  const game=read('game.js').toString(),html=read('index.html').toString();
+  const digest=path=>createHash('sha256').update(read(path)).digest('hex');
+  assert.equal(digest(source),'a287641c02f9e243d5f58d8188e7a54084c42a92150542ce52adfa29e8315f07');
+  assert.equal(digest(asset),'ca658ed41aadea959226f237e2c2a728fc6c5d9a72f851184afb7418237d5876');
+  assert.deepEqual(dimensions(asset),[104,40]);
+  assert.match(processor,/moonwell-keeper-walk-v7\.png/);
+  assert.match(processor,/a287641c02f9e243d5f58d8188e7a54084c42a92150542ce52adfa29e8315f07/);
+  assert.match(processor,/Dilate Diamond:1/);
+  assert.match(processor,/#275c63/);
+  assert.match(managed,/process-luna-readability-art\.sh/);
+  const sourcePixels=rgba(source),pixels=rgba(asset);
+  let outline=0;
+  for(let offset=0;offset<sourcePixels.length;offset+=4){
+    if(sourcePixels[offset+3]>15)assert.deepEqual(pixels.subarray(offset,offset+4),sourcePixels.subarray(offset,offset+4),`authored Luna pixel changed at ${offset/4}`);
+    else if(pixels[offset+3]>15){outline++;assert.deepEqual([...pixels.subarray(offset,offset+3)],[39,92,99]);}
+  }
+  assert.ok(outline>=500&&outline<=560,'contact edge no longer stays a one-source-pixel silhouette');
+  assert.match(game,/moonwell-keeper-walk-v8\.png\?v=moonwell-luna-readability-1/);
+  assert.match(html,/preload" as="image" href="assets\/moonwell-art\/production\/moonwell-keeper-walk-v8\.png\?v=moonwell-luna-readability-1"/);
+  assert.match(html,/game\.js\?v=moonwell-luna-readability-1/);
+  const before=digest(asset);
+  execFileSync('sh',[fileURLToPath(new URL('scripts/process-luna-readability-art.sh',root))],{stdio:'pipe',timeout:120000});
+  assert.equal(digest(asset),before);
+});
+
 test('Hollow echo is a deterministic moonlit derivative of Luna with identical frame geometry',()=>{
   const source='assets/moonwell-art/production/moonwell-keeper-walk-v7.png';
   const asset='assets/moonwell-art/production/moonwell-keeper-echo-v1.png';
@@ -674,7 +704,7 @@ test('Hollow echo is a deterministic moonlit derivative of Luna with identical f
   assert.match(game,/query\.get\('state'\)==='echo-ready'/);
   assert.match(game,/trail=\[\{\.\.\.runes\[0\]\},\{x:216,y:112\},\{\.\.\.runes\[1\]\}\]/);
   assert.match(html,/preload" as="image" href="assets\/moonwell-art\/production\/moonwell-keeper-echo-v1\.png\?v=moonwell-hollow-echo-1"/);
-  assert.match(html,/game\.js\?v=moonwell-hollow-echo-1/);
+  assert.match(html,/game\.js\?v=moonwell-luna-readability-1/);
   const before=digest(asset);
   execFileSync('sh',[fileURLToPath(new URL('scripts/process-hollow-echo-art.sh',root))],{stdio:'pipe',timeout:120000});
   assert.equal(digest(asset),before);
@@ -701,9 +731,9 @@ test('no-violet runtime regeneration is byte-identical',()=>{
   assert.equal(digest(retainedStarrootAlpha),starrootAlphaBefore,'composite regeneration rewrote a retained generated source companion');
 });
 
-test('Luna draws the unchanged v7 atlas at exact half size over one-cell control',()=>{
+test('Luna draws the exact-owner readability derivative at unchanged half size over one-cell control',()=>{
   const source=read('game.js').toString();
-  assert.match(source,/moonwell-keeper-walk-v7\.png/);
+  assert.match(source,/moonwell-keeper-walk-v8\.png\?v=moonwell-luna-readability-1/);
   assert.match(source,/KEEPER_SOURCE_WIDTH=26,KEEPER_SOURCE_HEIGHT=40,KEEPER_DRAW_WIDTH=13,KEEPER_DRAW_HEIGHT=20,KEEPER_DRAW_X=-6\.5,KEEPER_DRAW_Y=-19\.5/);
   assert.match(source,/walking&&!reduce\.matches\?Math\.floor\(walkClock\/\.11\)%4:0/);
   assert.match(source,/frame\*KEEPER_SOURCE_WIDTH,0,KEEPER_SOURCE_WIDTH,KEEPER_SOURCE_HEIGHT,KEEPER_DRAW_X,KEEPER_DRAW_Y,KEEPER_DRAW_WIDTH,KEEPER_DRAW_HEIGHT/);
@@ -955,5 +985,5 @@ test('the dense top-canopy renderer consumes the same exported layout as its roo
   assert.match(source,/!object\.id\.startsWith\('edge-top-'\).*object\.id!=='edge-left-1'.*object\.id!=='edge-right-1'/);
   for(const layout of context.globalThis.MoonwellCore.TOP_CANOPY_LAYOUTS)for(const curtain of layout)assert.equal(curtain.y,0,'top canopy must begin inside the viewport rather than crop a crown at its edge');
   assert.match(html,/game-core\.js\?v=moonwell-top-boundary-1/);
-  assert.match(html,/game\.js\?v=moonwell-hollow-echo-1/);
+  assert.match(html,/game\.js\?v=moonwell-luna-readability-1/);
 });
