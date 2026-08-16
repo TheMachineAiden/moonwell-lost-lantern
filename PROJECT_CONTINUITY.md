@@ -1,20 +1,5 @@
 # Moonwell visual art system — continuity record
 
-## Retained Luna contact silhouette — 2026-08-16
-
-- Public all-map comparison found Luna's accepted 13 × 20 figure consistently
-  harder to locate than Eir, the cool echo, fireflies, and map landmarks,
-  especially over Moonroot's lower foliage and Hollow's central loam.
-- The v8 retained derivative preserves every authored v7 RGBA pixel and adds
-  only a one-source-pixel muted teal contact edge. The exact-owner handoff and
-  literal v7 reduction remain authoritative and hash-pinned; the managed art
-  workflow rebuilds v8 byte-identically after v7.
-- Frame order, 13 × 20 draw, anchor, baseline, gait timing, mirroring, 10 × 10
-  collision, routes, interactions, progression, echo, and world art are
-  unchanged. Regression coverage pins source identity, pixel preservation,
-  bounded outline coverage, runtime/preload/cache paths, and deterministic
-  regeneration.
-
 ## Retained map-specific forest atmosphere — 2026-08-12
 
 - Follow-up audit removed the final static full-canvas `rgba(3,12,24,.08)`
