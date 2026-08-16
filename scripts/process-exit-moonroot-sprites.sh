@@ -38,10 +38,10 @@ magick "$work_dir/route-overhang-closed.png" "$work_dir/route-overhang-opening.p
 # parted spruces. A single retained floor cell, rather than a large opaque loam
 # crop, keeps the finished opening visibly porous at native scale: it reads as
 # a narrow path through the trees rather than a flat dark 32-pixel panel.
-magick "$repo_dir/assets/moonwell-art/production/moonwell-loam-base-tiles-v1.png" -crop '16x16+16+0' +repage -filter point \
+magick "$shore_source" -crop '96x80+200+8' +repage -filter point \
   -resize '32x40!' -background '#24463f' -alpha remove -alpha off \
-  -modulate '124,63,100' -fill '#b58550' -colorize 30% "$work_dir/route-path-base.png"
-for spec in 'closed:4:6:8:76' 'opening:7:10:14:86' 'revealed:10:14:18:96' 'open:12:16:22:108'; do
+  -modulate '108,58,96' -fill '#8d7048' -colorize 22% "$work_dir/route-path-base.png"
+for spec in 'closed:4:6:10:76' 'opening:7:12:18:84' 'revealed:10:16:24:92' 'open:12:20:28:100'; do
   state=${spec%%:*}
   rest=${spec#*:}
   mouth=${rest%%:*}
@@ -64,13 +64,11 @@ for spec in 'closed:4:6:8:76' 'opening:7:10:14:86' 'revealed:10:14:18:96' 'open:
   magick "$work_dir/route-path-base.png" -modulate "$light,100,100" \
     "$work_dir/route-path-$state.png"
   magick "$work_dir/route-path-$state.png" "$work_dir/route-mask-$state.png" \
-    -alpha off -compose copyopacity -composite \
-    -fill '#a66d3c' -draw 'point 16,20 point 15,27 point 17,33' \
-    "$work_dir/exit-$state.png"
+    -alpha off -compose copyopacity -composite "$work_dir/exit-$state.png"
 done
 magick "$work_dir/exit-closed.png" "$work_dir/exit-opening.png" \
   "$work_dir/exit-revealed.png" "$work_dir/exit-open.png" +append +repage \
-  -strip -define png:exclude-chunk=date,time PNG32:"$production/moonwell-exit-clearing-states-v5.png"
+  -strip -define png:exclude-chunk=date,time PNG32:"$production/moonwell-exit-clearing-states-v4.png"
 
 # A continuous, low-contrast loam-to-wet-soil bank avoids turning the river
 # edge into a root fence or bright tiled rail. Eight overlapping crops retain
@@ -112,7 +110,7 @@ magick "$work_dir/shore-north.png" "$work_dir/shore-south.png" -append +repage \
 # sheets. Recolor only the established purple-family predicate to quiet teal;
 # warm path loam and all retained source detail stay intact.
 purple_predicate='r>g*1.08 && b>g*1.12 && b>r*.58 && (max(r,b)-g)>.035'
-for asset in moonwell-route-opening-overhang-v1.png moonwell-exit-clearing-states-v5.png moonwell-moonroot-shores-v1.png; do
+for asset in moonwell-route-opening-overhang-v1.png moonwell-exit-clearing-states-v4.png moonwell-moonroot-shores-v1.png; do
   mask="$work_dir/$asset-mask.png"
   shifted="$work_dir/$asset-shifted.png"
   magick "$production/$asset" -alpha off -fx "$purple_predicate ? 1 : 0" "$mask"
