@@ -1,5 +1,19 @@
 # Moonwell visual release audit
 
+## Retained Luna contact silhouette — 2026-08-16
+
+- Four-map actual-scale comparison found Luna consistently harder to locate
+  than Eir, the echo, collectibles, and landmarks over dense loam and lower
+  foliage. Her exact-owner identity, size, and gait already read correctly.
+- `moonwell-keeper-walk-v8.png` preserves every opaque pixel from the
+  hash-pinned exact-owner v7 reduction and adds only a one-source-pixel muted
+  teal contact silhouette. Runtime keeps the same 13 × 20 draw, anchor,
+  baseline, timing, mirroring, and 10 × 10 movement/collision box.
+- Acceptance target: syntax; full tests; dedicated and managed byte-identical
+  regeneration; build/source identity; diff hygiene; four-map desktop visual
+  review; 390 × 844 portrait fit; 844 × 390 touch movement and pause/Continue;
+  public v8 byte identity, request success, and empty consoles.
+
 ## Retained Whispering Hollow echo — 2026-08-12
 
 - Actual-scale comparison of the two remaining partial interaction states
