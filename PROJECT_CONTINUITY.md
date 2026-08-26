@@ -1013,3 +1013,21 @@ then look for the next small player-visible improvement.
   collision, player Luna, and every other world-art layer are unchanged. New
   developer previews cover both audited partial transitions, and the
   `echo-ready` scene requires a normal keyboard E or touch Echo action.
+
+## Sound-effect palette — 2026-08-26
+
+- Keep this workstream independent from soundtrack composition. The three
+  music scores, three production masters, cue order, volumes, and story arc are
+  unchanged; only the minimal enabled-state subscription used by effects was
+  added to `soundtrack.js`.
+- Retained effect map: firefly, bridge, memory, valid Echo, and Starroot only.
+  The intentional exclusions in `VERIFICATION.md` are part of the restraint
+  contract and should not be expanded without gameplay evidence.
+- Editable source and production workflow live under `sound-effects/`; runtime
+  files live under `assets/audio/sfx/`. The shared Sound control preserves the
+  existing `moonwell-music` off preference while truthfully muting both music
+  and effects.
+- Before publication, rerun the exact local acceptance, inspect every changed
+  file, publish the tested commit through the repository release path, and
+  repeat the critical pickup/bridge/control/lifecycle/mobile/network/console
+  checks on the public Pages revision.

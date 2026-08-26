@@ -173,7 +173,7 @@ test('Moonroot bridge keeps its retained footprint while yielding warm hierarchy
   assert.match(read('scripts/process-no-violet-environment-art.sh').toString(),/process-moonroot-bridge-art\.sh/);
   assert.match(source,/bridge:loadArt\('assets\/moonwell-art\/production\/moonwell-bridge-vertical-v5\.png\?v=moonwell-quiet-bridge-1'\)/);
   assert.match(html,/preload" as="image" href="assets\/moonwell-art\/production\/moonwell-bridge-vertical-v5\.png\?v=moonwell-quiet-bridge-1"/);
-  assert.match(html,/script src="game\.js\?v=moonwell-lanterns-1"/);
+  assert.match(html,/script src="game\.js\?v=moonwell-sfx-1"/);
   assert.doesNotMatch(source+html,/moonwell-bridge-vertical-v4\.png/);
   assert.match(source,/object\.kind==='bridge'&&loaded\(art\.bridge\)\)ctx\.drawImage\(art\.bridge,object\.x,object\.y,object\.w,object\.h\)/);
   const [basePixels,pixels]=[rgba(base),rgba(asset)];
@@ -502,7 +502,7 @@ test('Starfall uses grounded cool-dormant starroot art and contains no sky-bell 
   assert.match(source+core,/starroot chime/i);
   assert.doesNotMatch(source+core+html,/skybell|sky-bell|\.bells\b/);
   assert.match(html,/game-core\.js\?v=moonwell-top-boundary-1/);
-  assert.match(html,/game\.js\?v=moonwell-lanterns-1/);
+  assert.match(html,/game\.js\?v=moonwell-sfx-1/);
 });
 
 test('generated Starroot source produces grounded strips with cool dormant and amber-lit states',()=>{
@@ -656,7 +656,7 @@ test('Hollow echo is a deterministic moonlit derivative of Luna with identical f
   assert.match(game,/query\.get\('state'\)==='echo-ready'/);
   assert.match(game,/trail=\[\{\.\.\.runes\[0\]\},\{x:216,y:112\},\{\.\.\.runes\[1\]\}\]/);
   assert.match(html,/preload" as="image" href="assets\/moonwell-art\/production\/moonwell-keeper-echo-v1\.png\?v=moonwell-hollow-echo-1"/);
-  assert.match(html,/game\.js\?v=moonwell-lanterns-1/);
+  assert.match(html,/game\.js\?v=moonwell-sfx-1/);
   const before=digest(asset);
   execFileSync('sh',[fileURLToPath(new URL('scripts/process-hollow-echo-art.sh',root))],{stdio:'pipe',timeout:120000});
   assert.equal(digest(asset),before);
@@ -939,5 +939,5 @@ test('the dense top-canopy renderer consumes the same exported layout as its roo
   assert.match(source,/!object\.id\.startsWith\('edge-top-'\).*object\.id!=='edge-left-1'.*object\.id!=='edge-right-1'/);
   for(const layout of context.globalThis.MoonwellCore.TOP_CANOPY_LAYOUTS)for(const curtain of layout)assert.equal(curtain.y,0,'top canopy must begin inside the viewport rather than crop a crown at its edge');
   assert.match(html,/game-core\.js\?v=moonwell-top-boundary-1/);
-  assert.match(html,/game\.js\?v=moonwell-lanterns-1/);
+  assert.match(html,/game\.js\?v=moonwell-sfx-1/);
 });

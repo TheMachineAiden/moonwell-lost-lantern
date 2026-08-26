@@ -97,7 +97,7 @@ def verify_sources() -> list[dict]:
 
 def main() -> int:
     audio_dir = PROJECT / "assets" / "audio"
-    names = sorted(path.name for path in audio_dir.iterdir())
+    names = sorted(path.name for path in audio_dir.iterdir() if path.is_file())
     reports = verify_sources()
     checks = [names == sorted(EXPECTED)]
     for name, expectation in EXPECTED.items():

@@ -28,8 +28,8 @@ test('soundtrack stays silent until a cue is selected after user input',()=>{
   const {api,audio,button}=harness();
   assert.equal(audio.plays,0);
   assert.equal(api.snapshot().cue,null);
-  assert.equal(button.textContent,'Music on');
-  assert.equal(button.attributes['aria-label'],'Mute music');
+  assert.equal(button.textContent,'Sound on');
+  assert.equal(button.attributes['aria-label'],'Mute sound');
 });
 
 test('prologue, exploration, and victory use one non-overlapping audio voice',async()=>{
@@ -69,18 +69,22 @@ test('game pause and page visibility suspend and resume the active cue',async()=
   assert.equal(audio.paused,false);
 });
 
-test('music control persists mute state and restores playback only on input',async()=>{
+test('sound control persists mute state, notifies effects, and restores playback only on input',async()=>{
   const {api,audio,button,storage}=harness();
+  const states=[];
+  const unsubscribe=api.subscribe(state=>states.push(state.enabled));
   await api.exploration();
   await button.handler();
   assert.equal(audio.muted,true);
   assert.equal(storage.get('moonwell-music'),'off');
-  assert.equal(button.textContent,'Music off');
+  assert.equal(button.textContent,'Sound off');
   assert.equal(button.attributes['aria-pressed'],'false');
   await button.handler();
   assert.equal(audio.muted,false);
   assert.equal(storage.get('moonwell-music'),'on');
   assert.equal(audio.paused,false);
+  assert.deepEqual(states,[true,false,true]);
+  unsubscribe();
 });
 
 test('autoplay rejection is contained and reported without throwing',async()=>{
@@ -102,6 +106,8 @@ test('selected master and editable source retain verified identities',async()=>{
   assert.equal(hash(await readFile(new URL('../soundtrack/render.py',import.meta.url))),'b6ed7c6aa63fcaf11d83881943b8e9ebc844a961b26d6ba1b0b072eb7ce580da');
 });
 
-test('production audio directory contains only the three OGG masters',async()=>{
-  assert.deepEqual((await readdir(new URL('../assets/audio/',import.meta.url))).sort(),['lantern-before-dawn.ogg','lantern-home.ogg','lanterns-through-leaves.ogg']);
+test('production audio root preserves exactly the three OGG masters beside isolated effects',async()=>{
+  const entries=await readdir(new URL('../assets/audio/',import.meta.url),{withFileTypes:true});
+  assert.deepEqual(entries.filter(entry=>entry.isFile()).map(entry=>entry.name).sort(),['lantern-before-dawn.ogg','lantern-home.ogg','lanterns-through-leaves.ogg']);
+  assert.deepEqual(entries.filter(entry=>entry.isDirectory()).map(entry=>entry.name).sort(),['sfx']);
 });

@@ -3,11 +3,13 @@
   "private":true,
   "type":"module",
   "scripts":{
-    "build":"rm -rf dist && mkdir -p dist && cp index.html game.js game-core.js soundtrack.js field-guide.html elsewhere.html manifest.webmanifest favicon.ico dist/ && cp -R assets dist/",
+    "build":"rm -rf dist && mkdir -p dist && cp index.html game.js game-core.js soundtrack.js sound-effects.js field-guide.html elsewhere.html manifest.webmanifest favicon.ico dist/ && cp -R assets dist/",
     "build:audio":"python3 soundtrack/build.py",
+    "build:sfx":"python3 sound-effects/build.py",
     "dev":"python3 -m http.server ${MOONWELL_PORT:-4173} --bind 127.0.0.1",
     "test":"node --test",
     "verify:audio":"python3 soundtrack/verify.py",
-    "check":"node --check game.js && node --check game-core.js && node --check soundtrack.js"
+    "verify:sfx":"python3 sound-effects/verify.py",
+    "check":"node --check game.js && node --check game-core.js && node --check soundtrack.js && node --check sound-effects.js"
   }
 }
