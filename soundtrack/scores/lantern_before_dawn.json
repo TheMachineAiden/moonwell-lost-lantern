@@ -1,0 +1,100 @@
+{
+  "metadata": {
+    "title": "Lantern Before Dawn",
+    "slug": "lantern_before_dawn",
+    "mood": "A sparse, uncertain prologue: the Lanterns motif searches through blue dark before the path opens.",
+    "tempo_note": "84 BPM, dotted-quarter pulse",
+    "meter": "6/8",
+    "key_mode": "B minor leaning toward D major, with one Lydian-E glint",
+    "palette": "Hushed 12.5% pulse fragments, distant 25% pulse answers, held triangle shadows, almost no noise",
+    "form": "10-bar bounded prologue cue",
+    "originality_note": "Wholly original Moonwell cue derived from the project's Lanterns Through Leaves motif; no outside melody was used."
+  },
+  "tempo_bpm": 84,
+  "beats_per_bar": 2,
+  "bars": 10,
+  "sample_rate": 44100,
+  "noise_seed": 31861,
+  "dither_seed": 7819,
+  "master_gain_db": 2.2,
+  "edge_fade_ms": 18,
+  "channels": {
+    "pulse1": {
+      "level": 0.22,
+      "duty": 0.125,
+      "patterns": {
+        "dark": {"length": 2, "events": []},
+        "d": {"length": 2, "events": [
+          {"at": 0.42, "note": "D5", "duration": 0.5, "velocity": 0.46}
+        ]},
+        "f": {"length": 2, "events": [
+          {"at": 0.34, "note": "F#5", "duration": 0.55, "velocity": 0.5}
+        ]},
+        "a": {"length": 2, "events": [
+          {"at": 0.25, "note": "A5", "duration": 0.92, "velocity": 0.56}
+        ]},
+        "question": {"length": 2, "events": [
+          {"at": 0.18, "note": "E5", "duration": 0.46, "velocity": 0.43},
+          {"at": 0.9, "note": "G#5", "duration": 0.62, "velocity": 0.49}
+        ]},
+        "threshold": {"length": 2, "events": [
+          {"at": 0.0, "note": "D5", "duration": 0.5, "velocity": 0.55},
+          {"at": 0.66, "note": "F#5", "duration": 0.34, "velocity": 0.48},
+          {"at": 1.12, "note": "A5", "duration": 0.66, "velocity": 0.62}
+        ]}
+      },
+      "arrangement": ["dark", "d", "dark", "f", "dark", "a", "question", "dark", "threshold", "dark"]
+    },
+    "pulse2": {
+      "level": 0.135,
+      "duty": 0.25,
+      "patterns": {
+        "air": {"length": 2, "events": []},
+        "b": {"length": 2, "events": [
+          {"at": 1.0, "note": "B4", "duration": 0.62, "velocity": 0.34}
+        ]},
+        "answer": {"length": 2, "events": [
+          {"at": 0.28, "note": "A4", "duration": 0.55, "velocity": 0.37},
+          {"at": 1.15, "note": "F#4", "duration": 0.52, "velocity": 0.32}
+        ]},
+        "open": {"length": 2, "events": [
+          {"at": 0.33, "note": "A4", "duration": 0.58, "velocity": 0.4},
+          {"at": 1.25, "note": "D5", "duration": 0.55, "velocity": 0.43}
+        ]}
+      },
+      "arrangement": ["air", "air", "b", "air", "answer", "air", "b", "answer", "open", "air"]
+    },
+    "triangle": {
+      "level": 0.16,
+      "patterns": {
+        "air": {"length": 2, "events": []},
+        "b": {"length": 2, "events": [
+          {"at": 0.0, "note": "B2", "duration": 1.7, "velocity": 0.48}
+        ]},
+        "f": {"length": 2, "events": [
+          {"at": 0.0, "note": "F#2", "duration": 1.65, "velocity": 0.42}
+        ]},
+        "e": {"length": 2, "events": [
+          {"at": 0.0, "note": "E3", "duration": 1.55, "velocity": 0.44}
+        ]},
+        "d": {"length": 2, "events": [
+          {"at": 0.0, "note": "D3", "duration": 1.82, "velocity": 0.5}
+        ]}
+      },
+      "arrangement": ["air", "b", "air", "f", "b", "air", "e", "b", "d", "air"]
+    },
+    "noise": {
+      "level": 0.035,
+      "patterns": {
+        "none": {"length": 2, "events": []},
+        "leaf": {"length": 2, "events": [
+          {"at": 1.36, "kind": "leaf", "duration": 0.08, "velocity": 0.2}
+        ]},
+        "glint": {"length": 2, "events": [
+          {"at": 0.2, "kind": "shimmer", "duration": 0.06, "velocity": 0.22}
+        ]}
+      },
+      "arrangement": ["none", "none", "leaf", "none", "none", "leaf", "glint", "none", "leaf", "none"]
+    }
+  }
+}
