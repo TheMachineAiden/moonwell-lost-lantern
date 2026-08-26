@@ -1,0 +1,70 @@
+{
+  "metadata": {
+    "title": "Moonwell state-change palette",
+    "version": 1,
+    "originality_note": "Original deterministic synthesis for Moonwell: The Lost Lantern; no samples or outside melodies are used.",
+    "tonal_language": "Short D-major and B-minor colors related by timbre, not by a continuous melody."
+  },
+  "sample_rate": 22050,
+  "noise_seed": 260826,
+  "cues": {
+    "firefly": {
+      "duration": 0.42,
+      "gain_db": -4.5,
+      "tones": [
+        {"wave": "triangle", "note": "A5", "to": "D6", "at": 0.0, "duration": 0.17, "level": 0.25, "attack_ms": 3, "release_ms": 48},
+        {"wave": "pulse", "duty": 0.125, "note": "D6", "to": "F#6", "at": 0.075, "duration": 0.19, "level": 0.16, "attack_ms": 2, "release_ms": 74}
+      ],
+      "noise": [
+        {"at": 0.018, "duration": 0.07, "level": 0.025, "clock_hz": 10800, "decay": 7.5}
+      ]
+    },
+    "bridge": {
+      "duration": 1.05,
+      "gain_db": -5.5,
+      "tones": [
+        {"wave": "triangle", "note": "D2", "to": "A2", "at": 0.0, "duration": 0.78, "level": 0.3, "attack_ms": 22, "release_ms": 190},
+        {"wave": "pulse", "duty": 0.25, "note": "D4", "at": 0.11, "duration": 0.25, "level": 0.13, "attack_ms": 7, "release_ms": 86},
+        {"wave": "pulse", "duty": 0.25, "note": "F#4", "at": 0.28, "duration": 0.28, "level": 0.14, "attack_ms": 7, "release_ms": 92},
+        {"wave": "pulse", "duty": 0.125, "note": "A4", "at": 0.46, "duration": 0.31, "level": 0.15, "attack_ms": 6, "release_ms": 105},
+        {"wave": "pulse", "duty": 0.125, "note": "D5", "at": 0.64, "duration": 0.31, "level": 0.15, "attack_ms": 5, "release_ms": 125}
+      ],
+      "noise": [
+        {"at": 0.0, "duration": 0.52, "level": 0.07, "clock_hz": 920, "decay": 2.8}
+      ]
+    },
+    "memory": {
+      "duration": 0.58,
+      "gain_db": -3.5,
+      "tones": [
+        {"wave": "pulse", "duty": 0.125, "note": "A5", "at": 0.0, "duration": 0.2, "level": 0.14, "attack_ms": 9, "release_ms": 92},
+        {"wave": "pulse", "duty": 0.125, "note": "F#5", "at": 0.15, "duration": 0.22, "level": 0.13, "attack_ms": 8, "release_ms": 105},
+        {"wave": "triangle", "note": "D5", "at": 0.31, "duration": 0.22, "level": 0.17, "attack_ms": 10, "release_ms": 120}
+      ],
+      "noise": [
+        {"at": 0.01, "duration": 0.12, "level": 0.018, "clock_hz": 9700, "decay": 6.0}
+      ]
+    },
+    "echo": {
+      "duration": 0.68,
+      "gain_db": -6.0,
+      "tones": [
+        {"wave": "pulse", "duty": 0.25, "note": "E5", "to": "B4", "at": 0.0, "duration": 0.34, "level": 0.15, "attack_ms": 6, "release_ms": 120},
+        {"wave": "triangle", "note": "B4", "to": "E4", "at": 0.2, "duration": 0.38, "level": 0.18, "attack_ms": 12, "release_ms": 160},
+        {"wave": "pulse", "duty": 0.125, "note": "E5", "to": "B4", "at": 0.31, "duration": 0.24, "level": 0.08, "attack_ms": 7, "release_ms": 128}
+      ],
+      "noise": []
+    },
+    "starroot": {
+      "duration": 0.46,
+      "gain_db": -5.5,
+      "tones": [
+        {"wave": "triangle", "note": "D4", "to": "A4", "at": 0.0, "duration": 0.32, "level": 0.23, "attack_ms": 5, "release_ms": 135},
+        {"wave": "pulse", "duty": 0.125, "note": "A4", "at": 0.075, "duration": 0.28, "level": 0.12, "attack_ms": 4, "release_ms": 126}
+      ],
+      "noise": [
+        {"at": 0.0, "duration": 0.055, "level": 0.02, "clock_hz": 6100, "decay": 8.0}
+      ]
+    }
+  }
+}

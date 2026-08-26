@@ -1,5 +1,32 @@
 # Moonwell visual release audit
 
+## Restrained state-change sound palette — 2026-08-26
+
+- The explicit runtime map is deliberately small: firefly pickup, Moonroot
+  bridge materialization, optional memory discovery, valid Hollow Echo cast,
+  and Starroot waking. Movement, collisions, invalid actions, rune contact,
+  route opening, area arrival, memory reread, and the finale receive no new
+  effect; the existing victory reprise remains unchanged.
+- `sound-effects/palette.json` and its standard-library renderer are the
+  editable deterministic source. Five 22.05 kHz dual-mono Ogg production cues
+  total under 40 KB. Deterministic PCM, duration, format, loudness, conservative
+  peak, and size checks pass; measured runtime output is -29.4 to -25.0 LUFS at
+  the shared 0.82 effects gain. The exploration master remains byte-identical
+  and verifies at -17.0 LUFS with its unchanged 0.33 playback volume.
+- `sound-effects.js` unlocks on normal input, decodes the five retained assets,
+  uses deterministic pickup/Starroot pitch colors, replaces same-family tails,
+  caps output at three voices, follows the persisted Sound control, stops on
+  pause/visibility/mute/finale, and never replays an interrupted cue on resume.
+- Local automated acceptance: syntax; 106/106 tests; existing soundtrack
+  verification; dedicated effects verification; static build/source identity;
+  and clean diff checks. Chrome normal-input QA covered three repeated desktop
+  pickups, memory pickup plus silent reread, Eir wrong/retry/three-correct flow
+  and bridge creation, valid/invalid Echo input, three Starroots, Sound off/on,
+  pause/resume, visibility loss/return, 390 × 844 × 3 portrait gate, and
+  844 × 390 × 3 touch landscape entry/movement/pickup/pause. Required regions
+  fit with no horizontal overflow; all five effects and paired cache-keyed
+  scripts returned 200/304; consoles were empty.
+
 ## Retained Whispering Hollow echo — 2026-08-12
 
 - Actual-scale comparison of the two remaining partial interaction states
