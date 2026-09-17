@@ -1,0 +1,95 @@
+{
+  "format": "moonwell-event-score-1",
+  "family": "mosslight-steps-hidden-clearing",
+  "title": "Mosslight Steps \u2014 Hidden Clearing",
+  "cue": "victory",
+  "qpm": 94,
+  "meter": [
+    4,
+    4
+  ],
+  "swing": 0.56,
+  "total_bars": 4,
+  "loop": false,
+  "sections": [
+    {
+      "bar": 1,
+      "label": "the clearing opens"
+    },
+    {
+      "bar": 3,
+      "label": "return and rest"
+    }
+  ],
+  "harmony": [
+    "D6",
+    "Gmaj7",
+    "A9",
+    "D"
+  ],
+  "timing": "quarter beats; C4=MIDI60; offset/pitch/occupied-duration[/velocity]; gaps=rests; release inside duration",
+  "parts": {
+    "lead": {
+      "channel": "pulse-1",
+      "instrument": "rounded-pulse",
+      "level": 0.2,
+      "duty": 0.25,
+      "cutoff": 2350,
+      "attack_ms": 20,
+      "release_ms": 110,
+      "default_velocity": 0.76,
+      "bars": [
+        ".5/F#4/.5/.78 1/A4/1/.81 2/D5/.5/.8 2.5/E5/.5/.74 3/F#5/1.5/.85",
+        ".5/E5/.5/.71 1/D5/1/.77 2.25/B4/.5/.69 3/G4/.75/.65",
+        "0/F#4/.5/.68 .5/G4/.5/.65 1/A4/1/.75 2/C#5/.5/.73 2.5/E5/2/.76",
+        ".5/D5/2.85/.75"
+      ]
+    },
+    "inner": {
+      "channel": "pulse-2",
+      "instrument": "rounded-pulse",
+      "level": 0.115,
+      "duty": 0.5,
+      "cutoff": 2050,
+      "attack_ms": 22,
+      "release_ms": 110,
+      "default_velocity": 0.52,
+      "bars": [
+        "0/A3/1.3/.46 2/F#4/.5/.44",
+        "0/D4/1.4/.45 2/B3/.65/.42 3.25/D5/.5/.48",
+        "0/G3/1.2/.43 1.5/C#4/.7/.45 3/A3/.7/.42",
+        "0/F#4/3.35/.48"
+      ]
+    },
+    "bass": {
+      "channel": "wave",
+      "instrument": "triangle",
+      "level": 0.26,
+      "cutoff": 1400,
+      "attack_ms": 10,
+      "release_ms": 65,
+      "default_velocity": 0.75,
+      "bars": [
+        "0/D3/1.4/.79 1.5/A2/.8/.61 3/C#3/.45/.64 3.5/D3/.45/.69",
+        "0/G3/1.4/.75 1.5/D3/.9/.6 3/F#3/.75/.61",
+        "0/A2/1.5/.76 2/E3/.75/.6 3/C#3/.85/.65",
+        "0/D3/3.5/.77"
+      ]
+    },
+    "noise": {
+      "channel": "noise",
+      "instrument": "brush",
+      "level": 0.02,
+      "cutoff": 1700,
+      "attack_ms": 9,
+      "release_ms": 65,
+      "default_velocity": 0.45,
+      "bars": [
+        "",
+        "",
+        "1.5/N/.16/.27",
+        ""
+      ]
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "family": "Hidden Clearing",
+  "format": "48000 Hz mono signed PCM16 WAV",
+  "conversion": "identity; mono samples exactly match both channels of the stereo masters",
+  "cues": {
+    "prologue": {
+      "file": "prologue.wav",
+      "sha256": "b8583bdd798e3ef2ba45426d0cf484befcbe784eee0105d908cec3ec374feae6",
+      "source_pcm_sha256": "b8583bdd798e3ef2ba45426d0cf484befcbe784eee0105d908cec3ec374feae6",
+      "frames": 735319,
+      "duration_seconds": 15.319145833333334,
+      "score_file": "../../../soundtrack/hidden-clearing/prologue.score.json",
+      "score_sha256": "b68253698b61c8442173cc6595d0e040ca59a3507b556cc04525d9822288765e",
+      "loop": false
+    },
+    "exploration": {
+      "file": "exploration.wav",
+      "sha256": "e6706eead9304dc59dc37788c598ebb2ee66f42b435b5fd7aaa530449d7a94a9",
+      "source_pcm_sha256": "e6706eead9304dc59dc37788c598ebb2ee66f42b435b5fd7aaa530449d7a94a9",
+      "frames": 3921702,
+      "duration_seconds": 81.702125,
+      "score_file": "../../../soundtrack/hidden-clearing/exploration.score.json",
+      "score_sha256": "0be3ff5c5ed5c253c2640a7e4ce6194051f7cb59b4aed911ae1c0464e458dc9e",
+      "loop": true
+    },
+    "victory": {
+      "file": "victory.wav",
+      "sha256": "e9395d6d7980808f1ddac7d3f47fd6f5f1d6700aa9b3c4b2f4d4c36f8ac81df9",
+      "source_pcm_sha256": "e9395d6d7980808f1ddac7d3f47fd6f5f1d6700aa9b3c4b2f4d4c36f8ac81df9",
+      "frames": 490213,
+      "duration_seconds": 10.212770833333334,
+      "score_file": "../../../soundtrack/hidden-clearing/victory.score.json",
+      "score_sha256": "8e49268810ed42a71c650c4b3b4bcc8172d56a9f0343c6d45bb423d007eb011d",
+      "loop": false
+    }
+  }
+}
