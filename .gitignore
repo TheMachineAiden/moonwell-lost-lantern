@@ -1,5 +1,6 @@
 dist/
 project-inputs/
+artifacts/
 __pycache__/
 assets/generated/compact-pass-crops/
 assets/generated/moonwell-compact-fairy-preview-v1.png
