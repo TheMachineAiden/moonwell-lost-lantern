@@ -1,0 +1,14 @@
+{
+  "title": "Beyond the Crossing - Gentle Arc",
+  "cue": "exploration",
+  "file": "exploration.wav",
+  "format": "48000 Hz mono signed PCM16 WAV",
+  "conversion": "identity mono extraction from identical stereo master channels; no resampling or gain change",
+  "sha256": "6769a324b39c95432bbf539200425b0e628c34ae78adbf08672260fa294bee15",
+  "frames": 3200000,
+  "duration_seconds": 66.66666666666667,
+  "loop": true,
+  "volume": 0.33,
+  "score_file": "../../../soundtrack/gentle-arc/exploration.score.json",
+  "score_sha256": "9a6f50a18b6b41e6f865b81732ef7f62d33a9d9f13d6993038482b4c2f9a63f1"
+}
