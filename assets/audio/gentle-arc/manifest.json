@@ -1,14 +1,47 @@
 {
-  "title": "Beyond the Crossing - Gentle Arc",
-  "cue": "exploration",
-  "file": "exploration.wav",
+  "family": "Gentle Arc",
   "format": "48000 Hz mono signed PCM16 WAV",
   "conversion": "identity mono extraction from identical stereo master channels; no resampling or gain change",
-  "sha256": "6769a324b39c95432bbf539200425b0e628c34ae78adbf08672260fa294bee15",
-  "frames": 3200000,
-  "duration_seconds": 66.66666666666667,
-  "loop": true,
-  "volume": 0.33,
-  "score_file": "../../../soundtrack/gentle-arc/exploration.score.json",
-  "score_sha256": "9a6f50a18b6b41e6f865b81732ef7f62d33a9d9f13d6993038482b4c2f9a63f1"
+  "renderer": "soundtrack/hidden-clearing/renderer.py",
+  "renderer_sha256": "066a60bd1797b54719784eafeacf60fbd213799509e42dfe268c5ab61e5755d7",
+  "cues": {
+    "prologue": {
+      "title": "Before the Forest Wakes",
+      "cue": "prologue",
+      "file": "prologue.wav",
+      "sha256": "4323bc3fd0ba8592665ab9c6af5fa416de7add93d3c7203b7716d8e4a320b29b",
+      "frames": 720000,
+      "duration_seconds": 15,
+      "loop": false,
+      "volume": 0.7,
+      "score_file": "../../../soundtrack/gentle-arc/prologue.score.json",
+      "score_sha256": "c78f8bdee830145913cac8194f18a401631b1627276ed70eb1562bc862e25388"
+    },
+    "exploration": {
+      "title": "Beyond the Crossing - Gentle Arc",
+      "cue": "exploration",
+      "file": "exploration.wav",
+      "format": "48000 Hz mono signed PCM16 WAV",
+      "conversion": "identity mono extraction from identical stereo master channels; no resampling or gain change",
+      "sha256": "6769a324b39c95432bbf539200425b0e628c34ae78adbf08672260fa294bee15",
+      "frames": 3200000,
+      "duration_seconds": 66.66666666666667,
+      "loop": true,
+      "volume": 0.33,
+      "score_file": "../../../soundtrack/gentle-arc/exploration.score.json",
+      "score_sha256": "9a6f50a18b6b41e6f865b81732ef7f62d33a9d9f13d6993038482b4c2f9a63f1"
+    },
+    "victory": {
+      "title": "The Forest Remembers",
+      "cue": "victory",
+      "file": "victory.wav",
+      "sha256": "792c6c56dee89a31133b059667890a25ce8d1ab330a708e027e050470e3af1f2",
+      "frames": 1280000,
+      "duration_seconds": 26.666666666666668,
+      "loop": false,
+      "volume": 0.42,
+      "score_file": "../../../soundtrack/gentle-arc/victory.score.json",
+      "score_sha256": "a9a3b4ebc9f6c4b717037c7591bb0dc65538096256b3f8771bbefe0df90a40ef"
+    }
+  }
 }

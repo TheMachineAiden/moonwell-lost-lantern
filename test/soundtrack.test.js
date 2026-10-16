@@ -36,7 +36,7 @@ test('soundtrack stays silent until a cue is selected after user input',()=>{
 test('prologue, exploration, and victory use one non-overlapping audio voice',async()=>{
   const {api,audio}=harness();
   await api.prologue();
-  assert.match(audio.src,/hidden-clearing\/prologue\.wav$/);
+  assert.match(audio.src,/gentle-arc\/prologue\.wav$/);
   assert.equal(audio.loop,false);
   assert.equal(audio.volume,.7);
   assert.equal(audio.plays,1);
@@ -47,7 +47,7 @@ test('prologue, exploration, and victory use one non-overlapping audio voice',as
   assert.equal(audio.currentTime,0);
   assert.equal(audio.pauses,2);
   await api.victory();
-  assert.match(audio.src,/hidden-clearing\/victory\.wav$/);
+  assert.match(audio.src,/gentle-arc\/victory\.wav$/);
   assert.equal(audio.loop,false);
   assert.equal(audio.volume,.42);
   assert.equal(api.snapshot().cue,'victory');
@@ -113,7 +113,6 @@ test('Hidden Clearing runtime PCM and editable scores match their provenance man
     assert.equal(wav.toString('ascii',0,4),'RIFF');assert.equal(wav.readUInt16LE(22),1);
     assert.equal(wav.readUInt32LE(24),48000);assert.equal(wav.readUInt16LE(34),16);
     assert.equal(wav.readUInt32LE(40)/2,entry.frames);
-    if(cue!=='exploration')assert.equal(api.cues[cue].src,`assets/audio/hidden-clearing/${entry.file}`);
     assert.equal(api.cues[cue].loop,entry.loop);
   }
 });
@@ -124,20 +123,26 @@ test('production audio root preserves exactly the three OGG masters beside isola
   assert.deepEqual(entries.filter(entry=>entry.isDirectory()).map(entry=>entry.name).sort(),['gentle-arc','hidden-clearing','sfx']);
 });
 
-test('Gentle Arc exploration maps to exact PCM with unchanged level and loop form',async()=>{
+test('Gentle Arc family maps to exact PCM with unchanged levels and cue forms',async()=>{
   const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
   const base=new URL('../assets/audio/gentle-arc/',import.meta.url);
-  const entry=JSON.parse(await readFile(new URL('manifest.json',base),'utf8'));
-  const wav=await readFile(new URL(entry.file,base));
+  const manifest=JSON.parse(await readFile(new URL('manifest.json',base),'utf8'));
   const {api}=harness();
-  assert.equal(hash(wav),entry.sha256);
-  assert.equal(hash(await readFile(new URL(entry.score_file,base))),entry.score_sha256);
-  assert.equal(wav.toString('ascii',0,4),'RIFF');
-  assert.equal(wav.readUInt16LE(22),1);assert.equal(wav.readUInt32LE(24),48000);
-  assert.equal(wav.readUInt16LE(34),16);assert.equal(wav.readUInt32LE(40)/2,3200000);
-  assert.equal(api.cues.exploration.src,'assets/audio/gentle-arc/exploration.wav');
-  assert.equal(api.cues.exploration.volume,.33);assert.equal(api.cues.exploration.loop,true);
-  assert.equal(entry.frames,3200000);assert.equal(entry.loop,true);
+  assert.deepEqual(Object.keys(manifest.cues).sort(),['exploration','prologue','victory']);
+  for(const [cue,entry] of Object.entries(manifest.cues)){
+    const wav=await readFile(new URL(entry.file,base));
+    assert.equal(hash(wav),entry.sha256);
+    assert.equal(hash(await readFile(new URL(entry.score_file,base))),entry.score_sha256);
+    assert.equal(wav.toString('ascii',0,4),'RIFF');
+    assert.equal(wav.readUInt16LE(22),1);assert.equal(wav.readUInt32LE(24),48000);
+    assert.equal(wav.readUInt16LE(34),16);assert.equal(wav.readUInt32LE(40)/2,entry.frames);
+    assert.equal(api.cues[cue].src,`assets/audio/gentle-arc/${cue}.wav`);
+    assert.equal(api.cues[cue].volume,{prologue:.7,exploration:.33,victory:.42}[cue]);
+    assert.equal(api.cues[cue].loop,cue==='exploration');
+    assert.equal(entry.frames,{prologue:720000,exploration:3200000,victory:1280000}[cue]);
+    assert.equal(entry.loop,cue==='exploration');
+    if(!entry.loop)for(let i=wav.length-960;i<wav.length;i+=2)assert.ok(Math.abs(wav.readInt16LE(i))<=2);
+  }
 });
 
 test('a stale rejection cannot block the latest cue after a rapid skip',async()=>{

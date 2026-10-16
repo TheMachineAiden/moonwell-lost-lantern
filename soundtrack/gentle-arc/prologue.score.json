@@ -1,0 +1,115 @@
+{
+  "format": "moonwell-event-score-1",
+  "family": "gentle-arc-prologue",
+  "title": "Gentle Arc - Before the Forest Wakes",
+  "cue": "song",
+  "qpm": 96,
+  "meter": [
+    6,
+    8
+  ],
+  "swing": 0.5,
+  "total_bars": 8,
+  "loop": false,
+  "sections": [
+    {
+      "bar": 1,
+      "label": "a lantern in the mist"
+    },
+    {
+      "bar": 5,
+      "label": "the path is not yet named"
+    }
+  ],
+  "harmony": [
+    "Gm(add9)",
+    "Ebmaj7",
+    "Cm9",
+    "D7sus4",
+    "Gm/D",
+    "Ebmaj7",
+    "D7sus4",
+    "D7(no3)"
+  ],
+  "timing": "quarter-note beats; C4=MIDI60; offset/pitch/occupied-duration[/velocity]; gaps=rests; release included",
+  "parts": {
+    "lead": {
+      "channel": "pulse-1",
+      "instrument": "rounded-pulse",
+      "level": 0.2,
+      "duty": 0.25,
+      "cutoff": 2350,
+      "attack_ms": 32,
+      "release_ms": 100,
+      "default_velocity": 0.74,
+      "bars": [
+        ".5/D4/1.5/.61 2/G4/.5/.65 2.5/A4/.5/.62",
+        "0/Bb4/1.75/.67 2/A4/.5/.6 2.5/G4/1/.62",
+        "1/Eb4/1/.59 2/G4/.5/.63 2.5/D5/1/.66",
+        ".5/C5/1/.62 1.5/A4/1/.59",
+        ".5/D4/1/.6 1.5/G4/.5/.65 2/A4/.5/.62 2.5/Bb4/1.5/.68",
+        "1/D5/.5/.64 1.5/Eb5/.5/.65 2/D5/1.5/.62",
+        ".5/C5/1/.6 1.5/A4/.5/.58 2/G4/1/.59",
+        "0/A4/1/.58 1/D4/1.5/.54"
+      ]
+    },
+    "inner": {
+      "channel": "pulse-2",
+      "instrument": "rounded-pulse",
+      "level": 0.105,
+      "duty": 0.5,
+      "cutoff": 1750,
+      "attack_ms": 45,
+      "release_ms": 120,
+      "default_velocity": 0.48,
+      "bars": [
+        "0/A3/1.3/.35",
+        "0/G3/1.5/.37",
+        "0/Bb3/1.3/.36",
+        "0/G3/1.4/.35 2.5/C4/.4/.36",
+        "0/Bb3/1.3/.36",
+        "0/G3/1.4/.36",
+        "0/C4/1.3/.35",
+        "0/A3/2.4/.32"
+      ]
+    },
+    "bass": {
+      "channel": "wave",
+      "instrument": "triangle",
+      "level": 0.27,
+      "cutoff": 1250,
+      "attack_ms": 18,
+      "release_ms": 80,
+      "default_velocity": 0.7,
+      "bars": [
+        "0/G2/2.85/.62",
+        "0/Eb3/2.85/.59",
+        "0/C3/1.9/.6 2/G2/.85/.48",
+        "0/D3/2.85/.6",
+        "0/D3/1.9/.58 2/Bb2/.85/.48",
+        "0/Eb3/2.85/.58",
+        "0/D3/2.85/.57",
+        "0/D3/2.45/.52"
+      ]
+    },
+    "noise": {
+      "channel": "noise",
+      "instrument": "brush",
+      "level": 0.018,
+      "cutoff": 1550,
+      "attack_ms": 9,
+      "release_ms": 60,
+      "default_velocity": 0.29,
+      "bars": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ]
+    }
+  }
+}
