@@ -1,7 +1,7 @@
 (()=>{
   const CUES=Object.freeze({
     prologue:Object.freeze({src:'assets/audio/hidden-clearing/prologue.wav',loop:false,volume:.7}),
-    exploration:Object.freeze({src:'assets/audio/hidden-clearing/exploration.wav',loop:true,volume:.33}),
+    exploration:Object.freeze({src:'assets/audio/gentle-arc/exploration.wav',loop:true,volume:.33}),
     victory:Object.freeze({src:'assets/audio/hidden-clearing/victory.wav',loop:false,volume:.42})
   });
   const button=document.querySelector('#music'),audio=new Audio(),storageKey='moonwell-music',listeners=new Set();
