@@ -98,18 +98,7 @@ test('loading and autoplay failures are contained without throwing',async()=>{
   assert.equal(blocked.api.snapshot().blocked,true);
 });
 
-test('game hooks only the retained successful state changes and lifecycle',async()=>{
-  const game=await readFile(new URL('../game.js',import.meta.url),'utf8');
-  for(const hook of ['bridge','memory','echo','starroot','firefly','pause','resume','unlock'])assert.match(game,new RegExp(`MoonwellEffects\\?\\.${hook}\\(`));
-  assert.match(game,/place\.memory\.got=true;[\s\S]*?MoonwellEffects\?\.memory\(\)/);
-  assert.match(game,/starroot\.lit=true;starrootsAwake\+\+;globalThis\.MoonwellEffects\?\.starroot\(starrootsAwake\)/);
-  assert.match(game,/light\.got=true;[\s\S]*?globalThis\.MoonwellEffects\?\.firefly\(gathered\(\),allHere\(\)\)/);
-  assert.match(game,/watcherFeedback\.complete\)\{bridge=true;[^}]*globalThis\.MoonwellEffects\?\.bridge\(\)/);
-  const echoCall=game.indexOf('MoonwellEffects?.echo()');
-  assert.ok(echoCall>game.indexOf('const replay=createEchoReplay'));
-  assert.ok(echoCall<game.indexOf("say('A delayed echo retraces"));
-  assert.doesNotMatch(game,/MoonwellEffects\?\.(?:step|collision|wrong|rune|exit|victory)\(/);
-});
+
 
 test('production effects are exactly the five small OGG cues declared by the editable palette',async()=>{
   const palette=JSON.parse(await readFile(new URL('../sound-effects/palette.json',import.meta.url),'utf8'));

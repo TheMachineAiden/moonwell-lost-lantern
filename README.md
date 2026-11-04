@@ -1,21 +1,36 @@
 # Moonwell: The Lost Lantern
 
-A small, original browser game made from a static HTML page and game script. Its skippable in-canvas prologue drifts through Moonwell’s own quiet forest imagery before play, with a static reduced-motion presentation. Walk with arrow keys or WASD, collect the first three fireflies, and return them to the lantern. That opens Moonroot Crossing: meet Eir on the north shore and solve her three gentle riddles to grow a vertical bridge, then cross south to gather two more fireflies and light the next passage. Its glow points to Whispering Hollow: touch the first echo-stone, walk to the second, then press `E` (or **Echo** on touch) to send a delayed Luna back along her path. While the echo holds the first rune, reach the third to call back a hidden firefly. Then Starfall Grove opens: wake its three grounded starroot chimes in any order, gather the final two canopy lights, and return them to the awakened Moonwell altar. Three pale forest memories are tucked beside the paths in the first three areas; collect them for small pieces of the keeper’s story, or press `J` to hear the memories found so far. Small cool glowmoss clusters are static floor flora, visually distinct from the animated amber collectibles. On phones, rotate to landscape, choose the clear fullscreen entry after the prologue, then use the transparent continuous-direction controls.
+A quiet browser walking tale about bringing everyone home after a storm. Luna finds her grandmother Eir’s dropped lantern and its three sparks in Lantern Glade. Eir waits with an adult and child on the south bank. Together they restore the bridge, light a safe detour through Whispering Hollow, and reconnect the village path at the Moonwell. Luna then holds the light for the child’s next step and walks home with Grandma.
 
-`elsewhere.html` remains a separate, playable no-gravity room until its dedicated public repository and Pages URL are verified. Drag its floating objects on touch or desktop, tap open space or choose Drift for a nudge, and optionally enable its gentle synthesized sound.
+The lantern remembers the steps Luna actually walks. Choose **Shine here** at a start stone, then **Create echo**: a single echo retraces those steps and waits at the start, without a timer. Creating it before walking is valid too. **Recall echo** only recalls it; the following action creates another. Both ends must be lit together to repair a path. Completed connections keep their light after Luna leaves or picks up the lantern. The village mark and well ring follow the same rule.
 
-`field-guide.html` is a mobile-first companion page with short field notes for the moonwell, lantern motes, and gravity seed, plus a direct route back to the game.
+Three optional keepsakes recall last autumn’s walk with Eir. They deepen the story without unlocking essential progress. The [guide](field-guide.html) explains the controls and light rules.
 
-The small original raster art pack in `assets/` adds the animated lantern keeper and discovery sprites while retaining the game's no-dependency static setup. Luna's current four-frame v7 walk atlas is a direct, transparency-only 26 × 40-cell reduction of the exact retained owner attachment; runtime drawing scales those unchanged cells to 13 × 20 with nearest-neighbor rendering. Her Whispering Hollow replay uses a retained cool-cyan derivative with the same four poses, alpha silhouette, draw box, and anchor, making the returning echo legible without changing its path or timing. Eir's unchanged runtime strip now draws at 16 × 24—exactly half her former size—with nearest-neighbor rendering, the same grounded baseline, and her existing non-solid 22-pixel interaction reach. Luna's 10 × 10 movement box is unchanged. The current forest system is derived from the owner-selected framed bottom-right clearing: parted-spruce route openings, broad mossy root shelves, continuous loam, cool moonlight pools, enclosing spruce canopies, raster Eir, warm fireflies, and supporting foliage are integrated as separate production layers across all four levels. Its provenance and reuse note are recorded in `assets/ARTWORK.md`.
+## Play and controls
 
-For deterministic non-player-facing scene checks, use `?dev=scene&area=0` through `?dev=scene&area=3`. These routes start the requested scene without changing normal gameplay and expose a small `window.__moonwellAudit` assertion surface for browser verification.
+Use **arrows/WASD**, or drag on the steering circle to walk continuously. Release or return to its centre to stop; tapping a direction takes a short step. **F** or the nearby-action button interacts; **E** creates or recalls an echo. **Enter** continues dialogue. **J** opens the paged notebook; on a phone choose Notebook from Pause. **P/Escape** pauses; restart from the pause menu or walk again after the ending. The sound button preserves the chosen mute setting across a restart.
 
-## Run locally
+The world fills the viewport at its original aspect ratio, with compact contextual controls and dialogue. Start requests fullscreen where supported; ordinary viewport play remains available otherwise. Landscape gives the widest phone view, while portrait keeps the complete map and controls below it. Full guidance, progress and the notebook are available from Pause. Dialogue waits for the player. Moving away from the child’s footing pauses their next step; returning with the lantern lets them continue. There is no countdown.
 
-Open `index.html` in a modern browser. No install, build step, network access, or third-party assets are needed.
+## Run and check
 
-For a local HTTP preview, run `npm run dev` and open `http://127.0.0.1:4173`. Run `npm test` for the dependency-free progression checks and `npm run check` for JavaScript syntax checks.
+Serve the files over HTTP (the game uses JavaScript modules):
 
-## Accessibility
+```sh
+npm run dev
+```
 
-The game has keyboard controls, a visible control guide, focus styling, and polite screen-reader updates for important game events. The prologue is a semantic dialog with fixed **Skip prologue** and **Enter the forest** controls; reduced-motion users receive the complete story statically with no timed wait. Press `P` or `Escape` at any point during a run to pause; press either key again or choose **Continue** to resume. On touch devices, use the round pause button in the upper-right corner during play.
+Open `http://127.0.0.1:4173/`. Set `MOONWELL_PORT` to choose another loopback port. No package installation is required. `npm run build` creates the portable static site in `dist/`.
+
+```sh
+npm run check
+npm test
+```
+
+Tests cover progression, persistent connections, echo lifecycle, early removal/recall recovery, child waiting, the shared home arrival, browser-adapter inputs/audio, retained audio and raster provenance. Raster/icon palette and reproducibility tests require **ImageMagick 7** (`magick`) on PATH. Diagnostic `?scene=hollow` begins an isolated scene with earlier progress already earned; it is not a full playthrough. `?layout=1` shows the retained blockout. The ordinary route uses production raster art; `window.__moonwell.snapshot()` exposes read-only inspection.
+
+## Art and music
+
+The world is 320×208 logical pixels with 16-pixel tiles, rendered with nearest-neighbour PNG composition. Source rasters remain under `assets/generated/`; deterministic derivatives are under `assets/moonwell-art/production/`. The [homecoming asset manifest](assets/moonwell-art/homecoming-art.json) records the new sources and processor contracts. Existing processing scripts produce the derivatives; no procedural world-art fallback is used in ordinary play.
+
+The released arrangements of **Before the Forest Wakes**, **Beyond the Crossing – Gentle Arc**, and **The Forest Remembers** are retained. Music begins with a player action, changes from the opening cue to exploration, and resolves at home. Pause, page visibility and mute preserve the audio lifecycle. Editable scores and provenance remain in `soundtrack/` and `assets/audio/`.

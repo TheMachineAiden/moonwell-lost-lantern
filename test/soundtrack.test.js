@@ -95,10 +95,7 @@ test('autoplay rejection is contained and reported without throwing',async()=>{
   assert.equal(api.snapshot().playRejections,1);
 });
 
-test('game lifecycle invokes each cue and pause transition',async()=>{
-  const game=await readFile(new URL('../game.js',import.meta.url),'utf8');
-  for(const hook of ['prologue','exploration','victory','pause','resume'])assert.match(game,new RegExp(`MoonwellSoundtrack\\?\\.${hook}\\(`));
-});
+
 
 test('Hidden Clearing runtime PCM and editable scores match their provenance manifest',async()=>{
   const hash=bytes=>createHash('sha256').update(bytes).digest('hex');

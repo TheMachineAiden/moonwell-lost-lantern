@@ -1,89 +1,489 @@
-(()=>{
-  const {MAP,TILE_SIZE,WORLD_WIDTH,WORLD_HEIGHT,RENDER_SCALE,TOP_CANOPY_LAYOUTS,BOTTOM_FOREST_CLUSTER,SIDE_FOREST_LAYOUT,INTERIOR_FOREST_LAYOUT,LOAM_PATCH_LAYOUT,MOONLIGHT_POOL_LAYOUT,WATER_TILE_LAYOUT,TOTAL_FIREFLIES,FIREFLY_VARIANTS,MEMORY_REVEAL_LAYOUT,MEMORY_REVEAL_TIMING,WATCHER_DIALOGUE,MOONROOT_BRIDGE_LAYOUT,EXIT_STATES,EXIT_CLEARING,areaComplete,canResolveEchoRune,collisionRectFor,countLights,countMemories,createAreas,createEchoReplay,createGroundDecor,createWorldObjects,exitStateAt,hiddenLightVisible,memoryRevealBoxForPlayer,memoryRevealStateAt,nearPoint,nextAreaIndex,starfallAltarState,watcherChoiceResult}=globalThis.MoonwellCore;
-  const canvas=document.querySelector('#game'),ctx=canvas.getContext('2d'),modal=document.querySelector('#modal'),start=document.querySelector('#start'),pauseButton=document.querySelector('#pause'),echoButton=document.querySelector('#echo'),talkButton=document.querySelector('#talk'),memoryDialogue=document.querySelector('#memory-dialogue')||(()=>{const node=document.createElement('aside');node.id='memory-dialogue';node.className='memory-dialogue';node.hidden=true;node.setAttribute('aria-live','polite');node.innerHTML='<span class="memory-dialogue__icon" aria-hidden="true">✦</span><strong>FOREST MEMORY</strong><p></p>';canvas.parentElement.append(node);return node})(),announcement=document.querySelector('#announcement'),count=document.querySelector('#fireflies'),memoryCount=document.querySelector('#memories'),areaLabel=document.querySelector('#area'),hint=document.querySelector('#hint'),coarse=matchMedia('(pointer:coarse)'),portrait=matchMedia('(orientation:portrait)'),reduce=matchMedia('(prefers-reduced-motion: reduce)');
-  const W=WORLD_WIDTH,H=WORLD_HEIGHT,T=TILE_SIZE,map=MAP;ctx.imageSmoothingEnabled=false;ctx.setTransform(RENDER_SCALE,0,0,RENDER_SCALE,0,0);
-  const loadArt=src=>{const image=new Image();image.src=src;return image};
-  const keeperArt=loadArt('assets/moonwell-art/production/moonwell-keeper-walk-v7.png'),echoArt=loadArt('assets/moonwell-art/production/moonwell-keeper-echo-v1.png?v=moonwell-hollow-echo-1');
-  const KEEPER_SOURCE_WIDTH=26,KEEPER_SOURCE_HEIGHT=40,KEEPER_DRAW_WIDTH=13,KEEPER_DRAW_HEIGHT=20,KEEPER_DRAW_X=-6.5,KEEPER_DRAW_Y=-19.5;
-  const art={exitTree:loadArt('assets/moonwell-art/production/moonwell-route-opening-overhang-v1.png'),exitClearing:loadArt('assets/moonwell-art/production/moonwell-exit-clearing-states-v4.png?v=moonwell-quiet-opening-1'),spruce:loadArt('assets/moonwell-art/production/moonwell-spruce-overhang-v3.png?v=moonwell-ambient-cues-21'),canopy:loadArt('assets/moonwell-art/production/moonwell-inner-forest-boundary-v1.png?v=moonwell-inner-forest-boundary-1'),bottomForest:loadArt('assets/moonwell-art/production/moonwell-bottom-forest-clusters-v1.png?v=moonwell-bottom-clusters-1'),atmosphere:loadArt('assets/moonwell-art/production/moonwell-forest-atmosphere-v1.png?v=moonwell-raster-atmosphere-1'),loamBase:loadArt('assets/moonwell-art/production/moonwell-loam-base-tiles-v1.png'),loam:loadArt('assets/moonwell-art/production/moonwell-clearing-loam-patches-v3.png'),luminousPool:loadArt('assets/moonwell-art/production/moonwell-clearing-moonlight-v4.png'),eir:loadArt('assets/moonwell-art/production/moonwell-eir-rootwatcher-idle-v2.png'),firefly:loadArt('assets/moonwell-art/production/moonwell-firefly-variants-v2.png?v=moonwell-varied-fireflies-1'),memory:loadArt('assets/moonwell-art/production/moonwell-memory-loop-v3.png'),platform:loadArt('assets/moonwell-art/production/moonwell-root-shelf-variants-v2.png?v=moonwell-rooted-shelves-2'),foliage:loadArt('assets/moonwell-art/production/moonwell-foliage-variants-v2.png'),ground:loadArt('assets/moonwell-art/production/moonwell-ground-texture-variants-v2.png'),stone:loadArt('assets/moonwell-art/production/moonwell-stone-variants-v2.png'),mushroom:loadArt('assets/moonwell-art/production/moonwell-mushroom-variants-v2.png'),lightPool:loadArt('assets/moonwell-art/production/moonwell-light-pool-variants-v2.png'),bridge:loadArt('assets/moonwell-art/production/moonwell-bridge-vertical-v5.png?v=moonwell-quiet-bridge-1'),rune:loadArt('assets/moonwell-art/production/moonwell-rune-stone-variants-v1.png?v=moonwell-varied-runes-1'),starroot:loadArt('assets/moonwell-art/production/moonwell-starroot-chime-variants-v5.png?v=moonwell-cool-dormant-starroots-1'),sentinel:loadArt('assets/moonwell-art/production/moonwell-sentinel-stones-v2.png'),altar:loadArt('assets/moonwell-art/production/moonwell-altar-v3.png'),water:loadArt('assets/moonwell-art/production/moonwell-water-tile-v4.png?v=moonwell-quiet-water-1'),moonrootShore:loadArt('assets/moonwell-art/production/moonwell-moonroot-shores-v1.png?v=moonwell-loam-bank-2')};
-  const keys={},touchKeys={},areas=createAreas();
-  const totalFireflies=TOTAL_FIREFLIES;
-  const query=new URLSearchParams(location.search),developerScene=query.get('dev')==='scene',requestedArea=Number.parseInt(query.get('area')||'0',10);
-  let player={...areas[0].start},area=0,bridge=false,exitState=EXIT_STATES.CLOSED,exitElapsed=0,worldObjects=createWorldObjects(0,false,EXIT_STATES.CLOSED),groundDecor=createGroundDecor(0),runeStep=0,echoAwake=false,echo={active:false,holding:false,path:[],index:0,x:0,y:0,holdTime:0},trail=[],trailClock=0,starrootsAwake=0,starfallAwake=false,memoryReveal=null,watcherBlessed=false,watcherRiddleStep=0,watcherFeedback=null,watcherDialogue=null,walking=false,facing=1,running=false,paused=false,won=false,last=0,step=0,walkClock=0,spawnCue=0;
-  const gathered=()=>countLights(areas);
-  const remembered=()=>countMemories(areas);
-  const allHere=()=>areaComplete(areas[area]);
-  const rect=(x,y,w,h,color)=>{ctx.fillStyle=color;ctx.fillRect(x,y,w,h)};
-  const loaded=image=>image.complete&&image.naturalWidth;
-  const animationFrame=()=>reduce.matches?0:Math.floor(step/12)%4;
-  const say=text=>{announcement.textContent=text;hint.textContent=text};
-  const inside=(x,y,box)=>x>=box.x&&x<box.x+box.w&&y>=box.y&&y<box.y+box.h;
-  const wall=(x,y)=>worldObjects.some(object=>object.solid&&inside(x,y,collisionRectFor(object)));
-  const canMove=(x,y)=>!wall(x-5,y-5)&&!wall(x+5,y-5)&&!wall(x-5,y+5)&&!wall(x+5,y+5);
-  const syncEchoControl=()=>{echoButton.hidden=area!==2||!running||paused||echoAwake};
-  const syncTalkControl=()=>{talkButton.hidden=area!==1||!running||paused||watcherDialogue!==null};
-  function tree(object){if(!loaded(art.spruce))return;const {x,y}=object,side=object.id.startsWith('edge-left-')?'left':object.id.startsWith('edge-right-')?'right':null,perimeter=object.id.startsWith('edge-'),treeIndex=object.id.startsWith('tree-')?Number(object.id.slice(5)):null,interior=Number.isInteger(treeIndex)?INTERIOR_FOREST_LAYOUT[area][treeIndex]:null,layout=side?SIDE_FOREST_LAYOUT[side][area][Math.floor(y/T)-1]:interior,width=layout?.width||(perimeter?40:24),height=layout?.height||(perimeter?56:40),frame=layout?.frame??(Math.floor(x/T)+Math.floor(y/T)*3+area)%3,drawX=x+(T-width)/2+(layout?.xOffset||0),drawY=y+T-height;if(layout?.mirror){ctx.save();ctx.translate(drawX+width,0);ctx.scale(-1,1);ctx.drawImage(art.spruce,frame*80,0,80,112,0,drawY,width,height);ctx.restore();return}ctx.drawImage(art.spruce,frame*80,0,80,112,drawX,drawY,width,height)}
-  function glow(x,y,r,color){const gradient=ctx.createRadialGradient(x,y,0,x,y,r);gradient.addColorStop(0,color);gradient.addColorStop(.42,color);gradient.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=gradient;ctx.fillRect(x-r,y-r,r*2,r*2)}
-  function firefly(light,index){if(light.got||(light.hidden&&!hiddenLightVisible(area,echoAwake,starfallAwake))||!loaded(art.firefly))return;const pulse=reduce.matches?1:1+Math.sin((step+index*22)/12)*.35,variant=FIREFLY_VARIANTS[area][index];glow(light.x,light.y,13*pulse,'rgba(255,196,76,.32)');ctx.drawImage(art.firefly,(variant*4+animationFrame())*16,0,16,16,light.x-8,light.y-8,16,16)}
-  function rootPlatform(object){if(!loaded(art.platform))return;const index=Number(object.id.at(-1)),frame=(area*2+index)%6;ctx.drawImage(art.platform,frame*48,0,48,24,object.x-8,object.y-8,48,24)}
-  function exitTree(object){
-    const {x,y,state}=object;
-    const frame={closed:0,opening:1,revealed:2,open:3}[state];
-    drawExitClearing(object);
-    if(loaded(art.exitTree)){ctx.drawImage(art.exitTree,frame*64,0,64,72,x-24,y-56,64,72);return}
-    tree(object)
+import { WORLD, SCENES, createGame, acknowledge, answerBridge, obstacles, move, tick, act, echoAction, interaction, objective, lit, crewPositions } from './game-core.js';
+import { FOREST_PRESENTATION } from './forest-presentation.js';
+
+const $ = selector => document.querySelector(selector);
+const write = (selector, text) => { const element = $(selector); if (element.textContent !== text) element.textContent = text; };
+const canvas = $('#game'), ctx = canvas.getContext('2d');
+const params = new URLSearchParams(location.search);
+const artSample = params.get('art') === 'sample';
+const immersive = params.get('experience') !== 'classic' && params.get('layout') !== '1' && !artSample;
+document.body.classList.toggle('immersive', immersive);
+const fullWorld = !artSample && params.get('layout') !== '1';
+const sampleArt = {};
+let artFailed = false;
+if (artSample || fullWorld) {
+  const files = { luna: 'moonwell-keeper-walk-v7.png', echo: 'moonwell-keeper-echo-v1.png', eir: 'moonwell-eir-empty-hand-idle-v1.png', adult: 'moonwell-traveller-adult-walk-v1.png', child: 'moonwell-traveller-child-walk-v1.png', tree: 'moonwell-spruce-overhang-v3.png', floor: 'moonwell-homecoming-loam-tiles-v1.png', lantern: 'moonwell-homecoming-lantern-loop-v1.png' };
+  if (fullWorld) Object.assign(files, { path: immersive ? 'moonwell-homecoming-path-v2.png' : 'moonwell-homecoming-path-v1.png', edge: 'moonwell-homecoming-forest-edge-v1.png', bank: immersive ? 'moonwell-hollow-bank-v3.png' : 'moonwell-hollow-bank-v2.png', window: 'moonwell-home-window-v1.png', well: 'moonwell-homecoming-well-v1.png', roots: 'moonwell-root-shelf-variants-v2.png', water: 'moonwell-water-tile-v4.png', bridge: 'moonwell-bridge-vertical-v5.png', rune: 'moonwell-rune-stone-variants-v1.png', pool: 'moonwell-light-pool-variants-v2.png', spark: 'moonwell-firefly-variants-v2.png', memory: 'moonwell-memory-loop-v3.png', chime: 'moonwell-starroot-chime-variants-v5.png', opening: 'moonwell-exit-clearing-states-v4.png', foliage: 'moonwell-foliage-variants-v2.png', lanternOff: 'moonwell-homecoming-lantern-off-v1.png' });
+  if (immersive && fullWorld) Object.assign(files, { richFloor: 'moonwell-loam-base-tiles-v1.png', loam: 'moonwell-clearing-loam-patches-v3.png', moonlight: 'moonwell-clearing-moonlight-v4.png', atmosphere: 'moonwell-forest-atmosphere-v1.png', ground: 'moonwell-ground-texture-variants-v2.png', stone: 'moonwell-stone-variants-v2.png', mushroom: 'moonwell-mushroom-variants-v2.png', canopy: 'moonwell-inner-forest-boundary-v1.png', forestBottom: 'moonwell-bottom-forest-clusters-v1.png' });
+  for (const [name, file] of Object.entries(files)) {
+    sampleArt[name] = new Image();
+    sampleArt[name].onload = () => refresh();
+    sampleArt[name].onerror = () => { artFailed = true; refresh(); };
+    sampleArt[name].src = `assets/moonwell-art/production/${file}`;
   }
-  function drawExitClearing(object){const frame={closed:0,opening:1,revealed:2,open:3}[object.state];if(loaded(art.exitClearing))ctx.drawImage(art.exitClearing,frame*32,0,32,40,object.x-8,object.y+EXIT_CLEARING.top,32,40)}
-  function watcher(point){if(!loaded(art.eir))return;const pulse=reduce.matches?1:1+Math.sin(step/16)*.06;glow(point.x+4,point.y-5,12*pulse,watcherBlessed?'rgba(255,196,76,.3)':'rgba(255,180,68,.22)');const frame=reduce.matches?0:Math.floor(step/28)%4;ctx.drawImage(art.eir,frame*64,0,64,96,point.x-8,point.y-22,16,24)}
-  function openWatcherDialogue(){if(area!==1||!running)return;const point=areas[1].watcher;if(Math.hypot(player.x-point.x,player.y-point.y)>22){say('Eir waits on the north shore. Step closer, then talk.');return}memoryDialogue.hidden=true;watcherDialogue=bridge?'solved':'riddle';running=false;Object.keys(keys).forEach(key=>keys[key]=false);Object.keys(touchKeys).forEach(key=>touchKeys[key]=false);syncTalkControl();renderWatcherDialogue()}
-  function renderWatcherDialogue(){let node=document.querySelector('#watcher-dialogue');if(!node){node=document.createElement('aside');node.id='watcher-dialogue';node.className='watcher-dialogue';node.setAttribute('role','dialog');node.setAttribute('aria-modal','true');node.setAttribute('data-qa-required','Eir dialogue');canvas.parentElement.append(node)}const portrait='<img class="watcher-dialogue__portrait" src="assets/moonwell-art/production/moonwell-eir-rootwatcher-portrait-v2.png" alt="Eir, Rootwatcher, an older forest guardian holding a warm lantern and root staff">';const finish=()=>{watcherDialogue=null;node.hidden=true;running=true;last=performance.now();syncTalkControl();canvas.focus();requestAnimationFrame(loop)};node.hidden=false;if(watcherDialogue==='riddle'){const riddle=WATCHER_DIALOGUE.riddles[watcherRiddleStep],lead=watcherRiddleStep===0?`${WATCHER_DIALOGUE.intro} `:'';node.innerHTML=`${portrait}<div class="watcher-dialogue__body"><strong>${WATCHER_DIALOGUE.name} · Riddle ${watcherRiddleStep+1} of ${WATCHER_DIALOGUE.riddles.length}</strong><p>${lead}${riddle.question}</p><div class="watcher-dialogue__choices">${riddle.choices.map((choice,index)=>`<button data-answer="${index}">${choice}</button>`).join('')}</div><button class="watcher-dialogue__leave">Leave</button></div>`;node.querySelectorAll('[data-answer]').forEach(button=>button.onclick=()=>{watcherFeedback=watcherChoiceResult(watcherRiddleStep,Number(button.dataset.answer));if(watcherFeedback.correct)watcherRiddleStep=watcherFeedback.nextStep;if(watcherFeedback.complete){bridge=true;watcherBlessed=true;refreshWorld();globalThis.MoonwellEffects?.bridge();watcherDialogue='solved'}else watcherDialogue='feedback';renderWatcherDialogue()});node.querySelector('.watcher-dialogue__leave').onclick=finish;node.querySelector('[data-answer]').focus();return}if(watcherDialogue==='solved'){node.innerHTML=`${portrait}<div class="watcher-dialogue__body"><strong>${WATCHER_DIALOGUE.name}</strong><p>${WATCHER_DIALOGUE.solved}</p><button class="watcher-dialogue__continue">Cross the bridge</button></div>`;node.querySelector('.watcher-dialogue__continue').onclick=finish;node.querySelector('.watcher-dialogue__continue').focus();return}node.innerHTML=`${portrait}<div class="watcher-dialogue__body"><strong>${WATCHER_DIALOGUE.name}</strong><p>${watcherFeedback.reply}</p><button class="watcher-dialogue__continue">${watcherFeedback.correct?'Next riddle':'Try this riddle again'}</button><button class="watcher-dialogue__leave">Leave</button></div>`;node.querySelector('.watcher-dialogue__continue').onclick=()=>{watcherDialogue='riddle';renderWatcherDialogue()};node.querySelector('.watcher-dialogue__leave').onclick=finish;node.querySelector('.watcher-dialogue__continue').focus()}
-  function memory(place,index){if(!place.memory||place.memory.got||!loaded(art.memory))return;const token=place.memory;const pulse=reduce.matches?1:1+Math.sin((step+index*17)/15)*.12;glow(token.x,token.y,9*pulse,'rgba(226,232,240,.13)');ctx.drawImage(art.memory,animationFrame()*16,0,16,16,token.x-8,token.y-8,16,16)}
-  function memoryRevealBox(){return memoryRevealBoxForPlayer(player.y)}
-  function memoryRevealLines(text){const words=text.split(' '),lines=[''];for(const word of words){const next=lines[lines.length-1]?`${lines[lines.length-1]} ${word}`:word;if(next.length>MEMORY_REVEAL_LAYOUT.maxLineChars)lines.push(word);else lines[lines.length-1]=next}return lines.slice(0,MEMORY_REVEAL_LAYOUT.maxLines)}
-  function drawMemoryReveal(){if(!memoryReveal){memoryDialogue.hidden=true;return}const state=memoryRevealStateAt(memoryReveal.elapsed,reduce.matches);if(state==='hidden'){memoryReveal=null;memoryDialogue.hidden=true;return}const box=memoryRevealBox();memoryDialogue.hidden=false;memoryDialogue.dataset.band=box.y===MEMORY_REVEAL_LAYOUT.topY?'top':'bottom';memoryDialogue.classList.toggle('is-fading',state==='fading'&&!reduce.matches);memoryDialogue.querySelector('p').textContent=memoryReveal.text}
-  function drawSpawnCue(){const remaining=(spawnCue-performance.now())/1000;if(remaining<=0)return;ctx.save();ctx.globalAlpha=Math.min(1,remaining)*.8;const color='#f0c76a';rect(player.x-15,player.y-10,3,3,color);rect(player.x+12,player.y-10,3,3,color);rect(player.x-10,player.y-18,3,3,color);rect(player.x+7,player.y-18,3,3,color);rect(player.x-7,player.y+1,3,2,color);rect(player.x+4,player.y+1,3,2,color);ctx.restore()}
-  function playerKeeper(){if(!loaded(keeperArt))return;const frame=walking&&!reduce.matches?Math.floor(walkClock/.11)%4:0;ctx.save();ctx.translate(player.x,player.y);ctx.scale(facing,1);ctx.drawImage(keeperArt,frame*KEEPER_SOURCE_WIDTH,0,KEEPER_SOURCE_WIDTH,KEEPER_SOURCE_HEIGHT,KEEPER_DRAW_X,KEEPER_DRAW_Y,KEEPER_DRAW_WIDTH,KEEPER_DRAW_HEIGHT);ctx.restore()}
-  function drawGroundSprite(image,item,frameCount=3,size=T,offsetX=0,offsetY=0){if(!loaded(image))return;const frame=item.frame%frameCount,x=item.x+item.xOffset+offsetX,y=item.y+item.yOffset+offsetY;ctx.save();ctx.globalAlpha=item.alpha;if(item.mirror){ctx.translate(x+size,0);ctx.scale(-1,1);ctx.drawImage(image,frame*T,0,T,T,0,y,size,size)}else ctx.drawImage(image,frame*T,0,T,T,x,y,size,size);ctx.restore()}
-  function drawGroundDetail(item){const {kind}=item;if(kind==='moon')drawGroundSprite(art.lightPool,item);else if(kind==='shadow'||kind==='needles'||kind==='root')drawGroundSprite(art.ground,item);else if(kind==='fern')drawGroundSprite(art.foliage,item);else if(kind==='stone')drawGroundSprite(art.stone,item);else if(kind==='mushroom')drawGroundSprite(art.mushroom,item,2);else if(kind==='glowmoss')drawGroundSprite(art.foliage,item,3,12,2,4)}
-  function drawWater(object){if(!loaded(art.water))return;const water=MOONROOT_BRIDGE_LAYOUT.water,row=Math.floor(object.y/T)-water.firstRow,col=Math.floor(object.x/T)-water.firstCol,frame=WATER_TILE_LAYOUT[row][col];ctx.drawImage(art.water,frame*T,0,T,T,object.x,object.y,T,T)}
-  function worldObject(object){if(object.kind==='tree')tree(object);else if(object.kind==='exit-tree')exitTree(object);else if(object.kind==='platform')rootPlatform(object);else if(object.kind==='water')drawWater(object);else if(object.kind==='bridge'&&loaded(art.bridge))ctx.drawImage(art.bridge,object.x,object.y,object.w,object.h);else if(object.kind==='sentinel'&&loaded(art.sentinel))ctx.drawImage(art.sentinel,object.x,object.y,object.w,object.h)}
-  function rune(stone,index){if(!loaded(art.rune))return;const active=!echoAwake&&((index===0&&runeStep===0)||(index===1&&runeStep===1)||(index===2&&runeStep===2));const held=echo.active&&echo.holding&&index===0;glow(stone.x,stone.y,held?18:active?15:8,held?'rgba(103,232,249,.26)':active?'rgba(125,211,252,.2)':'rgba(148,163,184,.08)');ctx.drawImage(art.rune,index*16,0,16,16,stone.x-8,stone.y-8,16,16)}
-  function echoKeeper(){if(!echo.active||!loaded(echoArt))return;const pulse=reduce.matches?1:1+Math.sin(step/7)*.08,frame=echo.holding||reduce.matches?0:animationFrame();glow(echo.x,echo.y-8,heldRadius(pulse),'rgba(103,232,249,.16)');ctx.save();ctx.globalAlpha=echo.holding?.82:.68;ctx.translate(echo.x,echo.y);ctx.drawImage(echoArt,frame*KEEPER_SOURCE_WIDTH,0,KEEPER_SOURCE_WIDTH,KEEPER_SOURCE_HEIGHT,KEEPER_DRAW_X,KEEPER_DRAW_Y,KEEPER_DRAW_WIDTH,KEEPER_DRAW_HEIGHT);ctx.restore()}
-  function heldRadius(pulse){return echo.holding?12*pulse:8*pulse}
-  function starroot(starroot,index){if(!loaded(art.starroot))return;const lit=starroot.lit,frame=lit?3:reduce.matches?0:Math.floor(step/30+index)%2,sourceX=(index*4+frame)*24;glow(starroot.x,starroot.y-2,lit?15:7,lit?'rgba(253,190,76,.2)':'rgba(91,150,133,.08)');ctx.drawImage(art.starroot,sourceX,0,24,24,starroot.x-12,starroot.y-16,24,24)}
-  function moonwellAltar(point){if(!loaded(art.altar))return;const state=starfallAltarState(starfallAwake,areaComplete(areas[3]));if(state!=='dormant')glow(point.x,point.y-10,state==='ready'?38:26,state==='ready'?'rgba(253,224,71,.24)':'rgba(103,232,249,.12)');ctx.save();ctx.globalAlpha=state==='dormant'?.42:1;ctx.drawImage(art.altar,point.x-16,point.y-24,32,24);ctx.restore()}
-  function drawLoamFloor(){if(loaded(art.loamBase))for(let y=0;y<H;y+=T)for(let x=0;x<W;x+=T){const frame=(x/T+y/T+area)%4;ctx.drawImage(art.loamBase,frame*T,0,T,T,x,y,T,T)}if(!loaded(art.loam))return;ctx.save();for(const patch of LOAM_PATCH_LAYOUT[area]){ctx.globalAlpha=patch.alpha;if(patch.mirror){ctx.save();ctx.translate(patch.x+patch.w,0);ctx.scale(-1,1);ctx.drawImage(art.loam,patch.frame*160,0,160,96,0,patch.y,patch.w,patch.h);ctx.restore()}else ctx.drawImage(art.loam,patch.frame*160,0,160,96,patch.x,patch.y,patch.w,patch.h)}ctx.restore()}
-  function drawMoonlightPools(){if(!loaded(art.luminousPool))return;ctx.save();ctx.globalCompositeOperation='screen';for(const pool of MOONLIGHT_POOL_LAYOUT[area]){ctx.globalAlpha=pool.alpha;ctx.drawImage(art.luminousPool,pool.frame*192,0,192,112,pool.x,pool.y,pool.w,pool.h)}ctx.restore()}
-  function drawMoonrootShore(){if(area!==1||!loaded(art.moonrootShore))return;const water=MOONROOT_BRIDGE_LAYOUT.water,depth=12,top=water.firstRow*T,bottom=(water.lastRow+1)*T,x=water.firstCol*T,width=(water.lastCol-water.firstCol+1)*T;ctx.drawImage(art.moonrootShore,0,0,288,depth,x,top,width,depth);ctx.drawImage(art.moonrootShore,0,depth,288,depth,x,bottom-depth,width,depth)}
-  function drawCanopyBackdrop(){if(!loaded(art.canopy))return;ctx.save();ctx.globalAlpha=.96;for(const curtain of TOP_CANOPY_LAYOUTS[area]){if(curtain.mirror){ctx.save();ctx.translate(curtain.x+curtain.w,0);ctx.scale(-1,1);ctx.drawImage(art.canopy,curtain.frame*256,0,256,112,0,curtain.y,curtain.w,curtain.h);ctx.restore()}else ctx.drawImage(art.canopy,curtain.frame*256,0,256,112,curtain.x,curtain.y,curtain.w,curtain.h)}ctx.restore()}
-  function drawBottomForest(){if(loaded(art.bottomForest))ctx.drawImage(art.bottomForest,area*BOTTOM_FOREST_CLUSTER.width,0,BOTTOM_FOREST_CLUSTER.width,BOTTOM_FOREST_CLUSTER.height,0,BOTTOM_FOREST_CLUSTER.y,BOTTOM_FOREST_CLUSTER.width,BOTTOM_FOREST_CLUSTER.height)}
-  function drawAtmosphere(){if(loaded(art.atmosphere))ctx.drawImage(art.atmosphere,area*W,0,W,H,0,0,W,H)}
-  function draw(){ctx.setTransform(RENDER_SCALE,0,0,RENDER_SCALE,0,0);ctx.imageSmoothingEnabled=false;drawLoamFloor();drawMoonlightPools();worldObjects.filter(object=>object.kind==='water').forEach(worldObject);drawMoonrootShore();worldObjects.filter(object=>object.kind==='bridge').forEach(worldObject);groundDecor.forEach(drawGroundDetail);drawCanopyBackdrop();const place=areas[area],entities=[];worldObjects.filter(object=>!object.collisionOnly&&object.kind!=='water'&&object.kind!=='bridge'&&!object.id.startsWith('edge-bottom-')&&!object.id.startsWith('edge-top-')&&object.id!=='edge-left-1'&&object.id!=='edge-right-1').forEach(object=>entities.push({y:object.y+object.h,draw:()=>worldObject(object)}));if(area===1)entities.push({y:place.watcher.y+2,draw:()=>watcher(place.watcher)});if(area===2){place.runes.forEach((stone,index)=>entities.push({y:stone.y,draw:()=>rune(stone,index)}));if(echo.active)entities.push({y:echo.y,draw:echoKeeper});if(echoAwake)glow(188,128,28,'rgba(253,224,71,.14)')}if(area===3){place.starroots.forEach((item,index)=>entities.push({y:item.y+8,draw:()=>starroot(item,index)}));entities.push({y:place.altar.y,draw:()=>moonwellAltar(place.altar)})}if(place.memory&&!place.memory.got)entities.push({y:place.memory.y,draw:()=>memory(place,area)});place.lights.forEach((light,index)=>entities.push({y:light.y,draw:()=>firefly(light,index)}));entities.push({y:player.y,draw:()=>{drawSpawnCue();playerKeeper()}});entities.sort((a,b)=>a.y-b.y).forEach(entity=>entity.draw());drawBottomForest();if(gathered())rect(0,0,W,H,`rgba(255,196,76,${.012*gathered()})`);drawAtmosphere();drawMemoryReveal()}
-  function refreshWorld(){worldObjects=createWorldObjects(area,bridge,exitState);groundDecor=createGroundDecor(area)}
-  function arrive(next){area=next;bridge=false;exitState=EXIT_STATES.CLOSED;exitElapsed=0;refreshWorld();player={...areas[next].start};trail=[];echo={active:false,holding:false,path:[],index:0,x:0,y:0,holdTime:0};areaLabel.textContent=`Area: ${areas[next].name}`;if(next===1)say('Moonroot Crossing runs north to south. Dark water bars the way; find Eir on the north shore and solve her three playful riddles.');else if(next===2)say('A lighted forest opening leads to Whispering Hollow. Touch the first moonlit rune, then find the second and press E or Echo.');else say('A quiet altar waits in Starfall Grove. Wake each grounded starroot chime to call its fallen lights from the canopy.');syncEchoControl();syncTalkControl()}
-  function finish(){won=true;running=false;globalThis.MoonwellEffects?.pause();globalThis.MoonwellSoundtrack?.victory();modal.innerHTML='<div class="card"><h2>The Moonwell shines again.</h2><p>Luna returns the last two lights to the awakened altar. Eight fireflies join the Lost Lantern, and moonlight spills through every path before dawn.</p><p>The young keeper has carried the forest home—and the forest remembers the way.</p><button id="again">Walk again</button></div>';modal.hidden=false;document.querySelector('#again').onclick=()=>location.reload();say('The Lost Lantern burns bright before dawn.')}
-  function resume(){paused=false;globalThis.MoonwellSoundtrack?.resume();globalThis.MoonwellEffects?.resume();pauseButton.hidden=false;modal.hidden=true;running=true;syncEchoControl();syncTalkControl();last=performance.now();canvas.focus();say('The forest waits.');requestAnimationFrame(loop)}
-  function pause(){if(!running||won)return;running=false;paused=true;globalThis.MoonwellSoundtrack?.pause();globalThis.MoonwellEffects?.pause();pauseButton.hidden=true;syncEchoControl();syncTalkControl();Object.keys(keys).forEach(key=>keys[key]=false);Object.keys(touchKeys).forEach(key=>touchKeys[key]=false);modal.innerHTML='<div class="card"><h2>The forest waits.</h2><p>Your lantern light is safe. Take a breath, then continue when you are ready.</p><button id="resume">Continue</button><button id="restart">Start again</button></div>';modal.hidden=false;const resumeButton=document.querySelector('#resume');resumeButton.onclick=resume;document.querySelector('#restart').onclick=()=>location.reload();resumeButton.focus();say('Moonwell is paused. Press P, Escape, or Continue when you are ready.')}
-  pauseButton.onclick=()=>{if(paused)resume();else pause()};
-  function resolveEcho(){echoAwake=true;echo.active=false;syncEchoControl();say('Your echo holds the first rune as the third answers. A hidden firefly rises beside the old stone arch.')}
-  function touchRune(){const runes=areas[2].runes;if(runeStep===0&&nearPoint(player,runes[0])){runeStep=1;say('The first echo-stone remembers your steps. Walk to the second moonlit rune, then press E or Echo.')}if(canResolveEchoRune(runeStep,echo.active&&echo.holding,player,runes))resolveEcho()}
-  function castEcho(){if(!running||area!==2||echoAwake||echo.active)return;const runes=areas[2].runes;if(runeStep===0){say('The lantern needs a remembered path. Touch the first moonlit rune first.');return}if(!nearPoint(player,runes[1])){say('Stand by the second moonlit rune, then press E or Echo.');return}const replay=createEchoReplay(trail,runes[0]);if(!replay.length){say('The lantern cannot find the first rune in your recent steps. Touch it again, then return here.');runeStep=0;return}echo={active:true,holding:false,path:replay,index:0,x:replay[0].x,y:replay[0].y,holdTime:4.5};runeStep=2;globalThis.MoonwellEffects?.echo();say('A delayed echo retraces your path. Reach the third rune while it returns to hold the first.');syncEchoControl()}
-  function updateEcho(dt){if(!echo.active)return;if(echo.holding){echo.holdTime-=dt;if(echo.holdTime<=0){echo={active:false,holding:false,path:[],index:0,x:0,y:0,holdTime:0};runeStep=0;say('The echo fades into the hollow. Touch the first rune and try again.');syncEchoControl()}return}let distance=96*dt;while(distance>0&&echo.index<echo.path.length-1){const next=echo.path[echo.index+1],dx=next.x-echo.x,dy=next.y-echo.y,gap=Math.hypot(dx,dy);if(gap<=distance){echo.x=next.x;echo.y=next.y;echo.index++;distance-=gap}else{echo.x+=dx/gap*distance;echo.y+=dy/gap*distance;distance=0}}if(echo.index===echo.path.length-1){echo.x=areas[2].runes[0].x;echo.y=areas[2].runes[0].y;echo.holding=true;say('Your echo holds the first rune. Reach the third moonlit rune before it fades.')}}
-  function touchStarroot(){for(const starroot of areas[3].starroots){if(!starroot.lit&&Math.hypot(player.x-starroot.x,player.y-starroot.y)<15){starroot.lit=true;starrootsAwake++;globalThis.MoonwellEffects?.starroot(starrootsAwake);if(starrootsAwake===areas[3].starroots.length){starfallAwake=true;say('Three starroot chimes glow together. The Moonwell altar wakes, and two fallen lights drift down through the open canopy.')}else say(`A starroot chime hums through the loam. ${areas[3].starroots.length-starrootsAwake} still sleep in the blue dark.`);break}}}
-  function update(dt){if(memoryReveal)memoryReveal.elapsed+=dt;let dx=0,dy=0,speed=65*dt;if(keys.up||touchKeys.up)dy-=speed;if(keys.down||touchKeys.down)dy+=speed;if(keys.left||touchKeys.left)dx-=speed;if(keys.right||touchKeys.right)dx+=speed;if(dx&&dy){dx*=.707;dy*=.707}if(dx)facing=dx<0?-1:1;const beforeX=player.x,beforeY=player.y;if(canMove(player.x+dx,player.y))player.x+=dx;if(canMove(player.x,player.y+dy))player.y+=dy;walking=player.x!==beforeX||player.y!==beforeY;if(walking)walkClock+=dt;const place=areas[area];if(area===2){trailClock+=dt;if(walking||trailClock>.08){trail.push({x:player.x,y:player.y});trailClock=0;if(trail.length>1800)trail.shift()}updateEcho(dt)}if(place.memory&&!place.memory.got&&Math.hypot(player.x-place.memory.x,player.y-place.memory.y)<12){place.memory.got=true;memoryReveal={text:place.memory.text,elapsed:0};memoryCount.textContent=`Memories: ${remembered()} / 3`;globalThis.MoonwellEffects?.memory();say(`Forest memory found. ${place.memory.text}`)}if(area===2&&!echoAwake)touchRune();if(area===3&&!starfallAwake)touchStarroot();place.lights.forEach(light=>{if(!light.got&&(!light.hidden||hiddenLightVisible(area,echoAwake,starfallAwake))&&Math.hypot(player.x-light.x,player.y-light.y)<12){light.got=true;count.textContent=`Fireflies: ${gathered()} / ${totalFireflies}`;globalThis.MoonwellEffects?.firefly(gathered(),allHere());say(allHere()?(area===3?'Both fallen lights join Luna. Return them to the awakened Moonwell altar.':'The border tree shivers; a moonlit seam begins to open.'):`A firefly joins you! ${totalFireflies-gathered()} still wander.`)}});if(area<3&&allHere()&&exitState===EXIT_STATES.CLOSED){exitState=EXIT_STATES.OPENING;exitElapsed=0;refreshWorld()}if(area<3&&exitState!==EXIT_STATES.CLOSED&&exitState!==EXIT_STATES.OPEN){const nextState=exitStateAt(exitElapsed);if(nextState!==exitState){exitState=nextState;refreshWorld();if(exitState===EXIT_STATES.REVEALED)say('The roots part around a warm forest opening, but still hold the path.');if(exitState===EXIT_STATES.OPEN)say('The warm clearing is fully open. Walk through the parted tree.')}exitElapsed+=dt}if(area<3&&exitState===EXIT_STATES.OPEN&&!won&&Math.hypot(player.x-place.home.x,player.y-place.home.y)<17)arrive(nextAreaIndex(area,areas));if(area===3&&starfallAwake&&allHere()&&!won&&nearPoint(player,place.altar,place.altar.interactionRadius))finish()}
-  function loop(time){if(!running)return;const dt=Math.min(.04,(time-last)/1000||0);last=time;step+=dt*60;update(dt);draw();requestAnimationFrame(loop)}
-  async function begin(input){const userInitiated=input===true||input?.isTrusted===true;if(coarse.matches&&!portrait.matches){document.body.classList.add('playing');window.scrollTo(0,1);try{if(userInitiated&&screen.orientation?.lock)await screen.orientation.lock('landscape')}catch{}}globalThis.MoonwellSoundtrack?.exploration();globalThis.MoonwellEffects?.unlock();paused=false;modal.hidden=true;running=true;spawnCue=performance.now()+(reduce.matches?1100:2800);syncEchoControl();syncTalkControl();last=performance.now();canvas.focus();say('Arrow keys or WASD move · gather the three lights in this glade.');requestAnimationFrame(loop)}
-  function keyNudge(direction){if(!direction||!running)return;const distance=2,dx=direction==='left'?-distance:direction==='right'?distance:0,dy=direction==='up'?-distance:direction==='down'?distance:0,beforeX=player.x,beforeY=player.y;if(dx&&canMove(player.x+dx,player.y))player.x+=dx;if(dy&&canMove(player.x,player.y+dy))player.y+=dy;walking=player.x!==beforeX||player.y!==beforeY;if(walking)walkClock+=.04}
-  function gate(){if(coarse.matches&&portrait.matches){document.body.classList.remove('playing');modal.hidden=false;running=false}else if(!running&&!won)modal.hidden=false;syncEchoControl();syncTalkControl()}start.onclick=begin;echoButton.onclick=castEcho;talkButton.onclick=openWatcherDialogue;[coarse,portrait].forEach(query=>query.addEventListener('change',gate));addEventListener('keydown',event=>{const direction={ArrowUp:'up',w:'up',W:'up',ArrowDown:'down',s:'down',S:'down',ArrowLeft:'left',a:'left',A:'left',ArrowRight:'right',d:'right'}[event.key];if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ','Enter'].includes(event.key))event.preventDefault();if(event.key==='Enter'&&!running&&!won&&!portrait.matches)begin();if(event.key==='e'||event.key==='E')castEcho();if(event.key==='f'||event.key==='F')openWatcherDialogue();if(event.key==='j'||event.key==='J'){const notes=areas.filter(place=>place.memory?.got).map(place=>place.memory.text);say(notes.length?`Forest memories: ${notes.join(' ')} ${3-notes.length} still wait.`:'No forest memories yet. Look for pale keepsakes beside the paths.')}if(direction){globalThis.MoonwellEffects?.unlock();if(!event.repeat)keyNudge(direction);keys[direction]=true}});addEventListener('keyup',event=>{const direction={ArrowUp:'up',w:'up',W:'up',ArrowDown:'down',s:'down',S:'down',ArrowLeft:'left',a:'left',A:'left',ArrowRight:'right',d:'right'}[event.key];if(direction)keys[direction]=false});const touch=document.querySelector('.touch');let touchPointer;function steer(event){const bounds=touch.getBoundingClientRect(),x=event.clientX-(bounds.left+bounds.width/2),y=event.clientY-(bounds.top+bounds.height/2),direction=Math.abs(x)>Math.abs(y)?x<0?'left':'right':y<0?'up':'down';Object.keys(touchKeys).forEach(key=>touchKeys[key]=false);touchKeys[direction]=true;return direction}function stopSteering(){touchPointer=undefined;Object.keys(touchKeys).forEach(key=>touchKeys[key]=false)}touch.addEventListener('contextmenu',event=>event.preventDefault());touch.addEventListener('pointerdown',event=>{event.preventDefault();globalThis.MoonwellEffects?.unlock();touchPointer=event.pointerId;try{touch.setPointerCapture(event.pointerId)}catch{}keyNudge(steer(event))});touch.addEventListener('pointermove',event=>{if(event.pointerId===touchPointer)steer(event)});touch.addEventListener('pointerup',event=>{if(event.pointerId===touchPointer)stopSteering()});touch.addEventListener('pointercancel',event=>{if(event.pointerId===touchPointer)stopSteering()});touch.addEventListener('lostpointercapture',stopSteering);draw();gate()
-  addEventListener('keydown',event=>{if((event.key==='p'||event.key==='P'||event.key==='Escape')&&!won){event.preventDefault();if(paused)resume();else pause()}});
-  if(developerScene&&Number.isInteger(requestedArea)&&requestedArea>=0&&requestedArea<areas.length){area=requestedArea;player={...areas[area].start};bridge=area===1;watcherBlessed=bridge;watcherRiddleStep=bridge?WATCHER_DIALOGUE.riddles.length:0;refreshWorld();runeStep=areas[2].runes.length;echoAwake=true;starrootsAwake=areas[3].starroots.length;starfallAwake=true;if(coarse.matches&&!portrait.matches)document.body.classList.add('playing');areaLabel.textContent=`Area: ${areas[area].name}`;modal.hidden=true;running=true;say(`Developer scene preview: ${areas[area].name}`);window.__moonwellAudit=Object.freeze({area:()=>area,name:()=>areas[area].name,player:()=>({x:player.x,y:player.y}),colliders:()=>worldObjects.filter(object=>object.solid).map(object=>({id:object.id,kind:object.kind,...collisionRectFor(object)})),topCanopy:()=>worldObjects.filter(object=>object.kind==='canopy-root').map(object=>({id:object.id,...collisionRectFor(object)})),waterBlocked:()=>wall(80,100),bridgePassable:()=>wall(160,100)===false,bridge:()=>worldObjects.find(object=>object.kind==='bridge'),riddleStep:()=>watcherRiddleStep,altarState:()=>starfallAltarState(starfallAwake,areaComplete(areas[3])),canvas:()=>({logicalWidth:W,logicalHeight:H,width:canvas.width,height:canvas.height,renderScale:RENDER_SCALE}),exitState:()=>exitState,previewExit:state=>{if(!areas[area].home)return null;exitState=state;refreshWorld();draw();return{state,blocked:wall(areas[area].home.x,areas[area].home.y)}},previewMemory:seconds=>{if(!areas[area].memory)return null;memoryReveal={text:areas[area].memory.text,elapsed:seconds};draw();return{state:memoryRevealStateAt(seconds,reduce.matches),box:memoryRevealBox(),text:areas[area].memory.text}},previewWatcher:()=>{area=1;bridge=false;watcherBlessed=false;watcherRiddleStep=0;refreshWorld();player={...areas[1].watcher};running=true;openWatcherDialogue();return{open:watcherDialogue,point:areas[1].watcher}},previewEcho:state=>{area=2;echoAwake=false;runeStep=2;const holding=state==='holding';echo={active:true,holding,path:[{...areas[2].runes[1]},{...areas[2].runes[0]}],index:holding?1:0,x:holding?areas[2].runes[0].x:208,y:holding?areas[2].runes[0].y:112,holdTime:4.5};player={x:96,y:120};refreshWorld();draw();return{state:holding?'holding':'moving',echo:{x:echo.x,y:echo.y,holding:echo.holding},runeStep}},previewStarroots:awake=>{area=3;const count=Math.max(0,Math.min(areas[3].starroots.length,Number(awake)||0));areas[3].starroots.forEach((root,index)=>root.lit=index<count);starrootsAwake=count;starfallAwake=count===areas[3].starroots.length;areas[3].lights.forEach(light=>delete light.got);player={...areas[3].start};refreshWorld();draw();return{awake:starrootsAwake,altarState:starfallAltarState(starfallAwake,areaComplete(areas[3]))}},preparePickup:index=>{area=0;const selected=Math.max(0,Math.min(2,Number(index)||0));areas[0].lights.forEach((light,lightIndex)=>light.got=lightIndex<selected);const target=areas[0].lights[selected];player={x:target.x-13,y:target.y};exitState=EXIT_STATES.CLOSED;refreshWorld();running=true;draw();return{selected,player:{...player},target:{...target}}},prepareMemory:()=>{area=0;delete areas[0].memory.got;const target=areas[0].memory;player={x:target.x-13,y:target.y};refreshWorld();running=true;draw();return{player:{...player},target:{...target}}},prepareStarroot:awake=>{area=3;const count=Math.max(0,Math.min(2,Number(awake)||0));areas[3].starroots.forEach((root,index)=>root.lit=index<count);starrootsAwake=count;starfallAwake=false;const target=areas[3].starroots[count];player={x:target.x-16,y:target.y};refreshWorld();running=true;draw();return{awake:count,player:{...player},target:{...target}}},previewFinale:()=>{area=3;starfallAwake=true;areas[3].starroots.forEach(root=>root.lit=true);areas[3].lights.forEach(light=>light.got=true);player={x:areas[3].altar.x,y:areas[3].altar.y+14};refreshWorld();update(0);return{area,altarState:starfallAltarState(starfallAwake,areaComplete(areas[3])),won}},transition:()=>{areas[area].lights.forEach(light=>light.got=true);if(area===3){player={x:areas[3].altar.x,y:areas[3].altar.y+14};update(0)}else{player={...areas[area].home};update(0)}return{area,exitState,won}},advanceExit:seconds=>{update(seconds);return{area,exitState,blocked:areas[area].home?wall(areas[area].home.x,areas[area].home.y):null}}});last=performance.now();requestAnimationFrame(loop)}
-  if(developerScene&&requestedArea===2&&query.get('state')==='echo-ready'){
-    const runes=areas[2].runes;
-    area=2;echoAwake=false;runeStep=1;player={...runes[1]};
-    trail=[{...runes[0]},{x:216,y:112},{...runes[1]}];
-    echo={active:false,holding:false,path:[],index:0,x:0,y:0,holdTime:0};
-    refreshWorld();running=true;syncEchoControl();draw();
-    say('Echo audit ready at the second rune. Press E or Echo to cast.');
+  if (artSample) { $('.build-label').hidden = false; $('.build-label').textContent = 'Art sample · layout markers'; }
+}
+const loaded = image => image?.complete && image.naturalWidth;
+let state = createGame({ scene: params.get('scene') });
+let started = false, paused = false, journal = false, last = 0, endingShown = false;
+let lastConnectionCount = Object.values(state.connections).filter(Boolean).length;
+let openingElapsed = 0, exploring = false;
+let journalPage = 0;
+let lastStepAt = 0, facing = 1;
+let steeringPointer = null, touchDirection = null, lastPointerKind = null;
+let lastFeedback = '', feedbackUntil = 0;
+const touchPresentation = immersive && globalThis.matchMedia?.('(pointer: coarse)').matches === true;
+const controlLabel = (text, key) => touchPresentation ? text : `${text} · ${key}`;
+const actorMotion = new Map();
+const keys = new Set();
+const sound = globalThis.MoonwellSoundtrack, effects = globalThis.MoonwellEffects;
+ctx.setTransform(2, 0, 0, 2, 0, 0);
+ctx.imageSmoothingEnabled = false;
+const colors = { ground: '#283c3d', path: '#718079', tree: '#16312c', trunk: '#a47b54', bank: '#344e50', water: '#396d89', ink: '#f2f1df', warm: '#ffdc83', cool: '#a5eff5' };
+function box(x, y, w, h, color) { ctx.fillStyle = color; ctx.fillRect(x, y, w, h); }
+function label(text, x, y, color = colors.ink, size = 8) {
+  ctx.font = `bold ${size}px monospace`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#13242a'; ctx.fillRect(x - ctx.measureText(text).width / 2 - 2, y - size / 2 - 1, ctx.measureText(text).width + 4, size + 2);
+  ctx.fillStyle = color; ctx.fillText(text, x, y);
+}
+function path(points, color, width) {
+  if (!points?.length) return;
+  ctx.strokeStyle = color; ctx.lineWidth = width; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  ctx.beginPath(); points.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.stroke();
+}
+function mark(id, point, connected = false) {
+  const on = connected || lit(state, id);
+  box(point.x - 7, point.y - 6, 14, 12, on ? colors.warm : '#1b2e3b');
+  ctx.strokeStyle = on ? '#fff0b0' : '#b4c9d1'; ctx.lineWidth = 1; ctx.strokeRect(point.x - 7, point.y - 6, 14, 12);
+  label(id, point.x, point.y, on ? '#fff0b0' : '#d1e0e5', 7);
+}
+function actor(p, symbol, color, child = false) {
+  const art = symbol === 'Luna' ? sampleArt.luna : symbol === 'Eir' ? sampleArt.eir : sampleArt[symbol];
+  if (loaded(art)) {
+    const now = performance.now(), old = actorMotion.get(symbol);
+    const movedAt = !old || Math.hypot(old.x - p.x, old.y - p.y) > .01 ? now : old.movedAt;
+    actorMotion.set(symbol, { ...p, movedAt });
+    const eir = symbol === 'Eir', luna = symbol === 'Luna';
+    const moving = now - (luna ? lastStepAt : movedAt) < 180;
+    const frame = eir ? Math.floor(now / 460) % 4 : moving ? Math.floor(now / 110) % 4 : 0;
+    const sw = luna ? 26 : eir ? 64 : 32, sh = luna ? 40 : eir ? 96 : 48;
+    ctx.save(); ctx.translate(p.x, p.y); if (luna) ctx.scale(facing, 1);
+    ctx.drawImage(art, frame * sw, 0, sw, sh, luna ? -6.5 : -8, luna ? -19.5 : -22, luna ? 13 : 16, luna ? 20 : 24);
+    ctx.restore();
+    if (!fullWorld) label(symbol, p.x, p.y + 8, color, 7);
+    return;
   }
-})();
-(()=>{const start=document.querySelector('#start'),modal=document.querySelector('#modal'),reduce=matchMedia('(prefers-reduced-motion: reduce)'),begin=start?.onclick;if(!start||!begin)return;let revealTimer;const requestPrologueFullscreen=()=>{if(document.fullscreenEnabled!==true||document.fullscreenElement||typeof document.documentElement.requestFullscreen!=='function')return;const request=document.documentElement.requestFullscreen();if(request?.catch)request.catch(()=>{})};const enter=event=>{clearTimeout(revealTimer);document.body.classList.remove('prologue-active');modal.classList.remove('prologue-active');document.querySelector('.prologue-stage')?.remove();begin(event)};const show=()=>{globalThis.MoonwellSoundtrack?.prologue();requestPrologueFullscreen();clearTimeout(revealTimer);document.body.classList.add('prologue-active');modal.classList.add('prologue-active');modal.innerHTML='<section class="prologue-stage" role="dialog" aria-modal="true" aria-labelledby="prologue-title" aria-describedby="prologue-story" data-qa-required="Moonwell prologue"><div class="prologue-window"><div class="prologue-copy"><h2 id="prologue-title">WHEN THE MOONWELL DIMMED</h2><div id="prologue-story"><p>The forest began to forget.</p><p>Paths lost their names. Fireflies carried the last bright memories into the blue dark.</p><p>You are Luna, the last young Keeper.</p><p class="prologue-call">Gather the scattered light. Wake the old crossings. Bring the Lost Lantern home before the forest forgets you too.</p></div></div></div><div class="prologue-controls"><button class="prologue-skip" id="prologue-skip">Skip prologue</button><button class="prologue-enter" id="prologue-enter" hidden>Enter the forest</button></div></section>';modal.hidden=false;const stage=document.querySelector('.prologue-stage'),skip=document.querySelector('#prologue-skip'),enterButton=document.querySelector('#prologue-enter');stage.classList.toggle('is-reduced',reduce.matches);skip.onclick=enter;enterButton.onclick=enter;if(reduce.matches)enterButton.hidden=false;else revealTimer=setTimeout(()=>{enterButton.hidden=false;enterButton.focus()},13500);skip.focus()};start.onclick=show;addEventListener('keydown',event=>{const stage=document.querySelector('.prologue-stage');if(!stage){if(event.key==='Enter'&&document.contains(start)){event.preventDefault();event.stopImmediatePropagation();start.click()}return}const active=document.activeElement,enterButton=document.querySelector('#prologue-enter'),activate=event.key==='Enter'||event.key===' ';if(event.key==='Escape'||activate&&(active.id==='prologue-skip'||!enterButton.hidden)){event.preventDefault();event.stopImmediatePropagation();enter(event)}},true)})();
+  box(p.x - 4, p.y - (child ? 7 : 11), 8, child ? 8 : 12, color);
+  box(p.x - 2, p.y - (child ? 9 : 13), 4, 4, '#e8cbb1');
+  label(symbol, p.x, p.y + 8, color, 7);
+}
+function draw() {
+  if (fullWorld) { drawWorld(); return; }
+  const scene = SCENES[state.area];
+  const entities = [];
+  box(0, 0, WORLD.width, WORLD.height, colors.ground);
+  if (loaded(sampleArt.floor)) {
+    for (let x = 0; x < WORLD.width; x += 16) for (let y = 0; y < WORLD.height; y += 16) ctx.drawImage(sampleArt.floor, (x / 16 + y / 16) % 4 * 16, 0, 16, 16, x, y, 16, 16);
+  }
+  for (let x = 0; x < WORLD.width; x += 16) for (let y = 0; y < WORLD.height; y += 16) {
+    ctx.strokeStyle = '#ffffff07'; ctx.lineWidth = .5; ctx.strokeRect(x, y, 16, 16);
+  }
+  scene.paths.forEach(p => path(p, colors.path, 24));
+  box(0, 0, 320, 16, '#132b28'); box(0, 192, 320, 16, '#132b28'); box(0, 0, 16, 208, '#132b28'); box(304, 0, 16, 208, '#132b28');
+  for (const o of obstacles(state)) {
+    if (o.kind === 'tree' && loaded(sampleArt.tree)) {
+      entities.push({ y: o.y + 16, draw: () => ctx.drawImage(sampleArt.tree, 0, 0, 80, 112, o.x - 7, o.y - 26, 30, 42) });
+      continue;
+    }
+    box(o.x, o.y, o.w, o.h, colors[o.kind]);
+    ctx.strokeStyle = '#b6d1c733'; ctx.lineWidth = 1; ctx.strokeRect(o.x + .5, o.y + .5, o.w - 1, o.h - 1);
+    if (o.kind === 'tree') box(o.x + 6, o.y + 4, 4, 10, '#405345');
+  }
+  if (state.area === 'hollow') {
+    label('BROKEN BANK', 160, 163, '#c1cbca', 7);
+    label('FALLEN TRUNK', 160, 102, '#ffe5bc', 6);
+    label('OPEN DETOUR', 160, 51, '#dae4da', 7);
+    const complete = !!state.connections.hollow;
+    if (complete) path(state.connections.hollow, colors.warm, 3);
+    mark('A', scene.A, complete); mark('C', scene.C, complete);
+  }
+  if (state.area === 'glade') {
+    label('OLD SHORTCUT', 64, 66, '#ddd4c2', 6);
+    if (state.lantern === 'ground') { box(scene.lantern.x - 4, scene.lantern.y - 6, 8, 10, '#d4b77e'); label('LANTERN', scene.lantern.x, scene.lantern.y - 17, colors.warm, 6); }
+    scene.sparks.forEach((p, i) => { if (!state.sparks.includes(i)) { box(p.x - 2, p.y - 3, 4, 6, colors.warm); box(p.x - 4, p.y - 1, 8, 2, colors.warm); } });
+  }
+  if (state.area === 'crossing') {
+    if (state.connections.bridge) { box(144, 88, 32, 40, '#ac916c'); path(state.connections.bridge, colors.warm, 3); }
+    mark('north', scene.north, !!state.connections.bridge); mark('south', scene.south, !!state.connections.bridge);
+    label('NORTH BANK', 72, 32, '#d7e6e9', 6); label('SOUTH BANK', 72, 144, '#d7e6e9', 6);
+    box(176, 151, 4, 6, colors.warm); label('rest light', 188, 137, colors.warm, 6);
+  }
+  if (state.area === 'grove') {
+    if (state.connections.village) path(state.connections.village, colors.warm, 3);
+    mark('V', scene.V, !!state.connections.village); mark('M', scene.M, !!state.connections.village);
+    for (const [i, key] of ['bridge', 'hollow', 'village'].entries()) box(88 + i * 16, 40, 9, 12, state.connections[key] ? colors.warm : '#141e27');
+    label('MOONWELL', 112, 24, '#dce7df', 7);
+    box(184, 138, 16, 4, '#937d62'); label('wet root', 192, 126, colors.warm, 6);
+    if (state.sawWindow) { box(280, 24, 16, 16, colors.warm); label('HOME', 288, 52, colors.warm, 6); }
+  }
+  const connection = state.area === 'hollow' ? state.connections.hollow : state.connections.village;
+  if (state.recording && !connection) {
+    ctx.setLineDash([1, 5]); path(state.recording.path, '#c9eee1', 1); ctx.setLineDash([]);
+  }
+  if (scene.memory && !state.memories.includes(state.area)) { box(scene.memory.x - 3, scene.memory.y - 3, 6, 6, '#b5d3ef'); label('◇', scene.memory.x, scene.memory.y - 10, '#cde5ff'); }
+  if (scene.exit) { box(scene.exit.x - 5, scene.exit.y - 8, 10, 16, '#dfba6955'); label('›', scene.exit.x, scene.exit.y, colors.warm, 12); }
+  if (scene.back) label('‹', scene.back.x, scene.back.y, '#e1d2ac', 12);
+  const crew = crewPositions(state);
+  crew.forEach((p, i) => entities.push({ y: p.y, draw: () => actor(p, ['Eir', 'adult', 'child'][i], ['#d1c0e9', '#c6d6b5', '#efb5b0'][i], i === 2) }));
+  if (state.echo) {
+    entities.push({ y: state.echo.y, draw: () => {
+    if (loaded(sampleArt.echo)) ctx.drawImage(sampleArt.echo, 0, 0, 26, 40, state.echo.x - 6.5, state.echo.y - 19.5, 13, 20);
+    else box(state.echo.x - 5, state.echo.y - 12, 10, 13, '#a5eff5aa');
+    label('echo', state.echo.x, state.echo.y - 24, colors.cool, 6);
+    } });
+  }
+  entities.push({ y: state.player.y, draw: () => {
+    actor(state.player, 'Luna', '#ffe08c');
+    if (state.lantern === 'carried') {
+      if (loaded(sampleArt.lantern)) ctx.drawImage(sampleArt.lantern, 0, 0, 16, 16, state.player.x + (facing > 0 ? 4 : -10), state.player.y - 7, 6, 6);
+      else box(state.player.x + 5, state.player.y - 5, 3, 5, colors.warm);
+    }
+  } });
+  entities.sort((a, b) => a.y - b.y).forEach(e => e.draw());
+  if (state.lantern === 'docked') {
+    if (loaded(sampleArt.lantern)) ctx.drawImage(sampleArt.lantern, 0, 0, 16, 16, SCENES.grove.M.x - 3, SCENES.grove.M.y - 5, 6, 6);
+    else box(SCENES.grove.M.x - 2, SCENES.grove.M.y - 3, 4, 6, colors.warm);
+  }
+}
+
+function placeAlong(points, gap, paint) {
+  if (!points?.length) return;
+  paint(points[0], 0); let carried = 0;
+  for (let i = 1; i < points.length; i++) {
+    const a = points[i - 1], b = points[i], distance = Math.hypot(b.x - a.x, b.y - a.y);
+    if (!distance) continue;
+    const angle = Math.abs(b.y - a.y) > Math.abs(b.x - a.x) ? Math.PI / 2 : 0;
+    for (let d = gap - carried; d <= distance; d += gap) paint({ x: a.x + (b.x - a.x) * d / distance, y: a.y + (b.y - a.y) * d / distance }, angle);
+    carried = (carried + distance) % gap;
+  }
+}
+function drawWorld() {
+  ctx.clearRect(0, 0, WORLD.width, WORLD.height);
+  if (artFailed || !Object.values(sampleArt).every(loaded)) return;
+  const scene = SCENES[state.area], entities = [], now = performance.now();
+  const openings = [scene.exit, scene.back].filter(Boolean);
+  const stamp = (key, sx, sy, sw, sh, x, y, w = sw, h = sh) => ctx.drawImage(sampleArt[key], sx, sy, sw, sh, x, y, w, h);
+  const pool = (p, size = 20, alpha = .7) => { ctx.save(); ctx.globalAlpha = alpha; stamp('pool', 16, 0, 16, 16, p.x - size / 2, p.y - size / 2, size, size); ctx.restore(); };
+  const markWorld = (id, p, connected, variant = 0) => { if (connected || lit(state, id)) pool(p, 24, .9); stamp('rune', variant * 16, 0, 16, 16, p.x - 8, p.y - 8); };
+  const trail = (points, complete) => placeAlong(points, complete ? 8 : 10, p => pool(p, complete ? 9 : 4, complete ? .75 : .35));
+  const forest = immersive ? FOREST_PRESENTATION[state.area] : null;
+  for (let y = 0; y < WORLD.height; y += 16) for (let x = 0; x < WORLD.width; x += 16) stamp(forest ? 'richFloor' : 'floor', (x / 16 + y / 16) % 4 * 16, 0, 16, 16, x, y);
+  if (forest) {
+    for (const patch of forest.loam) {
+      ctx.save(); ctx.globalAlpha = patch.alpha;
+      ctx.translate(patch.x + (patch.mirror ? patch.w : 0), patch.y);
+      if (patch.mirror) ctx.scale(-1, 1);
+      stamp('loam', patch.frame * 160, 0, 160, 96, 0, 0, patch.w, patch.h); ctx.restore();
+    }
+    ctx.save(); ctx.globalCompositeOperation = 'screen';
+    for (const light of forest.moonlight) { ctx.globalAlpha = light.alpha; stamp('moonlight', light.frame * 192, 0, 192, 112, light.x, light.y, light.w, light.h); }
+    ctx.restore();
+    for (const item of forest.details) {
+      const key = item.kind === 'moon' ? 'pool' : ['shadow','needles','root'].includes(item.kind) ? 'ground' : ['fern','glowmoss'].includes(item.kind) ? 'foliage' : item.kind;
+      const size = item.kind === 'glowmoss' ? 12 : 16, frame = item.frame % (key === 'mushroom' ? 2 : 3);
+      ctx.save(); ctx.globalAlpha = item.alpha;
+      ctx.translate(item.col * 16 + item.xOffset + (item.mirror ? size : 0), item.row * 16 + item.yOffset);
+      if (item.mirror) ctx.scale(-1,1);
+      stamp(key, frame * 16, 0, 16, 16, 0, 0, size, size); ctx.restore();
+    }
+  }
+  scene.paths.forEach(route => placeAlong(route, 12, (p, angle) => {
+    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(angle);
+    if (forest) { ctx.globalAlpha = .65; if (Math.floor(p.x / 24 + p.y / 24) % 2) ctx.scale(1, -1); stamp('path', 0, 0, 40, 24, -20, -12); }
+    else stamp('path', 0, 0, 40, 24, -20, -12);
+    ctx.restore();
+  }));
+  if (state.area === 'crossing') {
+    for (let y = 88; y < 128; y += 16) for (let x = 16; x < 304; x += 16) stamp('water', (x / 16 + (y - 88) / 16) % 4 * 16, 0, 16, Math.min(16, 128 - y), x, y);
+    if (state.connections.bridge) stamp('bridge', 0, 8, 32, 48, 144, 84);
+  }
+  // The visible path continues through the forest edge at transition anchors.
+  // The normal nearby action changes scene before Luna reaches the outer bounds.
+  for (let row = 0; row < 13; row++) for (let col = 0; col < 20; col++) {
+    const isEdge = row === 0 || row === 12 || col === 0 || col === 19;
+    const isGap = openings.some(p => col === (p.x > 160 ? 19 : 0) && Math.abs(row * 16 + 8 - p.y) < 24);
+    if (isEdge && !isGap) stamp('edge', 0, 0, 16, 16, col * 16, row * 16);
+  }
+  for (const opening of openings) {
+    const edgeX = opening.x > 160 ? 320 : 0;
+    placeAlong([opening, { x: edgeX, y: opening.y }], 10, p => {
+      ctx.save(); if (forest) ctx.globalAlpha = .4;
+      stamp('path', 0, 0, 40, 24, p.x - 20, p.y - 12); ctx.restore();
+    });
+    stamp('opening', 96, 0, 32, 40, opening.x - 16, opening.y - 24);
+  }
+  if (state.area === 'hollow') {
+    for (const route of [[{x:80,y:104},{x:144,y:104}], [{x:176,y:104},{x:240,y:104}]]) {
+      placeAlong(route, 12, p => { ctx.save(); if (forest) ctx.globalAlpha = .32; stamp('path', 0, 0, 40, 24, p.x - 20, p.y - 12); ctx.restore(); });
+    }
+  }
+  if (forest) {
+    // Released forest silhouettes keep their roots on the tested boundary.
+    // Their crowns may overhang it; they do not introduce new blocking ground.
+    for (const [x, frame, mirror] of [[-2,1,false],[102,1,true],[206,0,false]]) {
+      ctx.save(); ctx.translate(x + (mirror ? 128 : 0), -32); if (mirror) ctx.scale(-1,1);
+      stamp('canopy', frame * 256, 0, 256, 112, 0, 0, 128, 56); ctx.restore();
+    }
+    for (const side of [0, 1]) for (let y = 48; y <= 192; y += 32) {
+      if (openings.some(p => (p.x > 160 ? 1 : 0) === side && Math.abs(p.y - y) < 44)) continue;
+      stamp('tree', ((y / 16 + side) % 3) * 80, 0, 80, 112, side ? 298 : -8, y - 42, 30, 42);
+    }
+    stamp('forestBottom', forest.frame * 320, 48, 320, 16, 0, 192);
+  }
+  for (const o of scene.obstacles) {
+    if (o.kind === 'tree') entities.push({ y: o.y + 16, draw: () => stamp('tree', ((o.x + o.y) / 16 % 3) * 80, 0, 80, 112, o.x - 7, o.y - 26, 30, 42) });
+    if (o.kind === 'trunk') entities.push({ y: o.y + o.h, draw: () => stamp('roots', 0, 0, 48, 24, o.x, o.y, 32, 16) });
+    if (o.kind === 'bank') stamp('bank', 0, 0, 96, 80, o.x, o.y);
+    if (o.kind === 'well') entities.push({ y: o.y + o.h, draw: () => stamp('well', 0, 0, 32, 16, o.x, o.y) });
+  }
+  if (state.area === 'glade') {
+    if (state.lantern === 'ground') stamp('lanternOff', 0, 0, 16, 16, scene.lantern.x - 5, scene.lantern.y - 9, 10, 10);
+    scene.sparks.forEach((p, i) => { if (!state.sparks.includes(i)) stamp('spark', (i * 4 + Math.floor(now / 180) % 4) * 16, 0, 16, 16, p.x - 8, p.y - 8); });
+  }
+  if (state.area === 'crossing') {
+    markWorld('north', scene.north, !!state.connections.bridge); markWorld('south', scene.south, !!state.connections.bridge, 2);
+    stamp('lantern', 0, 0, 16, 16, scene.south.x - 4, scene.south.y - 10, 8, 8);
+    if (state.connections.bridge) trail(state.connections.bridge, true);
+  }
+  if (state.area === 'hollow') {
+    if (state.connections.hollow) trail(state.connections.hollow, true);
+    markWorld('A', scene.A, !!state.connections.hollow); markWorld('C', scene.C, !!state.connections.hollow, 2);
+  }
+  if (state.area === 'grove') {
+    if (state.connections.village) trail(state.connections.village, true);
+    markWorld('V', scene.V, !!state.connections.village); markWorld('M', scene.M, !!state.connections.village, 2);
+    ['bridge', 'hollow', 'village'].forEach((key, i) => stamp('chime', (i * 4 + (state.connections[key] ? 3 : 0)) * 24, 0, 24, 24, 80 + i * 16, 28, 16, 16));
+    stamp('roots', 48, 0, 48, 24, scene.footing.x - 8, scene.footing.y + 20, 16, 8);
+    if (state.hold === 'footing') pool({ x: scene.footing.x, y: scene.footing.y + 24 }, 32, .8);
+    if (state.sawWindow) entities.push({ y: 40, draw: () => stamp('window', 0, 0, 32, 24, 272, 16) });
+    if (state.lantern === 'docked') stamp('lantern', 0, 0, 16, 16, scene.M.x - 3, scene.M.y - 5, 6, 6);
+  }
+  if (state.recording && !(state.area === 'hollow' ? state.connections.hollow : state.connections.village)) trail(state.recording.path, false);
+  if (scene.memory && !state.memories.includes(state.area)) stamp('memory', 0, 0, 16, 16, scene.memory.x - 6, scene.memory.y - 9, 12, 12);
+  const plants = { glade: [[32,128],[96,48],[192,64],[272,144]], crossing: [[96,24],[224,56],[80,160],[256,136]], hollow: [[32,80],[96,32],[208,48],[272,128]], grove: [[32,80],[80,112],[208,32],[272,176]] }[state.area];
+  plants.forEach(([x, y], i) => stamp('foliage', i % 3 * 16, 0, 16, 16, x, y));
+  crewPositions(state).forEach((p, i) => entities.push({ y: p.y, draw: () => actor(p, ['Eir', 'adult', 'child'][i], '', i === 2) }));
+  if (state.echo) entities.push({ y: state.echo.y, draw: () => stamp('echo', (state.echo.holding ? 0 : Math.floor(now / 110) % 4) * 26, 0, 26, 40, state.echo.x - 6.5, state.echo.y - 19.5, 13, 20) });
+  entities.push({ y: state.player.y, draw: () => {
+    actor(state.player, 'Luna', '');
+    if (state.lantern === 'carried') {
+      ctx.save(); ctx.globalAlpha = state.sparks.length ? .4 + state.sparks.length * .2 : 1;
+      stamp(state.sparks.length ? 'lantern' : 'lanternOff', 0, 0, 16, 16, state.player.x + (facing > 0 ? 4 : -10), state.player.y - 7, 6, 6); ctx.restore();
+    }
+  } });
+  entities.sort((a, b) => a.y - b.y).forEach(e => e.draw());
+  if (forest) stamp('atmosphere', forest.frame * 320, 0, 320, 208, 0, 0);
+}
+function compactTask() {
+  if (state.won || state.homeWalk > 0) return 'Home, together';
+  if (state.area === 'glade') return state.lantern === 'ground' ? 'Find Grandma’s lantern' : state.sparks.length < 3 ? `Light the lantern · ${state.sparks.length}/3 sparks` : 'Towards the river';
+  if (state.area === 'crossing') return !state.connections.bridge ? 'Light the north bridge mark' : !state.metEir ? 'Cross to Grandma' : 'Towards Whispering Hollow';
+  if (state.area === 'hollow') {
+    if (state.connections.hollow) return state.crewArrived ? 'Towards Starfall Grove' : 'Wait for the others';
+    if (!state.recording) return 'Light the near stone';
+    return state.echo ? 'Light the far stone' : 'Walk the detour · Leave an echo';
+  }
+  if (!state.connections.village) return !state.recording ? 'Light the village mark' : 'Echo at the village · Lantern in the well';
+  if (state.lantern === 'docked') return 'Take the lantern';
+  if (!state.groveCrew?.arrived) return 'Meet the others at the wet root';
+  if (!state.childHelped) return 'Light the child’s footing · Wait';
+  if (!state.homeCrew.ready) return 'Wait for Grandma';
+  return state.homeCrew.arrived ? 'Home with Grandma' : 'Walk with Grandma to the window';
+}
+function refresh() {
+  $('#fullscreen').hidden = !immersive || document.fullscreenEnabled !== true || !!document.fullscreenElement;
+  $('#pause-notebook').hidden = !immersive;
+  $('#start').disabled = fullWorld && (artFailed || !Object.values(sampleArt).every(loaded));
+  if (artFailed) write('#entry-copy', 'A forest picture could not load. Reload the page to try again.');
+  write('#area', SCENES[state.area].name);
+  const task = objective(state);
+  write('#objective', immersive ? compactTask() : task);
+  write('#pause-task', task);
+  const progress = `Sparks ${state.sparks.length}/3 · Paths ${Object.values(state.connections).filter(Boolean).length}/3`;
+  write('#progress', progress); write('#pause-progress', progress);
+  if (state.message !== lastFeedback) { lastFeedback = state.message; feedbackUntil = performance.now() + 6500; }
+  write('#feedback', state.won || state.homeWalk > 0 ? '' : state.message || 'The path is quiet. Take your time.');
+  $('#feedback').hidden = immersive && (!state.message || performance.now() > feedbackUntil);
+  const line = state.dialogue[0];
+  document.body.classList.toggle('reading', !!line || state.choice || journal);
+  if (line || state.choice || journal || paused || state.won) stopSteering();
+  $('#speech').hidden = !line || journal;
+  if (line) { write('#speaker', line.speaker); write('#words', line.text); }
+  $('#choices').hidden = !state.choice || !!line || journal;
+  const action = interaction(state);
+  write('#act', controlLabel(action?.label || 'Look nearby', 'F'));
+  $('#act').disabled = !started || paused || !!line || state.choice || journal || state.won;
+  $('#echo').hidden = !state.echoLearned;
+  write('#echo', controlLabel(state.echo ? 'Recall echo' : 'Create echo', 'E'));
+  write('#next', controlLabel('Continue', 'Enter'));
+  write('#close-journal', controlLabel('Close notebook', 'J'));
+  $('#echo').disabled = !started || paused || !!line || state.choice || journal || state.won;
+  $('#journal').hidden = !journal;
+  $('.actions').hidden = journal;
+  $('#tools').hidden = journal;
+  if (journal) {
+    journalPage = Math.max(0, Math.min(journalPage, state.memories.length - 1));
+    const memory = SCENES[state.memories[journalPage]]?.memory;
+    write('#memory-title', memory?.title || 'Last autumn');
+    write('#notes', memory?.text || 'No keepsakes found yet. They are small memories of last autumn’s walk with Grandma.');
+    $('#journal-pages').hidden = state.memories.length < 2;
+    write('#memory-page', `${journalPage + 1} of ${state.memories.length}`);
+    $('#previous-memory').disabled = journalPage === 0;
+    $('#next-memory').disabled = journalPage >= state.memories.length - 1;
+  }
+  write('#pause', immersive ? 'Ⅱ' : paused ? 'Continue · P' : 'Pause · P');
+  $('#pause').setAttribute('aria-label', paused ? 'Continue game' : 'Pause game');
+  const count = Object.values(state.connections).filter(Boolean).length;
+  if (count > lastConnectionCount && started) {
+    if (count === 1) effects?.bridge(); else effects?.starroot(count);
+    lastConnectionCount = count;
+  }
+  if (state.won && !endingShown) {
+    endingShown = true; sound?.victory(); effects?.pause();
+    $('#ending').hidden = false;
+  }
+  draw();
+}
+function unlock() { effects?.unlock(); }
+function actInput() {
+  if (!started || paused || journal || state.won) return;
+  feedbackUntil = performance.now() + 6500;
+  unlock();
+  const memories = state.memories.length;
+  act(state);
+  if (state.memories.length > memories) effects?.memory();
+  refresh();
+}
+function echoInput() {
+  if (!started || paused || journal) return;
+  feedbackUntil = performance.now() + 6500;
+  unlock(); const before = state.echo; echoAction(state);
+  if (state.echo && !before) effects?.echo();
+  refresh();
+}
+function advance() { if (!started || paused || journal) return; acknowledge(state); refresh(); canvas.focus({ preventScroll: true }); }
+function pause() {
+  if (!started || state.won) return;
+  paused = !paused; keys.clear(); stopSteering();
+  $('#pause-card').hidden = !paused;
+  if (paused) { sound?.pause(); effects?.pause(); } else { sound?.resume(); effects?.resume(); }
+  refresh();
+}
+function start() {
+  if (fullWorld && (artFailed || !Object.values(sampleArt).every(loaded))) return;
+  if (immersive) requestPresentation();
+  started = true; document.body.classList.add('playing'); $('#entry').hidden = true;
+  sound?.prologue(); unlock();
+  // Exploration follows the approved opening cue; pause and visibility keep its place.
+  refresh(); canvas.focus({ preventScroll: true });
+}
+function journalInput() { if (!started || paused || state.won) return; journal = !journal; keys.clear(); stopSteering(); refresh(); }
+const directionFor = key => ({ ArrowUp: [0, -1], w: [0, -1], ArrowDown: [0, 1], s: [0, 1], ArrowLeft: [-1, 0], a: [-1, 0], ArrowRight: [1, 0], d: [1, 0] })[key.length === 1 ? key.toLowerCase() : key];
+function step(dx, dy) {
+  if (!started || paused || journal) return;
+  const before = state.sparks.length;
+  const position = { ...state.player };
+  move(state, dx, dy);
+  if (position.x !== state.player.x || position.y !== state.player.y) { lastStepAt = performance.now(); if (position.x !== state.player.x) facing = state.player.x > position.x ? 1 : -1; }
+  if (state.sparks.length > before) effects?.firefly(state.sparks.length, state.sparks.length === 3);
+}
+addEventListener('keydown', event => {
+  if (event.target instanceof HTMLButtonElement && (event.key === ' ' || event.key === 'Enter')) return;
+  const direction = directionFor(event.key);
+  if (direction) {
+    event.preventDefault();
+    if (started && !paused && !journal) canvas.focus({ preventScroll: true });
+    if (!event.repeat) step(direction[0] * 8, direction[1] * 8);
+    keys.add(event.key);
+  }
+  if (event.repeat) return;
+  if (['f', 'F'].includes(event.key)) { event.preventDefault(); actInput(); }
+  if (['e', 'E'].includes(event.key)) { event.preventDefault(); echoInput(); }
+  if (['p', 'P', 'Escape'].includes(event.key)) { event.preventDefault(); if (journal) journalInput(); else pause(); }
+  if (['j', 'J'].includes(event.key)) journalInput();
+  if (event.key === 'Enter' && state.dialogue.length) { event.preventDefault(); advance(); }
+  refresh();
+});
+addEventListener('keyup', event => keys.delete(event.key));
+addEventListener('blur', () => { keys.clear(); stopSteering(); });
+addEventListener('resize', stopSteering);
+document.addEventListener('fullscreenchange', () => { stopSteering(); refresh(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) { keys.clear(); stopSteering(); } });
+for (const button of document.querySelectorAll('[data-direction]')) {
+  if (immersive) continue;
+  let pointer;
+  const stop = () => { keys.delete(button.dataset.direction); pointer = null; };
+  button.addEventListener('pointerdown', event => {
+    event.preventDefault(); unlock(); pointer = event.pointerId; button.setPointerCapture(pointer);
+    const direction = directionFor(button.dataset.direction); step(direction[0] * 8, direction[1] * 8); keys.add(button.dataset.direction); refresh();
+  });
+  button.addEventListener('pointerup', stop); button.addEventListener('pointercancel', stop); button.addEventListener('lostpointercapture', stop);
+  button.addEventListener('contextmenu', event => event.preventDefault());
+}
+// The released continuous thumb pad: pointer ownership and cardinal steering,
+// plus a small neutral centre. Ordinary movement still uses the shared collision core.
+function stopSteering() { steeringPointer = null; touchDirection = null; }
+function steer(event) {
+  const bounds = $('.steering').getBoundingClientRect();
+  const x = event.clientX - (bounds.left + bounds.width / 2), y = event.clientY - (bounds.top + bounds.height / 2);
+  touchDirection = Math.hypot(x,y) < 12 ? null : Math.abs(x) > Math.abs(y) ? [Math.sign(x),0] : [0,Math.sign(y)];
+}
+if (immersive) {
+  const pad = $('.steering');
+  pad.setAttribute('aria-label', 'Drag to walk. Release or return to the centre to stop.');
+  pad.addEventListener('contextmenu', event => event.preventDefault());
+  pad.addEventListener('pointerdown', event => {
+    if (!started || paused || journal || state.dialogue.length || state.choice || state.won || steeringPointer !== null) return;
+    event.preventDefault(); unlock(); steeringPointer = event.pointerId; lastPointerKind = event.pointerType || null;
+    try { pad.setPointerCapture(event.pointerId); } catch {}
+    steer(event); if (touchDirection) step(touchDirection[0] * 8, touchDirection[1] * 8); refresh();
+  });
+  pad.addEventListener('pointermove', event => { if (event.pointerId === steeringPointer) { event.preventDefault(); steer(event); } });
+  for (const kind of ['pointerup','pointercancel','lostpointercapture']) pad.addEventListener(kind, event => { if (event.pointerId === steeringPointer) stopSteering(); });
+}
+function requestPresentation() {
+  if (document.fullscreenEnabled !== true || document.fullscreenElement || typeof document.documentElement.requestFullscreen !== 'function') return;
+  try { const request = document.documentElement.requestFullscreen(); if (request?.catch) request.catch(() => {}); } catch {}
+}
+$('#fullscreen').onclick = requestPresentation;
+$('#pause-notebook').onclick = () => { if (paused) pause(); journalInput(); };
+if (immersive) $('#entry-controls').textContent = 'Drag across the steering circle to walk. Release or return to its centre to stop. Tap the nearby action, and read each line at your own pace. There is no timer.';
+$('#start').onclick = start; $('#next').onclick = advance;
+$('#act').onclick = actInput; $('#echo').onclick = echoInput; $('#pause').onclick = pause; $('#resume').onclick = pause;
+$('#notebook').onclick = journalInput; $('#close-journal').onclick = journalInput;
+$('#previous-memory').onclick = () => { journalPage--; refresh(); };
+$('#next-memory').onclick = () => { journalPage++; refresh(); };
+for (const button of document.querySelectorAll('[data-answer]')) button.onclick = () => { answerBridge(state, button.dataset.answer); refresh(); };
+for (const button of document.querySelectorAll('[data-restart]')) button.onclick = () => location.reload();
+function frame(time) {
+  const dt = Math.min(.04, (time - last) / 1000 || 0); last = time;
+  if (started && !paused && !state.won) {
+    if (!document.hidden && !exploring) {
+      openingElapsed += dt;
+      const audio = sound?.snapshot();
+      if (audio?.ended || openingElapsed >= 15 && (!audio?.enabled || audio?.blocked || !audio)) {
+        exploring = true; sound?.exploration();
+      }
+    }
+    if (journal) { refresh(); requestAnimationFrame(frame); return; }
+    let x = touchDirection?.[0] || 0, y = touchDirection?.[1] || 0;
+    keys.forEach(key => { const d = directionFor(key); if (d) { x += d[0]; y += d[1]; } });
+    if (x || y) { const length = Math.hypot(x, y); step(x / length * 65 * dt, y / length * 65 * dt); }
+    tick(state, dt); refresh();
+  }
+  requestAnimationFrame(frame);
+}
+// Inspection is read-only. QA must play with ordinary keyboard/touch controls.
+window.__moonwell = { snapshot: () => JSON.parse(JSON.stringify(state)), controls: () => ({ pointerActive: steeringPointer !== null, direction: touchDirection ? [...touchDirection] : null, pointerKind: lastPointerKind }) };
+if (state.slice) { $('#entry-title').textContent = 'The path around the trunk'; $('#entry-copy').textContent = 'Begin after the bridge. Luna has found her grandmother Eir. Help her light a safe detour for the waiting adult and child.'; $('#start').textContent = 'Walk into the hollow'; }
+refresh(); requestAnimationFrame(frame);

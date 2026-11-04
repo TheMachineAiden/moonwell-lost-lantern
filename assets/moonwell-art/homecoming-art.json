@@ -1,0 +1,203 @@
+{
+  "assets": [
+    {
+      "role": "Eir without a second portable light",
+      "source": "assets/generated/moonwell-eir-empty-hand-source-v1.png",
+      "source_sha256": "614ca0156525cfca7392069084b9e03d9126efc1f6c9aa94861814d5d197f231",
+      "production": "assets/moonwell-art/production/moonwell-eir-empty-hand-idle-v1.png",
+      "production_sha256": "288436a7cca218b709e85ed5f519d17cbb340d1a8e97f351b7b9b0245228761f",
+      "production_frame": [
+        64,
+        96
+      ],
+      "runtime_frame": [
+        16,
+        24
+      ],
+      "frames": 4,
+      "generator": "OpenAI image generation",
+      "processor": "scripts/process-moonwell-art.sh (MOONWELL_ART_SCOPE=homecoming)"
+    },
+    {
+      "role": "Adult traveller",
+      "source": "assets/generated/moonwell-traveller-adult-source-v1.png",
+      "source_sha256": "f2d301a864c9c07b8a1a58c6f8d5982c172a69fcd040518318bb23aea42fd12f",
+      "production": "assets/moonwell-art/production/moonwell-traveller-adult-walk-v1.png",
+      "production_sha256": "daf9f35df5aeca34fa430a257eb74e140adeb276bf79beb81db390069514e961",
+      "production_frame": [
+        32,
+        48
+      ],
+      "runtime_frame": [
+        16,
+        24
+      ],
+      "frames": 4,
+      "generator": "OpenAI image generation",
+      "processor": "scripts/process-moonwell-art.sh (MOONWELL_ART_SCOPE=homecoming)"
+    },
+    {
+      "role": "Child traveller",
+      "source": "assets/generated/moonwell-traveller-child-source-v1.png",
+      "source_sha256": "92deaefeffc78560cc2cf0e0dc0c7eb87ff043fbf1b4280ab8d573c4640fef92",
+      "production": "assets/moonwell-art/production/moonwell-traveller-child-walk-v1.png",
+      "production_sha256": "87ada400053bdfa8bc1384898ff4c6e1699bec8f1bdfc219e0af3f1b52575994",
+      "production_frame": [
+        32,
+        48
+      ],
+      "runtime_frame": [
+        16,
+        24
+      ],
+      "frames": 4,
+      "generator": "OpenAI image generation",
+      "processor": "scripts/process-moonwell-art.sh (MOONWELL_ART_SCOPE=homecoming)"
+    },
+    {
+      "role": "Hollow root-bank terrain",
+      "source": "assets/generated/moonwell-hollow-bank-source-v1.png",
+      "source_sha256": "f2ffa5d59da117260f237e1056acf9232d8442de2919c46aa38f5d0d5bcd3dc1",
+      "production": "assets/moonwell-art/production/moonwell-hollow-bank-v1.png",
+      "production_sha256": "619255e93769896a706e68adcc77ca2344c661600c9870ea26d19f50bee7ca90",
+      "production_frame": [
+        96,
+        80
+      ],
+      "runtime_frame": [
+        96,
+        80
+      ],
+      "frames": 1,
+      "generator": "OpenAI image generation",
+      "processor": "scripts/process-moonwell-art.sh (MOONWELL_ART_SCOPE=homecoming)"
+    },
+    {
+      "role": "Kitchen window",
+      "source": "assets/generated/moonwell-home-window-source-v1.png",
+      "source_sha256": "9493f5ce1a16c8433a4e63ac7a36d57eb72dd6e68d954fb58f8315360747747d",
+      "production": "assets/moonwell-art/production/moonwell-home-window-v1.png",
+      "production_sha256": "367c20c0e8600305459ca0c613eebad453acb891439d76ce8f49cf63190cf022",
+      "production_frame": [
+        32,
+        24
+      ],
+      "runtime_frame": [
+        32,
+        24
+      ],
+      "frames": 1,
+      "generator": "OpenAI image generation",
+      "processor": "scripts/process-moonwell-art.sh (MOONWELL_ART_SCOPE=homecoming)"
+    },
+    {
+      "role": "Organic loam path",
+      "source": "assets/generated/moonwell-homecoming-path-source-v1.png",
+      "source_sha256": "9aa018d357819be2f379831e2f2a0f4e48914f61f23de3b9c9fd81bcd3e1a1e0",
+      "production": "assets/moonwell-art/production/moonwell-homecoming-path-v1.png",
+      "production_sha256": "29004583bd1ed1b666907749b83aab282fb28bfc41e2352a942d2388be4d6743",
+      "production_frame": [
+        40,
+        24
+      ],
+      "runtime_frame": [
+        40,
+        24
+      ],
+      "frames": 1,
+      "generator": "OpenAI image generation",
+      "processor": "scripts/process-moonwell-art.sh (MOONWELL_ART_SCOPE=homecoming)"
+    },
+    {
+      "role": "Quiet loam",
+      "retained_source": "assets/moonwell-art/production/moonwell-clearing-loam-patches-v3.png",
+      "production": "assets/moonwell-art/production/moonwell-homecoming-loam-tiles-v1.png",
+      "production_sha256": "64125793fa636725c40c8d3d6a06aaac4c57e74889c914bdd7ff83e58e0d64bd",
+      "processor": "scripts/process-loam-base-art.sh"
+    },
+    {
+      "role": "Forest boundary",
+      "retained_source": "assets/moonwell-art/production/moonwell-spruce-overhang-v3.png",
+      "production": "assets/moonwell-art/production/moonwell-homecoming-forest-edge-v1.png",
+      "production_sha256": "d69195a454bc850b5e34d4b8db44c07b04ea1a649ff0a1edb972a04ff60e741d",
+      "processor": "scripts/process-loam-base-art.sh, then scripts/process-moonwell-art.sh (MOONWELL_ART_SCOPE=homecoming)"
+    },
+    {
+      "role": "Moonwell bowl",
+      "retained_source": "assets/moonwell-art/production/moonwell-altar-v3.png",
+      "production": "assets/moonwell-art/production/moonwell-homecoming-well-v1.png",
+      "production_sha256": "00b3c77df79b6835dd28d6006bc7a8be34fa0a66cb4310ec7bf676a26be36c47",
+      "processor": "scripts/process-moonwell-art.sh (MOONWELL_ART_SCOPE=homecoming)"
+    },
+    {
+      "role": "Portable lantern loop",
+      "retained_source": "assets/moonwell-art/production/moonwell-lantern-loop-v3.png",
+      "production": "assets/moonwell-art/production/moonwell-homecoming-lantern-loop-v1.png",
+      "production_sha256": "bd3ac991a50f2438a66c53bc2ac6ed78c82b283fdcda06308ddd28760064afc2",
+      "processor": "scripts/process-moonwell-art.sh (MOONWELL_ART_SCOPE=homecoming)"
+    },
+    {
+      "role": "Portable lantern off",
+      "retained_source": "assets/moonwell-art/production/moonwell-lantern-off-v3.png",
+      "production": "assets/moonwell-art/production/moonwell-homecoming-lantern-off-v1.png",
+      "production_sha256": "02f44e86b1d84470bed6f2c8d0bc9067372ac201a4101cbd080452636704ed6f",
+      "processor": "scripts/process-moonwell-art.sh (MOONWELL_ART_SCOPE=homecoming)"
+    },
+    {
+      "role": "Quiet Hollow root-bank terrain",
+      "source": "assets/generated/moonwell-hollow-bank-source-v2.png",
+      "production": "assets/moonwell-art/production/moonwell-hollow-bank-v2.png",
+      "production_frame": [
+        96,
+        80
+      ],
+      "runtime_frame": [
+        96,
+        80
+      ],
+      "frames": 1,
+      "generator": "OpenAI image generation",
+      "processor": "scripts/process-moonwell-art.sh (MOONWELL_ART_SCOPE=homecoming)",
+      "source_sha256": "818f9b6fcd3d7b8cc13b4410fa0f84c5eb6da7b5cf0b8ff9fb8e4adf9e825152",
+      "production_sha256": "a6870c9e230b7618c4fcaaa5d43c3569b8ad34675cba608bdb59fcfd65ec8e65"
+    },
+    {
+      "role": "Hollow root-bank terrain with organic moss and root edge",
+      "source": "assets/generated/moonwell-hollow-bank-source-v3.png",
+      "source_sha256": "3fbb65d1c2ae01ce5108511e9d3ff426ac113d95e6a70ae50a286eeed2e50538",
+      "production": "assets/moonwell-art/production/moonwell-hollow-bank-v3.png",
+      "production_sha256": "3f97093b319807afd1c344dd38a0746e628da96bff7c03fbb333bc11840a90fa",
+      "production_frame": [
+        96,
+        80
+      ],
+      "runtime_frame": [
+        96,
+        80
+      ],
+      "frames": 1,
+      "generator": "OpenAI image generation",
+      "processor": "scripts/process-moonwell-art.sh (MOONWELL_ART_SCOPE=homecoming)"
+    },
+    {
+      "role": "Organic worn forest footpath patch with broken edge",
+      "source": "assets/generated/moonwell-homecoming-path-source-v2.png",
+      "source_sha256": "5599ed54fa3bd3eea5a06df211973e44bcc6d6fe37a4dba1934884ecce03fee1",
+      "production": "assets/moonwell-art/production/moonwell-homecoming-path-v2.png",
+      "production_sha256": "47392eda5b65580c633fe57b6644c181b929b655dd5ba4af477e05c80606aeda",
+      "production_frame": [
+        40,
+        24
+      ],
+      "runtime_frame": [
+        40,
+        24
+      ],
+      "frames": 1,
+      "generator": "OpenAI image generation",
+      "processor": "scripts/process-moonwell-art.sh (MOONWELL_ART_SCOPE=homecoming)"
+    }
+  ],
+  "rendering": "Uniform nearest-neighbour raster composition, fixed world anchors and source foot baselines.",
+  "palette": "Retained navy, teal, natural bark, subdued moonlight and restrained warm lantern/window light."
+}

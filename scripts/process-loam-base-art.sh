@@ -28,4 +28,19 @@ magick "$work_dir/loam-base-0.png" "$work_dir/loam-base-1.png" \
   -strip -define png:exclude-chunk=date,time \
   PNG32:"$production/moonwell-loam-base-tiles-v1.png"
 
+# The homecoming paths need a quieter substrate behind small people. Keep the
+# same retained loam clusters, reduce their frequency and compress their tonal
+# range instead of enlarging the characters or painting a replacement floor.
+magick "$production/moonwell-loam-base-tiles-v1.png" -filter point \
+  -resize 32x8! -resize 64x16! -colorspace gray -level '5%,95%' \
+  +level-colors '#122a2e','#233d3c' -colors 12 \
+  -strip -define png:exclude-chunk=date,time \
+  PNG32:"$production/moonwell-homecoming-loam-tiles-v1.png"
+
+magick "$repo_dir/assets/moonwell-art/production/moonwell-spruce-overhang-v3.png" \
+  -crop 32x32+24+32 +repage -filter point -resize 16x16 \
+  -modulate 52,70,100 \
+  -background '#0c2428' -alpha remove -alpha off -strip -define png:exclude-chunk=date,time \
+  PNG32:"$production/moonwell-homecoming-forest-edge-v1.png"
+
 printf '%s\n' "Rebuilt opaque Moonwell loam base tiles in $production"
