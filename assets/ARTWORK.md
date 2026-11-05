@@ -556,3 +556,15 @@ The renderer selects the panel matching the map, after depth-sorted entities,
 while the established twenty bottom-edge tree records remain collision-only
 for rendering. Their anchors, 20 × 12 contact rectangles, playable bounds,
 routes, interactions, and phone-scale clarity are unchanged.
+
+## Foreground crown framing — 2026-11-05
+
+The homecoming renderer reuses the unchanged four-panel
+`moonwell-bottom-forest-clusters-v1.png` at uniform logical scale. It places the
+full 320 × 64 scene panel at (0, 176), after depth-sorted characters and before
+the atmosphere. The canvas exposes the upper 32 pixels of crowns; trunks and
+bases continue below the view. The opaque lower-edge tile band is omitted in
+this forest presentation so it cannot create a straight cut behind the crown
+silhouettes. The existing movement bounds, collisions and interaction anchors
+are unchanged. No new raster source or derivative is needed for this framing
+correction.

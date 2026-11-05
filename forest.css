@@ -1,0 +1,101 @@
+/* World-first presentation. The logical camera and collision map stay fixed. */
+body.immersive { background:#07101b; }
+body.immersive.playing { overflow:hidden; overscroll-behavior:none; }
+body.immersive.playing header { height:0; padding:0; border:0; }
+body.immersive.playing h1, body.immersive.playing .build-label { display:none; }
+body.immersive.playing main { display:block; margin:0; padding:0; max-width:none; height:100dvh; }
+body.immersive.playing .world { display:block; }
+body.immersive.playing canvas {
+  position:fixed; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:min(100dvw,calc(100dvh * 20 / 13)); height:min(100dvh,calc(100dvw * 13 / 20));
+  max-width:none; max-height:none; margin:0; border:0; z-index:0;
+}
+body.immersive.playing .scene-heading, body.immersive.playing .objective {
+  position:fixed; z-index:2; left:max(16px,calc((100dvw - 100dvh * 20 / 13) / 2 + 16px));
+  width:min(540px,calc(100vw - 280px)); text-shadow:0 1px 3px #000;
+}
+body.immersive.playing .scene-heading { top:10px; min-height:20px; justify-content:flex-start; }
+body.immersive.playing .scene-heading h2 { font-size:14px; }
+body.immersive.playing #progress { display:none; }
+body.immersive.playing .panel { display:contents; }
+body.immersive.playing .objective {
+  top:32px; min-height:0; margin:0; padding:0; border:0; background:transparent;
+  font-size:12px; font-weight:400; line-height:1.3; text-align:left; color:#c6d8d2;
+}
+body.immersive.playing #feedback {
+  position:fixed; z-index:2; left:50%; bottom:12px; transform:translateX(-50%);
+  width:min(480px,calc(100vw - 330px)); min-height:0; padding:4px 8px;
+  background:#071525ea; border-radius:4px; font-size:11px; line-height:1.3; text-align:center;
+}
+body.immersive.playing .speech, body.immersive.playing .choices {
+  position:fixed; z-index:5; left:50%; bottom:64px; transform:translateX(-50%);
+  width:min(560px,calc(100vw - 240px)); padding:12px 16px; background:#071525f2;
+  border:1px solid #78aeb8; border-radius:6px; font-size:13px; line-height:1.4;
+}
+body.immersive.playing .speech h3 { margin-bottom:6px; }
+body.immersive.playing .speech p { margin-bottom:10px; }
+body.immersive.playing .speech button { min-height:44px; }
+body.immersive.playing .actions {
+  position:fixed; z-index:3; right:max(16px,env(safe-area-inset-right));
+  bottom:max(68px,calc(env(safe-area-inset-bottom) + 56px)); width:136px;
+  display:grid; grid-template-columns:1fr; gap:8px;
+}
+body.immersive.playing .actions button {
+  min-height:44px; padding:6px 8px; font-size:11px; background:#071525d9;
+  border-color:#82b1b8; border-radius:18px;
+}
+body.immersive.playing .actions button:first-child { border-color:#ddc58c; background:#34352ddd; }
+body.immersive.playing .tools {
+  position:fixed; z-index:3; top:max(8px,env(safe-area-inset-top));
+  right:max(12px,env(safe-area-inset-right)); bottom:auto; width:auto;
+  max-width:180px; gap:4px; justify-content:end;
+}
+body.immersive.playing .tools button {
+  font-size:10px; padding:4px 7px; min-height:44px; background:#071525d9; border-radius:16px;
+}
+body.immersive.playing .tools #notebook, body.immersive.playing .tools a { display:none; }
+body.immersive.playing #pause { width:44px; height:44px; border-radius:50%; font-size:22px; padding:0; }
+body.immersive.playing #music {
+  position:fixed; z-index:4; right:max(16px,env(safe-area-inset-right));
+  bottom:max(12px,env(safe-area-inset-bottom)); min-height:44px; min-width:100px;
+  border-radius:22px; background:#071525e8;
+}
+body.immersive.playing .steering {
+  position:fixed; z-index:3; left:max(16px,env(safe-area-inset-left));
+  bottom:max(16px,env(safe-area-inset-bottom)); width:132px; height:132px;
+  display:grid; grid-template-columns:repeat(3,44px); grid-template-rows:repeat(3,44px); gap:0;
+  border:1px solid #aac8d066; border-radius:50%; background:#07152566;
+  touch-action:none; -webkit-user-select:none; user-select:none;
+}
+body.immersive.playing .steering button {
+  min-width:44px; min-height:44px; padding:0; border:1px solid #e1d4a68c;
+  background:#f3e5bd16; color:#f6e8bf; border-radius:50%; font-size:15px; touch-action:none;
+}
+body.immersive.playing .steering [data-direction=ArrowUp] { grid-column:2; grid-row:1; }
+body.immersive.playing .steering [data-direction=ArrowLeft] { grid-column:1; grid-row:2; }
+body.immersive.playing .steering [data-direction=ArrowRight] { grid-column:3; grid-row:2; }
+body.immersive.playing .steering [data-direction=ArrowDown] { grid-column:2; grid-row:3; }
+body.immersive.playing .steering p { display:none; }
+body.immersive.playing.reading .steering, body.immersive.playing.reading .actions,
+body.immersive.playing.reading .objective, body.immersive.playing.reading #feedback { visibility:hidden; }
+.forest-menu { display:none; }
+body.immersive .forest-menu { display:inline-flex; align-items:center; min-height:44px; margin:4px; padding:8px 12px; color:#c9e4de; }
+body.immersive .pause-context { display:block; padding:0; margin:0; }
+body.immersive .pause-context p { font-size:13px; color:#c6d8d2; margin:0 0 10px; }
+.landscape-advice { display:none; }
+
+@media (orientation:portrait) {
+  body.immersive.playing { --portrait-controls-top:clamp(calc(142px + 65vw),52dvh,calc(100dvh - 190px)); }
+  body.immersive.playing canvas { top:110px; transform:translateX(-50%); }
+  body.immersive.playing .scene-heading { left:16px; top:48px; width:calc(100vw - 100px); }
+  body.immersive.playing .objective { left:16px; top:72px; width:calc(100vw - 32px); font-size:12px; }
+  body.immersive.playing .steering, body.immersive.playing .actions { top:var(--portrait-controls-top); bottom:auto; }
+  body.immersive.playing #music { top:calc(var(--portrait-controls-top) + 108px); bottom:auto; }
+  body.immersive.playing #feedback { top:calc(var(--portrait-controls-top) + 168px); bottom:auto; width:calc(100vw - 32px); font-size:12px; }
+  body.immersive.playing .speech, body.immersive.playing .choices, body.immersive.playing #journal {
+    top:calc(122px + 65vw); bottom:auto; width:calc(100vw - 32px);
+    max-height:calc(100dvh - 65vw - 150px); overflow-y:auto; font-size:14px; padding:12px;
+  }
+  body.immersive.playing.reading #music { visibility:hidden; }
+  body.immersive .landscape-advice { display:block; }
+}

@@ -28,6 +28,83 @@ sprite() {
   magick "$source" -crop "$crop" +repage -trim +repage -filter point -resize "${size}!" "$output_file"
 }
 
+# A scoped retained-source revision of Eir for the homecoming story. Her
+# original atlas stays intact; the new source removes only the spare lantern.
+if [ "${MOONWELL_ART_SCOPE:-all}" = homecoming ]; then
+  source="$generated/moonwell-eir-empty-hand-source-v1.png"
+  work=$(mktemp -d "${TMPDIR:-/var/tmp}/moonwell-eir-empty-hand.XXXXXX")
+  trap 'rm -rf "$work"' EXIT
+  for frame in 0 1 2 3; do
+    magick "$source" -crop "512x768+$((frame * 512))+0" +repage \
+      -channel A -threshold 65% +channel -trim +repage \
+      -filter point -resize x73 -background none -gravity south -extent 64x84 \
+      -gravity north -extent 64x96 -strip -define png:exclude-chunk=date,time \
+      PNG32:"$work/eir-$frame.png"
+  done
+  magick "$work"/eir-{0,1,2,3}.png +append -strip \
+    -define png:exclude-chunk=date,time PNG32:"$output/moonwell-eir-empty-hand-idle-v1.png"
+  for person in adult child; do
+    source="$generated/moonwell-traveller-$person-source-v1.png"
+    [ -f "$source" ] || continue
+    height=40
+    [ "$person" != child ] || height=28
+    for frame in 0 1 2 3; do
+      magick "$source" -crop "512x768+$((frame * 512))+0" +repage \
+        -channel A -threshold 65% +channel -trim +repage \
+        -filter point -resize "x$height" -background none -gravity south -extent 32x44 \
+        -gravity north -extent 32x48 -strip -define png:exclude-chunk=date,time \
+        PNG32:"$work/$person-$frame.png"
+    done
+    magick "$work"/$person-{0,1,2,3}.png +append -strip \
+      -define png:exclude-chunk=date,time PNG32:"$output/moonwell-traveller-$person-walk-v1.png"
+  done
+  for version in 1 2 3; do
+    [ -f "$generated/moonwell-hollow-bank-source-v$version.png" ] || continue
+    magick "$generated/moonwell-hollow-bank-source-v$version.png" \
+      -channel A -threshold 65% +channel -trim +repage -filter point -resize 96x80 \
+      -background none -gravity south -extent 96x80 -strip -define png:exclude-chunk=date,time \
+      PNG32:"$output/moonwell-hollow-bank-v$version.png"
+  done
+  if [ -f "$generated/moonwell-home-window-source-v1.png" ]; then
+    magick "$generated/moonwell-home-window-source-v1.png" \
+      -channel A -threshold 65% +channel -trim +repage -filter point -resize 30x22 \
+      -background none -gravity center -extent 32x24 -strip -define png:exclude-chunk=date,time \
+      PNG32:"$output/moonwell-home-window-v1.png"
+  fi
+  magick "$root/assets/moonwell-art/production/moonwell-altar-v3.png" \
+    -crop 64x22+0+26 +repage -filter point -resize 32x11 \
+    -background none -gravity south -extent 32x16 -strip -define png:exclude-chunk=date,time \
+    PNG32:"$output/moonwell-homecoming-well-v1.png"
+  if [ -f "$generated/moonwell-homecoming-path-source-v1.png" ]; then
+    magick "$generated/moonwell-homecoming-path-source-v1.png" \
+      -channel A -threshold 65% +channel -trim +repage -filter point -resize 40x24 \
+      -background none -gravity center -extent 40x24 -strip -define png:exclude-chunk=date,time \
+      PNG32:"$output/moonwell-homecoming-path-v1.png"
+  fi
+  if [ -f "$generated/moonwell-homecoming-path-source-v2.png" ]; then
+    magick "$generated/moonwell-homecoming-path-source-v2.png" \
+      -channel A -threshold 65% +channel -trim +repage -filter point -resize 40x24 \
+      -background none -gravity center -extent 40x24 -strip -define png:exclude-chunk=date,time \
+      PNG32:"$output/moonwell-homecoming-path-v2.png"
+  fi
+  cp "$root/assets/moonwell-art/production/moonwell-lantern-loop-v3.png" "$output/moonwell-homecoming-lantern-loop-v1.png"
+  cp "$root/assets/moonwell-art/production/moonwell-lantern-off-v3.png" "$output/moonwell-homecoming-lantern-off-v1.png"
+  # Use the managed forest family's existing violet-mask/material pass on
+  # new environmental derivatives. Retained source pixels stay unchanged.
+  for name in moonwell-hollow-bank-v1.png moonwell-hollow-bank-v2.png moonwell-hollow-bank-v3.png moonwell-homecoming-path-v2.png moonwell-home-window-v1.png moonwell-homecoming-forest-edge-v1.png moonwell-homecoming-lantern-loop-v1.png moonwell-homecoming-lantern-off-v1.png; do
+    input="$output/$name"
+    [ -f "$input" ] || continue
+    magick "$input" -alpha off \
+      -fx 'r>g*1.08 && b>g*1.12 && b>r*.58 && (max(r,b)-g)>.035 ? 1 : 0' "$work/material-mask.png"
+    magick "$input" -colorspace HSL -channel R -evaluate set 44% +channel \
+      -channel G -evaluate multiply .48 +channel -channel B -evaluate multiply .72 +channel \
+      -colorspace sRGB "$work/material-teal.png"
+    magick "$input" "$work/material-teal.png" "$work/material-mask.png" -compose over -composite \
+      -strip -define png:exclude-chunk=date,time PNG32:"$input"
+  done
+  exit 0
+fi
+
 world_source="$generated/moonwell-world-props-atlas-v2-source.png"
 animated_source="$generated/moonwell-animated-props-atlas-v2-source.png"
 grid_source="$generated/moonwell-grid-sprite-reference-v1.png"

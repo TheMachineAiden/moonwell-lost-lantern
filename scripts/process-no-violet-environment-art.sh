@@ -218,5 +218,8 @@ MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-moonroot-bridge-
 MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-moonroot-water-art.sh"
 MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-starroot-dormant-art.sh"
 MOONWELL_ART_OUTPUT="$production" sh "$repo_dir/scripts/process-forest-atmosphere-art.sh"
+if [ -f "$repo_dir/assets/generated/moonwell-eir-empty-hand-source-v1.png" ]; then
+  MOONWELL_ART_SCOPE=homecoming MOONWELL_ART_OUTPUT="$production" bash "$repo_dir/scripts/process-moonwell-art.sh"
+fi
 
 printf '%s\n' "Rebuilt no-violet Moonwell runtime family in $production"
