@@ -212,7 +212,7 @@ function drawWorld() {
   for (let row = 0; row < 13; row++) for (let col = 0; col < 20; col++) {
     const isEdge = row === 0 || row === 12 || col === 0 || col === 19;
     const isGap = openings.some(p => col === (p.x > 160 ? 19 : 0) && Math.abs(row * 16 + 8 - p.y) < 24);
-    if (isEdge && !isGap) stamp('edge', 0, 0, 16, 16, col * 16, row * 16);
+    if (isEdge && !isGap && !(forest && row === 12)) stamp('edge', 0, 0, 16, 16, col * 16, row * 16);
   }
   for (const opening of openings) {
     const edgeX = opening.x > 160 ? 320 : 0;
@@ -238,7 +238,6 @@ function drawWorld() {
       if (openings.some(p => (p.x > 160 ? 1 : 0) === side && Math.abs(p.y - y) < 44)) continue;
       stamp('tree', ((y / 16 + side) % 3) * 80, 0, 80, 112, side ? 298 : -8, y - 42, 30, 42);
     }
-    stamp('forestBottom', forest.frame * 320, 48, 320, 16, 0, 192);
   }
   for (const o of scene.obstacles) {
     if (o.kind === 'tree') entities.push({ y: o.y + 16, draw: () => stamp('tree', ((o.x + o.y) / 16 % 3) * 80, 0, 80, 112, o.x - 7, o.y - 26, 30, 42) });
@@ -282,6 +281,9 @@ function drawWorld() {
     }
   } });
   entities.sort((a, b) => a.y - b.y).forEach(e => e.draw());
+  // Foreground crowns enter from below; their trunks and bases stay offscreen.
+  // The retained panel continues beyond the canvas, without changing collision.
+  if (forest) stamp('forestBottom', forest.frame * 320, 0, 320, 64, 0, 176);
   if (forest) stamp('atmosphere', forest.frame * 320, 0, 320, 208, 0, 0);
 }
 function compactTask() {
